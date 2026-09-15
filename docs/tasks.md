@@ -993,7 +993,7 @@ O jogador não deve conhecer as posições no início.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Ao clicar em uma carta escondida:
 
