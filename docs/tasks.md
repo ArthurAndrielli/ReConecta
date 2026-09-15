@@ -702,7 +702,7 @@ Somente storage.js deverá manipular diretamente o armazenamento.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Estrutura inicial:
 
