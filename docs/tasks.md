@@ -1125,7 +1125,7 @@ Durante os aproximadamente 700ms, novos cliques não devem alterar cartas.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Quando os dois pares forem encontrados:
 
