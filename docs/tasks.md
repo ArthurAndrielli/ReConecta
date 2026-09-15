@@ -499,7 +499,7 @@ O usuário deve perceber visualmente que um elemento pode ser clicado.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Adicionar estilo:
 
