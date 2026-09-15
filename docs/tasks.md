@@ -973,7 +973,7 @@ Reiniciar o jogo deve poder alterar a posição das cartas.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Estado inicial:
 
