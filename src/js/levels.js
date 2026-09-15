@@ -1,5 +1,6 @@
 export const LEVELS = {
-  1: { name: 'Inicial', help: 'high' }
+  1: { name: 'Inicial', help: 'high' },
+  2: { name: 'Fácil', help: 'medium' }
 };
 
 export function getCurrentLevel(progress) {

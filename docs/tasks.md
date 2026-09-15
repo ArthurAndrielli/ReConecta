@@ -40,7 +40,7 @@ Fase 2 — Progresso e armazenamento
 Fase 3 — Sistema de níveis
 
 [x] T14 — Implementar o Nível 1 — Inicial.
-[ ] T15 — Implementar o Nível 2 — Fácil.
+[x] T15 — Implementar o Nível 2 — Fácil.
 [ ] T16 — Implementar o Nível 3 — Intermediário.
 [ ] T17 — Implementar o Nível 4 — Avançado.
 [ ] T18 — Fazer os jogos consultarem o nível atual para ajustar sua dificuldade.
