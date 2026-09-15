@@ -391,7 +391,7 @@ Criar uma interface simples, confortável e fácil de utilizar.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
