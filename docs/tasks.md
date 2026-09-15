@@ -49,7 +49,7 @@ Fase 3 — Sistema de níveis
 Fase 4 — Pontuação, feedback e dicas
 
 [x] T20 — Implementar o sistema de estrelas: 1, 2 ou 3 estrelas conforme o desempenho.
-[ ] T21 — Mostrar mensagens positivas quando o usuário acertar.
+[x] T21 — Mostrar mensagens positivas quando o usuário acertar.
 [ ] T22 — Mostrar mensagens amigáveis quando o usuário errar.
 [ ] T23 — Implementar dicas depois de algumas tentativas nos jogos que suportarem ajuda.
 
