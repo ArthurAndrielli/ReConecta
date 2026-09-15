@@ -427,7 +427,7 @@ A página não deverá aparecer apenas como HTML sem formatação.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Configurar o conteúdo principal para possuir:
 
