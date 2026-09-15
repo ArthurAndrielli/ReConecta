@@ -317,7 +317,7 @@ O nome ReConecta deve aparecer no topo da página.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
