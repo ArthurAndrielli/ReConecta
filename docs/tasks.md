@@ -59,7 +59,7 @@ Fase 5 — Jogo da Memória
 [x] T25 — Adicionar 6 cartas e 3 pares no próximo nível.
 [x] T26 — Adicionar 8 cartas e 4 pares no nível seguinte.
 [x] T27 — Permitir níveis mais avançados com mais cartas ou imagens parecidas.
-[ ] T28 — Registrar pares encontrados, tentativas, erros e tempo de conclusão.
+[x] T28 — Registrar pares encontrados, tentativas, erros e tempo de conclusão.
 [ ] T29 — Finalizar corretamente a atividade quando todos os pares forem encontrados.
 
 Fase 6 — O Que Você Viu?
