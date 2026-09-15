@@ -95,7 +95,7 @@ Os três arquivos devem aparecer dentro da pasta docs no VS Code.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Criar:
 
