@@ -285,7 +285,7 @@ O arquivo deve abrir no navegador sem apresentar erros.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
