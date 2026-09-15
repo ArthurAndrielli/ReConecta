@@ -932,7 +932,7 @@ O módulo deve poder ser importado por app.js.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Utilizar inicialmente:
 
