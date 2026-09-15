@@ -1029,7 +1029,7 @@ O sistema deverá comparar as duas cartas.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Se o jogador clicar duas vezes na mesma carta:
 
