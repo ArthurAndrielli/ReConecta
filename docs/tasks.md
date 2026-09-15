@@ -1011,7 +1011,7 @@ A primeira carta deverá permanecer aberta esperando a segunda.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Ao clicar em outra carta:
 
