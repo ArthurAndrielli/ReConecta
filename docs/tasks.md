@@ -1045,7 +1045,7 @@ Uma carta não poderá formar par consigo mesma.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Se os dois emojis forem iguais:
 
