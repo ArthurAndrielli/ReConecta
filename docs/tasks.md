@@ -810,7 +810,7 @@ Uma tentativa incorreta deve aumentar o contador de erros.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Responsabilidade:
 
