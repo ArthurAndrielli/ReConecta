@@ -214,7 +214,7 @@ O documento deve explicar claramente como os requisitos serão transformados em 
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
