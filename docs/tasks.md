@@ -31,7 +31,7 @@ Fase 2 — Progresso e armazenamento
 [x] T06 — Completar o storage.js para salvar e recuperar o progresso com localStorage.
 [x] T07 — Registrar atividades realizadas.
 [x] T08 — Registrar acertos.
-[ ] T09 — Registrar erros.
+[x] T09 — Registrar erros.
 [ ] T10 — Registrar tentativas.
 [ ] T11 — Registrar tempo de resposta ou tempo de conclusão sem usar o tempo para pressionar o usuário.
 [ ] T12 — Criar a função para limpar o progresso mediante confirmação.
