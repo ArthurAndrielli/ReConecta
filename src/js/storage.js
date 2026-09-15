@@ -1,5 +1,5 @@
 const STORAGE_KEY = 'reconecta_progress';
-const initialProgress = () => ({ atividades: 0, acertos: 0, erros: 0, tentativas: 0, tempoRespostaTotal: 0, estrelas: 0 });
+const initialProgress = () => ({ atividades: 0, acertos: 0, erros: 0, tentativas: 0, tempoRespostaTotal: 0, estrelas: 0, nivelAtual: 1 });
 
 function getProgress() {
   try { return { ...initialProgress(), ...JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') }; }
