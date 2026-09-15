@@ -1541,7 +1541,7 @@ Preparar o projeto para ser mostrado e explicado.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Explicar:
 
