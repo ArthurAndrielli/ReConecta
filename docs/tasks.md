@@ -680,7 +680,7 @@ Criar um pequeno sistema de armazenamento local.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
