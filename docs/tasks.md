@@ -621,7 +621,7 @@ Todos os cinco cards devem responder ao clique.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Criar uma função responsável por mostrar:
 
