@@ -953,7 +953,7 @@ Devem existir exatamente quatro cartas.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Antes de exibir o jogo:
 
