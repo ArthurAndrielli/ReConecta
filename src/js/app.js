@@ -2,6 +2,7 @@ import { getProgress, registerCorrect, registerWrong, registerActivity, register
 import { render as renderMemory } from './games/memory.js';
 import { games } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
+import { getCurrentLevel } from './levels.js';
 
 const app = document.getElementById('app');
 
@@ -19,7 +20,8 @@ function renderDevelopment(game) {
 
 function openGame(gameId) {
   const game = games.find((item) => item.id === gameId);
-  if (gameId === 'memory') renderMemory(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: registerActivity, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome });
+  const level = getCurrentLevel(getProgress());
+  if (gameId === 'memory') renderMemory(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: registerActivity, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else renderDevelopment(game);
 }
 
