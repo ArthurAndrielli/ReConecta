@@ -1207,7 +1207,7 @@ Uma mensagem textual deverá aparecer quando houver acerto.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Utilizar mensagens amigáveis.
 
