@@ -1509,7 +1509,7 @@ O projeto não deve possuir código abandonado sem motivo.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Confirmar:
 
