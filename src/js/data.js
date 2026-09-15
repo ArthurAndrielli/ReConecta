@@ -16,5 +16,6 @@ export const games = [
 export const memoryCards = ['🍎', '🍎', '🍌', '🍌'];
 export const memoryCardsByLevel = {
   1: memoryCards,
-  2: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇']
+  2: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇'],
+  3: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇', '🍉', '🍉']
 };
