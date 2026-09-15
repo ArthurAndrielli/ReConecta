@@ -1151,7 +1151,7 @@ Encontrar todas as cartas encerra a partida.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Depois de concluir:
 
