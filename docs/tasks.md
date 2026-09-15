@@ -790,7 +790,7 @@ Um acerto no jogo deverá aumentar o contador.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Responsabilidade:
 
