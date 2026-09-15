@@ -244,7 +244,7 @@ Criar a estrutura HTML básica que será utilizada por toda a aplicação.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
