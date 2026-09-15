@@ -55,7 +55,7 @@ Fase 4 — Pontuação, feedback e dicas
 
 Fase 5 — Jogo da Memória
 
-[ ] T24 — Completar o Jogo da Memória com 4 cartas e 2 pares no nível inicial.
+[x] T24 — Completar o Jogo da Memória com 4 cartas e 2 pares no nível inicial.
 [ ] T25 — Adicionar 6 cartas e 3 pares no próximo nível.
 [ ] T26 — Adicionar 8 cartas e 4 pares no nível seguinte.
 [ ] T27 — Permitir níveis mais avançados com mais cartas ou imagens parecidas.
