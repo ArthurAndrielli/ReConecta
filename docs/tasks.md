@@ -884,7 +884,7 @@ Os valores devem vir de getProgress().
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Depois de jogar e voltar à tela inicial:
 
