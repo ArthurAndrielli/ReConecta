@@ -29,7 +29,7 @@ Fase 1 — Estrutura atual da aplicação
 Fase 2 — Progresso e armazenamento
 
 [x] T06 — Completar o storage.js para salvar e recuperar o progresso com localStorage.
-[ ] T07 — Registrar atividades realizadas.
+[x] T07 — Registrar atividades realizadas.
 [ ] T08 — Registrar acertos.
 [ ] T09 — Registrar erros.
 [ ] T10 — Registrar tentativas.
