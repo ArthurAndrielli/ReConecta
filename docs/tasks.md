@@ -750,7 +750,7 @@ A aplicação não deve quebrar quando for executada pela primeira vez.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Função:
 
