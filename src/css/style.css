@@ -29,4 +29,8 @@ button:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
 .memory-grid { display: grid; grid-template-columns: repeat(2, minmax(100px, 150px)); justify-content: center; gap: .75rem; margin: 1.5rem 0; }
 .memory-card { aspect-ratio: 1; font-size: 2.5rem; background: #dbeafe; color: #1e3a8a; }
 .memory-card.is-open, .memory-card.is-matched { background: #dcfce7; }
+.choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: .75rem; margin: 1.5rem 0; }
+.choice-item, .choice-button { min-height: 72px; display: grid; place-items: center; font-size: 2rem; border-radius: 12px; }
+.choice-item { background: #f1f5f9; border: 1px solid #dbe4f0; }
+.choice-button { background: #dbeafe; }
 @media (max-width: 560px) { main { width: min(100% - 1rem, 960px); padding-top: 1rem; } .progress-card { grid-template-columns: 1fr; } .game-grid { grid-template-columns: 1fr; } }

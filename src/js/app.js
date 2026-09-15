@@ -1,5 +1,6 @@
 import { getProgress, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
 import { render as renderMemory } from './games/memory.js';
+import { render as renderWhatDidYouSee } from './games/whatDidYouSee.js';
 import { games } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
@@ -23,6 +24,7 @@ function openGame(gameId) {
   const game = games.find((item) => item.id === gameId);
   const level = getCurrentLevel(getProgress());
   if (gameId === 'memory') renderMemory(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => { registerMemoryMetrics({ pairs: result.pairs, ...result }); registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }); }, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
+  else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else renderDevelopment(game);
 }
 

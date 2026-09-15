@@ -20,3 +20,7 @@ export const memoryCardsByLevel = {
   3: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇', '🍉', '🍉'],
   4: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇', '🍉', '🍉', '🍐', '🍐']
 };
+
+export const whatDidYouSeeRounds = [
+  { items: ['🍎', '🍌'], options: ['🍎', '🍌'], answer: '🍌' }
+];
