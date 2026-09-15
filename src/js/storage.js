@@ -9,7 +9,7 @@ function saveProgress(progress) { localStorage.setItem(STORAGE_KEY, JSON.stringi
 function updateProgress(field) { const progress = getProgress(); progress[field] += 1; saveProgress(progress); return progress; }
 function registerCorrect() { return updateProgress('acertos'); }
 function registerWrong() { return updateProgress('erros'); }
-function registerActivity({ elapsedTime = 0 } = {}) { const progress = updateProgress('atividades'); progress.tempoRespostaTotal += Number.isFinite(elapsedTime) ? Math.max(0, elapsedTime) : 0; saveProgress(progress); return progress; }
+function registerActivity({ elapsedTime = 0, stars = 1 } = {}) { const progress = updateProgress('atividades'); progress.tempoRespostaTotal += Number.isFinite(elapsedTime) ? Math.max(0, elapsedTime) : 0; progress.estrelas += Math.max(0, Number(stars) || 0); saveProgress(progress); return progress; }
 function registerAttempt() { return updateProgress('tentativas'); }
 function resetProgress() { if (!window.confirm('Tem certeza que deseja apagar o progresso desta versão de teste?')) return false; saveProgress(initialProgress()); return true; }
 export { getProgress, saveProgress, registerCorrect, registerWrong, registerActivity, registerAttempt, resetProgress };
