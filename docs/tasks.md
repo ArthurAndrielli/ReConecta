@@ -1105,7 +1105,7 @@ Depois do tempo definido, as cartas deverão voltar ao estado escondido.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Enquanto as duas cartas incorretas estiverem sendo mostradas:
 
