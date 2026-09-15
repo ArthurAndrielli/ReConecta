@@ -1183,7 +1183,7 @@ Garantir que os erros não sejam tratados como punição.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Utilizar mensagens positivas.
 
