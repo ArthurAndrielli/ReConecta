@@ -1456,7 +1456,7 @@ Deixar o projeto mais organizado antes da apresentação.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Verificar se nomes são compreensíveis.
 
