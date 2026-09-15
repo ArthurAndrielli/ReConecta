@@ -1,8 +1,9 @@
-const cards = ['🍎', '🍎', '🍌', '🍌'];
+import { memoryCards } from '../data.js';
+
 const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);
 
 function render(container, callbacks) {
-  let deck = shuffle(cards);
+  let deck = shuffle(memoryCards);
   let openCards = [];
   let matched = [];
   let locked = false;
