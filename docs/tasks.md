@@ -1564,7 +1564,7 @@ Uma pessoa que nunca viu o projeto deverá conseguir abrir e executar seguindo o
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Informar claramente:
 
