@@ -862,7 +862,7 @@ Permitir que o usuário veja seus resultados.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Na página inicial mostrar:
 
