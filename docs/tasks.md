@@ -1073,7 +1073,7 @@ Cartas corretas não deverão voltar a fechar.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Se forem diferentes:
 
