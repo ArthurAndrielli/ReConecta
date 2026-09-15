@@ -569,7 +569,7 @@ app.js deve ser carregado corretamente pelo navegador.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Criar uma função:
 
