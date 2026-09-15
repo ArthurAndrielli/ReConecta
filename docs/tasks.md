@@ -910,7 +910,7 @@ Implementar o primeiro minijogo funcional do ReConecta.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
