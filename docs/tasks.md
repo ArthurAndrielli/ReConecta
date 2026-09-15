@@ -41,7 +41,7 @@ Fase 3 — Sistema de níveis
 
 [x] T14 — Implementar o Nível 1 — Inicial.
 [x] T15 — Implementar o Nível 2 — Fácil.
-[ ] T16 — Implementar o Nível 3 — Intermediário.
+[x] T16 — Implementar o Nível 3 — Intermediário.
 [ ] T17 — Implementar o Nível 4 — Avançado.
 [ ] T18 — Fazer os jogos consultarem o nível atual para ajustar sua dificuldade.
 [ ] T19 — Permitir que o nível seja usado internamente sem precisar mostrar o número ao usuário.
