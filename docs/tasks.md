@@ -519,7 +519,7 @@ Ao utilizar TAB, o botão focado deve ficar visivelmente destacado.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Em telas maiores:
 
