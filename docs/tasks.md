@@ -24,7 +24,7 @@ Fase 1 — Estrutura atual da aplicação
 [x] T02 — Garantir que todos os cards dos jogos abram a atividade correta.
 [x] T03 — Garantir que todas as atividades possuam o botão “← Voltar ao início”.
 [x] T04 — Organizar os dados fixos dos jogos em um arquivo central de dados.
-[ ] T05 — Criar funções utilitárias compartilhadas para embaralhamento, escolha aleatória e feedback.
+[x] T05 — Criar funções utilitárias compartilhadas para embaralhamento, escolha aleatória e feedback.
 
 Fase 2 — Progresso e armazenamento
 

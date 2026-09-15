@@ -1,6 +1,5 @@
 import { memoryCards } from '../data.js';
-
-const shuffle = (items) => [...items].sort(() => Math.random() - 0.5);
+import { shuffle } from '../utils/array.js';
 
 function render(container, callbacks) {
   let deck = shuffle(memoryCards);
