@@ -353,7 +353,7 @@ O elemento com id "app" deve existir no HTML.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
