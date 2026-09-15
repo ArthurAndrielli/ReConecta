@@ -133,7 +133,7 @@ Definir primeiro o que será construído antes de começar a programar.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
