@@ -22,7 +22,7 @@ Fase 1 — Estrutura atual da aplicação
 
 [ ] T01 — Ajustar a tela inicial para exibir os 12 minijogos do ReConecta.
 [x] T02 — Garantir que todos os cards dos jogos abram a atividade correta.
-[ ] T03 — Garantir que todas as atividades possuam o botão “← Voltar ao início”.
+[x] T03 — Garantir que todas as atividades possuam o botão “← Voltar ao início”.
 [ ] T04 — Organizar os dados fixos dos jogos em um arquivo central de dados.
 [ ] T05 — Criar funções utilitárias compartilhadas para embaralhamento, escolha aleatória e feedback.
 
