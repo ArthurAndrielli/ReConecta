@@ -1595,7 +1595,7 @@ Isso é proposital nesta versão.
 
 Status:
 
-- [ ] Validado
+- [x] Validado
 
 Estrutura esperada:
 
