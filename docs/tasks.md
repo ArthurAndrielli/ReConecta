@@ -35,7 +35,7 @@ Preparar corretamente a pasta ReConecta antes de começar a programação.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 O que fazer:
 
