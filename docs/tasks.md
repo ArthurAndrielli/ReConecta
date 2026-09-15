@@ -645,7 +645,7 @@ Os quatro jogos ainda não implementados não devem causar erros.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Quando o usuário estiver:
 
