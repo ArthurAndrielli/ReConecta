@@ -1490,7 +1490,7 @@ Uma pessoa iniciante deve conseguir entender aproximadamente o propósito das va
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Verificar:
 
