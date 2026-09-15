@@ -547,7 +547,7 @@ Criar o JavaScript que controla as telas.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
