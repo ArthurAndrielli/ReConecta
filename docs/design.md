@@ -37,6 +37,9 @@ ReConecta/
 
 3. Fluxo de navegação
 
+A aplicação funcionará como uma SPA simples: o navegador carrega o index.html uma
+única vez e o app.js substitui o conteúdo de main#app conforme a tela escolhida.
+
 Tela inicial
    ↓
 Escolha de minijogo
@@ -48,6 +51,9 @@ Feedback / conclusão
 Jogar novamente ou voltar ao menu
 
 4. Componentes principais
+
+Os arquivos JavaScript serão módulos ES6. Cada jogo ficará em seu próprio arquivo
+dentro de src/js/games e exportará uma função render(container, callbacks).
 
 4.1 app.js
 
@@ -168,6 +174,11 @@ Os scripts usarão type="module", permitindo separar responsabilidades em arquiv
 Sem banco de dados
 
 O MVP salva apenas progresso local. Uma versão posterior poderá usar API e banco de dados.
+
+O Jogo da Memória usará quatro cartas (dois pares), inicialmente ocultas. A cada
+rodada o usuário revela duas cartas; pares permanecem abertos e tentativas
+incorretas são ocultadas após um pequeno intervalo. Ao encontrar os dois pares,
+a atividade é registrada e a tela oferece reinício ou retorno ao menu.
 
 10. Evolução futura
 

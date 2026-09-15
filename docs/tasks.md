@@ -177,7 +177,7 @@ O arquivo deve permitir que uma pessoa entenda as funções da versão 0.1 sem p
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Arquivo:
 
