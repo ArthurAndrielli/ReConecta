@@ -830,7 +830,7 @@ Virar uma carta não pode contar como atividade concluída.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Responsabilidade:
 
