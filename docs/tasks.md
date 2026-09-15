@@ -483,7 +483,7 @@ Os cinco jogos devem ser facilmente identificáveis.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Adicionar efeito visual quando o mouse passar sobre botões e cards.
 
