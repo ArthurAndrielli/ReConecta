@@ -726,7 +726,7 @@ Quando ainda não houver dados salvos, o sistema deve utilizar esses valores.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Função:
 
