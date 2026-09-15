@@ -449,7 +449,7 @@ A aplicação deve permanecer visualmente organizada em telas grandes.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Os jogos deverão aparecer como grandes cards ou botões.
 
