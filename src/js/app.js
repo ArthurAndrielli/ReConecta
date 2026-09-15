@@ -1,4 +1,4 @@
-import { getProgress, registerCorrect, registerWrong, registerActivity, resetProgress } from './storage.js';
+import { getProgress, registerCorrect, registerWrong, registerActivity, registerAttempt, resetProgress } from './storage.js';
 import { render as renderMemory } from './games/memory.js';
 import { games } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
@@ -19,7 +19,7 @@ function renderDevelopment(game) {
 
 function openGame(gameId) {
   const game = games.find((item) => item.id === gameId);
-  if (gameId === 'memory') renderMemory(app, { onCorrect: registerCorrect, onWrong: registerWrong, onComplete: registerActivity, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome });
+  if (gameId === 'memory') renderMemory(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: registerActivity, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome });
   else renderDevelopment(game);
 }
 

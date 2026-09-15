@@ -32,7 +32,7 @@ Fase 2 — Progresso e armazenamento
 [x] T07 — Registrar atividades realizadas.
 [x] T08 — Registrar acertos.
 [x] T09 — Registrar erros.
-[ ] T10 — Registrar tentativas.
+[x] T10 — Registrar tentativas.
 [ ] T11 — Registrar tempo de resposta ou tempo de conclusão sem usar o tempo para pressionar o usuário.
 [ ] T12 — Criar a função para limpar o progresso mediante confirmação.
 [ ] T13 — Exibir na tela inicial um resumo do progresso salvo.
