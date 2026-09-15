@@ -1,8 +1,8 @@
-import { memoryCards } from '../data.js';
+import { memoryCardsByLevel } from '../data.js';
 import { shuffle } from '../utils/array.js';
 
 function render(container, callbacks, context = {}) {
-  let deck = shuffle(memoryCards);
+  let deck = shuffle(memoryCardsByLevel[context.level] || memoryCardsByLevel[1]);
   let openCards = [];
   let matched = [];
   let locked = false;
