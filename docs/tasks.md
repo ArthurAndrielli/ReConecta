@@ -770,7 +770,7 @@ Os dados precisam permanecer após atualizar a página.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Responsabilidade:
 
