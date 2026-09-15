@@ -61,7 +61,7 @@ A pasta ReConecta deve aparecer como pasta principal no Explorer do VS Code.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Criar:
 
