@@ -597,7 +597,7 @@ Ao abrir o aplicativo, renderHome() deverá mostrar a tela principal.
 
 Status:
 
-- [ ] Concluído
+- [x] Concluído
 
 Cada card deverá responder ao clique.
 
