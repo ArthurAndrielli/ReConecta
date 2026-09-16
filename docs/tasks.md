@@ -144,7 +144,7 @@ Fase 17 — Treino Diário
 [x] T74 — Incluir 1 exercício de atenção.
 [x] T75 — Incluir 1 atividade cotidiana.
 [x] T76 — Executar as cinco atividades em sequência.
-[ ] T77 — Mostrar a mensagem “Parabéns! Você concluiu o treino de hoje.” ao finalizar.
+[x] T77 — Mostrar a mensagem “Parabéns! Você concluiu o treino de hoje.” ao finalizar.
 
 Fase 18 — Acompanhamento da evolução
 
