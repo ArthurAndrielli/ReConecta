@@ -256,7 +256,7 @@ Validar: histórico vazio, poucas tentativas, uma única categoria elegível, em
 
 Commit: feat: implementa a task 21.
 
-[ ] Task 22 — Implementar Ajustes e exclusão confirmada de progresso
+[x] Task 22 — Implementar Ajustes e exclusão confirmada de progresso
 
 Depende de: Tasks 05–06 e 20–21. Requisitos: RF013, RF058, RUI013, RUI016, RNF005, RNF011.
 

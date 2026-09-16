@@ -1,4 +1,4 @@
-import { getProgress, saveProgress, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
+import { getProgress, saveProgress, getPreferences, savePreferences, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
 import { render as renderMemory } from './games/memory.js';
 import { render as renderWhatDidYouSee } from './games/whatDidYouSee.js';
 import { render as renderWordBuilder } from './games/wordBuilder.js';
@@ -83,6 +83,16 @@ function renderDevelopment(game) {
   app.querySelector('#back-home').addEventListener('click', renderHome);
 }
 
+function renderSettings() {
+  setActiveNav('ajustes');
+  const preferences = getPreferences();
+  app.innerHTML = `<section class="page-card settings-page"><h2>Ajustes</h2><p class="lead">Escolha uma experiência confortável para você.</p><div class="settings-list"><label for="appearance">Aparência<select id="appearance"><option value="system">Sistema</option><option value="light">Claro</option><option value="dark">Escuro</option></select></label><label for="text-size">Tamanho do texto<select id="text-size"><option value="standard">Padrão</option><option value="large">Ampliado</option></select></label><label for="observation-mode">Observação<select id="observation-mode"><option value="self-paced">No meu ritmo</option><option value="suggested-time">Tempo sugerido</option></select></label><label class="setting-check"><input id="reduce-motion" type="checkbox"> Reduzir animações</label></div><section class="danger-zone"><h3>Meu progresso</h3><p>Apagar o progresso remove somente os dados do ReConecta e mantém estes ajustes.</p><button class="danger" id="reset-progress">Apagar meu progresso</button></section></section>`;
+  app.querySelector('#appearance').value = preferences.appearance; app.querySelector('#text-size').value = preferences.textSize; app.querySelector('#observation-mode').value = preferences.observationMode; app.querySelector('#reduce-motion').checked = preferences.reduceMotion;
+  const persist = () => { savePreferences({ appearance: app.querySelector('#appearance').value, textSize: app.querySelector('#text-size').value, observationMode: app.querySelector('#observation-mode').value, reduceMotion: app.querySelector('#reduce-motion').checked }); document.documentElement.dataset.appearance = app.querySelector('#appearance').value; document.documentElement.dataset.textSize = app.querySelector('#text-size').value; document.documentElement.classList.toggle('reduce-motion', app.querySelector('#reduce-motion').checked); };
+  app.querySelectorAll('select, input').forEach((control) => control.addEventListener('change', persist)); persist();
+  app.querySelector('#reset-progress').addEventListener('click', () => { if (resetProgress()) renderSettings(); });
+}
+
 function advanceTraining() {
   if (!dailyTraining) return;
   dailyTraining.currentIndex += 1;
@@ -152,7 +162,7 @@ function routeFromHash() {
   if (route === 'inicio') renderHome();
   else if (route === 'evolucao') renderEvolution();
   else if (route === 'atividades') renderActivities();
-  else if (route === 'ajustes') { renderHome(); setActiveNav('ajustes'); }
+  else if (route === 'ajustes') renderSettings();
   else if (route.startsWith('jogo/') && games.some((game) => game.id === route.slice(5))) openGame(route.slice(5));
   else renderHome('Não encontramos esta página. Volte ao início para continuar.');
 }
