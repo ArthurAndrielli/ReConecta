@@ -8,7 +8,7 @@ function render(container, callbacks, context = {}) {
   let attempts = 0;
   let errors = 0;
   const startTime = Date.now();
-  const syllables = shuffle(round.syllables);
+  const syllables = shuffle([...round.syllables, ...(round.distractors || [])]);
 
   container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Monte a Palavra</h2><p>Escolha as sílabas na ordem correta para formar a palavra.</p><div class="word-image" role="img" aria-label="Imagem da palavra">${round.image}</div><p id="selected-syllables" class="selected-syllables" aria-live="polite">Escolha uma sílaba</p><div id="syllable-options" class="choice-grid"></div><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="undo-syllable">Desfazer</button><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
   const options = container.querySelector('#syllable-options');
