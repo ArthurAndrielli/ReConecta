@@ -162,7 +162,7 @@ Fase 19 — Acessibilidade e responsividade
 [x] T86 — Adicionar foco visível para navegação por teclado.
 [x] T87 — Garantir que acertos e erros não sejam comunicados somente por cor.
 [x] T88 — Adaptar a tela inicial para celular.
-[ ] T89 — Adaptar os 12 minijogos para celular sem rolagem horizontal desnecessária.
+[x] T89 — Adaptar os 12 minijogos para celular sem rolagem horizontal desnecessária.
 
 Fase 20 — Testes finais
 
