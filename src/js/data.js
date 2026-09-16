@@ -22,5 +22,6 @@ export const memoryCardsByLevel = {
 };
 
 export const whatDidYouSeeRounds = [
-  { items: ['🍎', '🍌'], options: ['🍎', '🍌'], answer: '🍌' }
+  { level: 1, items: ['🍎', '🍌'], options: ['🍎', '🍌'], answer: '🍌' },
+  { level: 2, items: ['🍎', '🍌', '🍇'], options: ['🍎', '🍌', '🍇', '🍉'], answer: '🍇' }
 ];

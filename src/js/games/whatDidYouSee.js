@@ -2,7 +2,7 @@ import { whatDidYouSeeRounds } from '../data.js';
 import { shuffle } from '../utils/array.js';
 
 function render(container, callbacks, context = {}) {
-  const round = whatDidYouSeeRounds[0];
+  const round = whatDidYouSeeRounds.find((item) => item.level === context.level) || whatDidYouSeeRounds[0];
   let phase = 'visible';
   let completed = false;
   let attempts = 0;
