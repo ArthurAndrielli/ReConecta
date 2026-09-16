@@ -141,7 +141,7 @@ Fase 17 — Treino Diário
 [x] T71 — Incluir 1 atividade de memória.
 [x] T72 — Incluir 1 exercício de palavras.
 [x] T73 — Incluir 1 exercício de raciocínio.
-[ ] T74 — Incluir 1 exercício de atenção.
+[x] T74 — Incluir 1 exercício de atenção.
 [ ] T75 — Incluir 1 atividade cotidiana.
 [ ] T76 — Executar as cinco atividades em sequência.
 [ ] T77 — Mostrar a mensagem “Parabéns! Você concluiu o treino de hoje.” ao finalizar.
