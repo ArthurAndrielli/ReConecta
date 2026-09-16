@@ -373,7 +373,7 @@ Validar: provocar os estados com dados de teste isolados; conferir ações de re
 
 Commit: feat: implementa a task 32.
 
-[ ] Task 33 — Unificar as miniaturas e imagens dos exercícios
+[x] Task 33 — Unificar as miniaturas e imagens dos exercícios
 
 Depende de: Tasks 28 e 31. Requisitos: RUI023, RUI012, RNF014, RNF016.
 
