@@ -66,7 +66,7 @@ Fase 6 — O Que Você Viu?
 
 [x] T30 — Implementar o jogo “O Que Você Viu?”.
 [x] T31 — Mostrar imagens durante alguns segundos e escondê-las antes da pergunta.
-[ ] T32 — Implementar nível inicial com 2 imagens e 2 opções.
+[x] T32 — Implementar nível inicial com 2 imagens e 2 opções.
 [ ] T33 — Implementar nível seguinte com 3 imagens e 3 ou 4 opções.
 [ ] T34 — Implementar níveis avançados com 4 ou mais imagens e redução gradual do tempo de visualização.
 
