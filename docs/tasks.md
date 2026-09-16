@@ -93,7 +93,7 @@ Fase 9 — Qual Não Combina?
 Fase 10 — Complete a Sequência
 
 [x] T46 — Implementar sequências simples com dois elementos alternados.
-[ ] T47 — Implementar sequências com três elementos.
+[x] T47 — Implementar sequências com três elementos.
 [ ] T48 — Implementar sequências numéricas simples.
 [ ] T49 — Implementar padrões mais complexos nos níveis avançados.
 
