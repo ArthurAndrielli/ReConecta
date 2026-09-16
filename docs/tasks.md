@@ -139,7 +139,7 @@ Fase 17 — Treino Diário
 
 [x] T70 — Criar o “Treino de Hoje”.
 [x] T71 — Incluir 1 atividade de memória.
-[ ] T72 — Incluir 1 exercício de palavras.
+[x] T72 — Incluir 1 exercício de palavras.
 [ ] T73 — Incluir 1 exercício de raciocínio.
 [ ] T74 — Incluir 1 exercício de atenção.
 [ ] T75 — Incluir 1 atividade cotidiana.
