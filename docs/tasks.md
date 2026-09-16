@@ -353,7 +353,7 @@ Validar: primeiro acesso sem estatísticas fictícias, usuário com histórico, 
 
 Commit: feat: implementa a task 30.
 
-[ ] Task 31 — Transformar os cards e a apresentação do catálogo
+[x] Task 31 — Transformar os cards e a apresentação do catálogo
 
 Depende de: Tasks 28 e 30. Requisitos: RF002, RF057, RUI021, RUI005.
 

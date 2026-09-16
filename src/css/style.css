@@ -92,7 +92,7 @@ p { max-width: 65ch; }
 .category-cotidiano { color: var(--category-cotidiano-fg); background: var(--category-cotidiano-bg); }
 .game-card:hover { border-color: var(--color-control-border); box-shadow: 0 6px 20px rgb(30 53 48 / 0.09); }
 .game-card h3 { margin: 0; }
-.game-icon { display: grid; place-items: center; width: 48px; height: 48px; color: var(--color-primary); background: var(--color-primary-soft); border-radius: 50%; }
+.game-icon { display: grid; place-items: center; width: 100%; height: 104px; color: var(--color-primary); background: var(--color-primary-soft); border-radius: 16px; }
 .icon { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .game-card p { margin: 0 0 var(--space-2); color: var(--color-text-muted); }
 button { min-height: 48px; padding: var(--space-3) var(--space-4); border: 1px solid transparent; border-radius: var(--radius-control); color: var(--color-surface); background: var(--color-primary); font: 600 1.125rem/1.35 var(--font-ui); cursor: pointer; transition: background-color var(--transition-ui), border-color var(--transition-ui), box-shadow var(--transition-ui); }
