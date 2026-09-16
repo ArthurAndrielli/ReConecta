@@ -1,4 +1,4 @@
-import { getProgress, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
+import { getProgress, saveProgress, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
 import { render as renderMemory } from './games/memory.js';
 import { render as renderWhatDidYouSee } from './games/whatDidYouSee.js';
 import { render as renderWordBuilder } from './games/wordBuilder.js';
@@ -84,13 +84,21 @@ function renderDevelopment(game) {
 function advanceTraining() {
   if (!dailyTraining) return;
   dailyTraining.currentIndex += 1;
+  const progress = getProgress();
+  const dateKey = new Date().toLocaleDateString('en-CA');
+  if (progress.dailyPlans[dateKey]) { progress.dailyPlans[dateKey].currentIndex = dailyTraining.currentIndex; progress.dailyPlans[dateKey].completed = dailyTraining.currentIndex >= dailyTraining.activities.length; saveProgress(progress); }
   if (dailyTraining.currentIndex >= dailyTraining.activities.length) { dailyTraining = null; renderHome('Parabéns! Você concluiu o treino de hoje.'); return; }
   openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true });
 }
 
 function startDailyTraining() {
-  dailyTraining = { activities: [...dailyTrainingActivities], currentIndex: 0, completed: false };
-  openGame(dailyTraining.activities[0], { trainingMode: true });
+  const progress = getProgress();
+  const dateKey = new Date().toLocaleDateString('en-CA');
+  const saved = progress.dailyPlans[dateKey] || { dateKey, activities: [...dailyTrainingActivities], currentIndex: 0, completed: false, createdAt: new Date().toISOString() };
+  progress.dailyPlans[dateKey] = saved; saveProgress(progress);
+  dailyTraining = { activities: [...saved.activities], currentIndex: Math.min(saved.currentIndex || 0, dailyTrainingActivities.length - 1), completed: saved.completed };
+  if (dailyTraining.completed) renderHome('Parabéns! Você concluiu o treino de hoje.');
+  else openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true });
 }
 
 function openGame(gameId, { trainingMode = false } = {}) {
