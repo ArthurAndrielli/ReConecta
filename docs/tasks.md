@@ -174,7 +174,7 @@ Validar: solução de cada padrão, alternativas inequívocas, sequência numér
 
 Commit: feat: implementa a task 13.
 
-[ ] Task 14 — Finalizar Organize a Rotina
+[x] Task 14 — Finalizar Organize a Rotina
 
 Depende de: Tasks 06–07. Requisitos: RF038–RF039.
 
