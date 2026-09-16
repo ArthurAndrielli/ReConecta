@@ -138,7 +138,7 @@ Fase 16 — Complete a Frase
 Fase 17 — Treino Diário
 
 [x] T70 — Criar o “Treino de Hoje”.
-[ ] T71 — Incluir 1 atividade de memória.
+[x] T71 — Incluir 1 atividade de memória.
 [ ] T72 — Incluir 1 exercício de palavras.
 [ ] T73 — Incluir 1 exercício de raciocínio.
 [ ] T74 — Incluir 1 exercício de atenção.
