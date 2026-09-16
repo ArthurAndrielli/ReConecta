@@ -7,6 +7,12 @@
   --color-primary: #245C45;
   --color-primary-hover: #1B4A36;
   --color-primary-soft: #E7F1EA;
+  --color-hero: #173F32;
+  --color-on-hero: #FAFCF8;
+  --color-hero-muted: #E0EEDD;
+  --color-highlight: #DDF0B6;
+  --color-on-highlight: #1C4231;
+  --color-navigation-active: #EDF3E4;
   --color-border: #DDE6DA;
   --color-control-border: #778B81;
   --color-focus: #1B63B9;
@@ -39,7 +45,7 @@
   --space-12: 3rem;
   --radius-control: 12px;
   --radius-card: 20px;
-  --shadow-card: 0 4px 16px rgb(30 53 48 / 0.04);
+  --shadow-card: 0 8px 24px rgb(30 53 48 / 0.06);
   --transition-ui: 150ms ease;
   font-family: var(--font-ui);
   font-size: calc(100% * var(--font-scale));
