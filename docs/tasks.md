@@ -160,7 +160,7 @@ Fase 19 — Acessibilidade e responsividade
 [x] T84 — Garantir poucos elementos e comandos objetivos em cada tela.
 [x] T85 — Garantir botões grandes e textos legíveis.
 [x] T86 — Adicionar foco visível para navegação por teclado.
-[ ] T87 — Garantir que acertos e erros não sejam comunicados somente por cor.
+[x] T87 — Garantir que acertos e erros não sejam comunicados somente por cor.
 [ ] T88 — Adaptar a tela inicial para celular.
 [ ] T89 — Adaptar os 12 minijogos para celular sem rolagem horizontal desnecessária.
 
