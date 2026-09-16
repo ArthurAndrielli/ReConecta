@@ -323,7 +323,7 @@ Validar: conferir Início, catálogo e uma tela de exercício. Comparar hierarqu
 
 Commit: feat: implementa a task 27.
 
-[ ] Task 28 — Refinar marca, tipografia e família de ícones
+[x] Task 28 — Refinar marca, tipografia e família de ícones
 
 Depende de: Task 27. Requisitos: RUI018, RUI012, RNF004.
 
