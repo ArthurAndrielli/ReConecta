@@ -149,7 +149,7 @@ Fase 17 — Treino Diário
 Fase 18 — Acompanhamento da evolução
 
 [x] T78 — Registrar exercícios realizados por categoria.
-[ ] T79 — Registrar acertos, erros, tentativas, tempo e nível atual.
+[x] T79 — Registrar acertos, erros, tentativas, tempo e nível atual.
 [ ] T80 — Identificar a categoria com maior facilidade.
 [ ] T81 — Identificar a categoria que precisa de mais prática.
 [ ] T82 — Criar uma tela simples de acompanhamento da evolução.
