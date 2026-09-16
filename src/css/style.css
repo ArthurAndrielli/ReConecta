@@ -146,6 +146,7 @@ button:focus-visible, .game-card:focus-within { outline: 3px solid var(--color-f
 .filter-chip { min-height: 44px; padding: .5rem .875rem; color: var(--color-primary); background: var(--color-surface); border: 1px solid var(--color-control-border); font-size: 1rem; }
 .filter-chip.is-selected { color: var(--color-text); background: var(--color-navigation-active, var(--color-primary-soft)); border-color: var(--color-primary); }
 .empty-state { grid-column: 1 / -1; padding: var(--space-8); text-align: center; background: var(--color-surface-soft); border-radius: var(--radius-card); }
+.empty-state h3 { margin-top: 0; }
 @media (max-width: 560px) { main { width: min(100% - 1rem, 960px); padding-top: var(--space-4); } .progress-card, .game-grid, .association-grid { grid-template-columns: 1fr; } .activity-card, .page-card { padding: var(--space-4); } }
 @media (min-width: 561px) and (max-width: 1023px) { main { width: min(100% - 4rem, 960px); } .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .global-nav { flex-wrap: wrap; } }
 @media (max-width: 767px) { .global-nav { position: sticky; bottom: 0; z-index: 1; justify-content: space-around; padding-bottom: calc(var(--space-2) + env(safe-area-inset-bottom)); } .global-nav a { flex: 1; justify-content: center; padding-inline: var(--space-2); font-size: .875rem; } body { padding-bottom: 1px; } }
