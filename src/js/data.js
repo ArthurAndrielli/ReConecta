@@ -29,5 +29,6 @@ export const whatDidYouSeeRounds = [
 ];
 
 export const wordRounds = [
-  { level: 1, word: 'CASA', syllables: ['CA', 'SA'], image: '🏠' }
+  { level: 1, word: 'CASA', syllables: ['CA', 'SA'], image: '🏠' },
+  { level: 2, word: 'BANANA', syllables: ['BA', 'NA', 'NA'], image: '🍌' }
 ];

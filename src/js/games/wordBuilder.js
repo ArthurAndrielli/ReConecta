@@ -3,7 +3,7 @@ import { shuffle } from '../utils/array.js';
 
 function render(container, callbacks, context = {}) {
   const round = wordRounds.find((item) => item.level === context.level) || wordRounds[0];
-  let selected = [];
+  let selectedIndices = [];
   let completed = false;
   let attempts = 0;
   let errors = 0;
@@ -14,17 +14,19 @@ function render(container, callbacks, context = {}) {
   const options = container.querySelector('#syllable-options');
   const selectedElement = container.querySelector('#selected-syllables');
   const draw = () => {
+    const selected = selectedIndices.map((index) => syllables[index]);
     selectedElement.textContent = selected.length ? selected.join(' - ') : 'Escolha uma sílaba';
-    options.innerHTML = syllables.map((syllable, index) => `<button class="choice-button" data-index="${index}" ${selected.includes(syllable) ? 'disabled' : ''}>${syllable}</button>`).join('');
-    options.querySelectorAll('[data-index]').forEach((button) => button.addEventListener('click', () => select(syllables[Number(button.dataset.index)])));
+    options.innerHTML = syllables.map((syllable, index) => `<button class="choice-button" data-index="${index}" ${selectedIndices.includes(index) ? 'disabled' : ''}>${syllable}</button>`).join('');
+    options.querySelectorAll('[data-index]').forEach((button) => button.addEventListener('click', () => select(Number(button.dataset.index))));
   };
-  const select = (syllable) => {
-    if (completed || selected.includes(syllable)) return;
-    selected.push(syllable);
+  const select = (index) => {
+    if (completed || selectedIndices.includes(index)) return;
+    selectedIndices.push(index);
     draw();
-    if (selected.length !== round.syllables.length) return;
+    if (selectedIndices.length !== round.syllables.length) return;
     attempts += 1;
     callbacks.onAttempt();
+    const selected = selectedIndices.map((itemIndex) => syllables[itemIndex]);
     if (selected.join('') === round.syllables.join('')) {
       completed = true;
       callbacks.onCorrect();
@@ -35,11 +37,11 @@ function render(container, callbacks, context = {}) {
       errors += 1;
       callbacks.onWrong();
       callbacks.onMessage('wrong');
-      selected = [];
+      selectedIndices = [];
       draw();
     }
   };
-  container.querySelector('#undo-syllable').addEventListener('click', () => { if (!completed) { selected.pop(); draw(); } });
+  container.querySelector('#undo-syllable').addEventListener('click', () => { if (!completed) { selectedIndices.pop(); draw(); } });
   container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
   container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
   draw();
