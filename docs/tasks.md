@@ -120,7 +120,7 @@ Fase 13 — Toque Somente em...
 Fase 14 — Associação de Objetos
 
 [x] T61 — Implementar o jogo “Associação de Objetos”.
-[ ] T62 — Adicionar associações simples como Escova→Dentes, Chave→Porta, Garfo→Comida, Cama→Dormir e Sapato→Pé.
+[x] T62 — Adicionar associações simples como Escova→Dentes, Chave→Porta, Garfo→Comida, Cama→Dormir e Sapato→Pé.
 [ ] T63 — Adicionar relações mais abstratas nos níveis avançados.
 
 Fase 15 — Situações do Cotidiano
