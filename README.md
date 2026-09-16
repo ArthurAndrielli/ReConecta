@@ -1,53 +1,30 @@
 ReConecta
+=========
 
-MVP acadêmico criado em HTML, CSS e JavaScript puro a partir da especificação do projeto ReConecta.
+Versão 0.1 - Pré-teste: uma aplicação acadêmica de atividades cognitivas e de linguagem.
 
-Como abrir no VS Code
+## Como executar
 
-Extraia a pasta ReConecta.
+Abra a pasta no VS Code, instale o Live Server e abra `index.html` com **Open with Live Server**. Um servidor HTTP local simples também funciona.
 
-Abra o VS Code.
+## Tecnologias
 
-Vá em File > Open Folder / Arquivo > Abrir Pasta.
+HTML5, CSS3, JavaScript ES6+ com ES Modules e `localStorage`. Não há framework nem back-end.
 
-Selecione a pasta ReConecta.
+## Funcionalidades atuais
 
-Instale a extensão Live Server (autor: Ritwick Dey), se ainda não tiver.
+- Tela inicial com cinco atividades.
+- Navegação sem recarregar a página.
+- Jogo da Memória com dois pares, feedback de acerto/erro, reinício e conclusão.
+- Progresso local de atividades, acertos e erros.
+- Layout responsivo, foco de teclado e botões grandes.
 
-Abra o arquivo index.html.
+Nesta versão, **Monte a Palavra**, **Imagem e Palavra**, **Qual Não Combina?** e **Complete a Sequência** exibem a mensagem de próxima versão.
 
-Clique com o botão direito dentro do arquivo e escolha Open with Live Server.
+## Estrutura
 
-O projeto abrirá no navegador.
+`index.html` contém a estrutura; `src/css/style.css` a aparência; `src/js/app.js` a navegação; `src/js/storage.js` o armazenamento; e `src/js/games/memory.js` o jogo funcional. A documentação SDD está em `docs/`.
 
-Documentação SDD
+## Próximos passos
 
-docs/requerimentos.md: o que o sistema deve fazer.
-
-docs/design.md: como o sistema será organizado e implementado.
-
-docs/tasks.md: etapas práticas de implementação e entrega.
-
-Tecnologias
-
-HTML5
-
-CSS3
-
-JavaScript ES6+
-
-ES Modules
-
-localStorage
-
-Minijogos do MVP
-
-Jogo da Memória
-
-Monte a Palavra
-
-Imagem e Palavra
-
-Qual Não Combina?
-
-Complete a Sequência
+ReConecta v0.2 deverá implementar Monte a Palavra e ampliar o sistema de progresso.
