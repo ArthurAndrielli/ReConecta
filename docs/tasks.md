@@ -144,7 +144,7 @@ Validar: CASA, BANANA com duas peças NA e palavra com distratores; desfazer sem
 
 Commit: feat: implementa a task 10.
 
-[ ] Task 11 — Finalizar Imagem e Palavra
+[x] Task 11 — Finalizar Imagem e Palavra
 
 Depende de: Tasks 06–07. Requisitos: RF031–RF032.
 
