@@ -1,4 +1,4 @@
-import { getProgress, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
+import { getProgress, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
 import { render as renderMemory } from './games/memory.js';
 import { render as renderWhatDidYouSee } from './games/whatDidYouSee.js';
 import { render as renderWordBuilder } from './games/wordBuilder.js';
@@ -21,6 +21,8 @@ import { renderIcon } from './utils/icons.js';
 const app = document.getElementById('app');
 const navLinks = [...document.querySelectorAll('[data-nav]')];
 let dailyTraining = null;
+let activeSession = null;
+let activeGameCleanup = null;
 const dailyTrainingActivities = ['memory', 'word', 'sequence', 'findObject', 'situations'];
 const categoryByGame = { memory: 'memoria', whatDidYouSee: 'memoria', word: 'linguagem', image: 'linguagem', sentence: 'linguagem', odd: 'raciocinio', sequence: 'raciocinio', findObject: 'atencao', tapOnly: 'atencao', routine: 'cotidiano', association: 'associacao', situations: 'cotidiano' };
 const normalize = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -94,10 +96,19 @@ function startDailyTraining() {
 function openGame(gameId, { trainingMode = false } = {}) {
   document.body.classList.add('is-focus-mode');
   const game = games.find((item) => item.id === gameId);
+  if (!game) return renderHome('Não encontramos essa atividade. Escolha uma opção disponível.');
+  app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">${game.category}</span><h2>${game.name}</h2><p>${game.description}</p><p>Faça a atividade com calma. Você poderá pedir ajuda ou voltar quando quiser.</p><div class="actions"><button id="start-activity">Começar atividade</button><button class="secondary" id="cancel-activity">Voltar ao início</button></div></section>`;
+  app.querySelector('#cancel-activity').addEventListener('click', () => { document.body.classList.remove('is-focus-mode'); renderHome(); });
+  app.querySelector('#start-activity').addEventListener('click', () => mountGame(gameId, { trainingMode, game }));
+}
+
+function mountGame(gameId, { trainingMode, game }) {
   const level = getCurrentLevel(getProgress());
   const category = categoryByGame[gameId];
-  const onComplete = (result) => { if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); registerActivity({ ...result, category, stars: calculateStars({ ...result, completed: true }) }); if (trainingMode) advanceTraining(); };
-  const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { dailyTraining = null; document.body.classList.remove('is-focus-mode'); renderHome(); } };
+  activeSession = createSession({ gameId, category, level, trainingRef: trainingMode ? { dateKey: new Date().toLocaleDateString('en-CA') } : null });
+  let completed = false;
+  const onComplete = (result) => { if (completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); renderResult(game, stars, trainingMode); };
+  const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { if (activeSession) abandonSession(activeSession.id); activeSession = null; dailyTraining = null; document.body.classList.remove('is-focus-mode'); renderHome(); } };
   if (gameId === 'memory') renderMemory(app, callbacks, { level });
   else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, callbacks, { level });
   else if (gameId === 'word') renderWordBuilder(app, callbacks, { level });
@@ -111,6 +122,12 @@ function openGame(gameId, { trainingMode = false } = {}) {
   else if (gameId === 'situations') renderDailySituations(app, callbacks, { level });
   else if (gameId === 'sentence') renderCompleteSentence(app, callbacks, { level });
   else renderDevelopment(game);
+}
+
+function renderResult(game, stars, trainingMode) {
+  const starText = '★'.repeat(stars);
+  app.innerHTML = `<section class="activity-card result-card"><span class="eyebrow">Atividade concluída</span><h2>Muito bem!</h2><p>Você concluiu ${game.name}.</p><p class="result-stars" aria-label="${stars} ${stars === 1 ? 'estrela recebida' : 'estrelas recebidas'}">${starText}</p><p class="feedback" role="status">${stars === 3 ? 'Você foi muito bem e manteve a calma.' : 'Cada tentativa faz parte do seu caminho.'}</p><div class="actions"><button id="next-action">${trainingMode ? 'Próxima atividade' : 'Voltar ao início'}</button></div></section>`;
+  app.querySelector('#next-action').addEventListener('click', () => { activeSession = null; if (trainingMode) advanceTraining(); else { document.body.classList.remove('is-focus-mode'); renderHome(); } });
 }
 
 function setActiveNav(route) {
