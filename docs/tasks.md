@@ -58,7 +58,7 @@ Validar: usar os componentes em pelo menos uma tela real; conferir que todos os 
 
 Commit: feat: implementa a task 02.
 
-[ ] Task 03 — Implementar a estrutura de navegação responsiva
+[x] Task 03 — Implementar a estrutura de navegação responsiva
 
 Depende de: Tasks 01–02. Requisitos: RF001, RF003, RF004, RUI002, RUI003, RUI006, RNF002, RNF008.
 

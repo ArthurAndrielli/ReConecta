@@ -19,11 +19,13 @@ import { getBestCategory, getPracticeCategory, getRecommendation } from './evolu
 import { renderIcon } from './utils/icons.js';
 
 const app = document.getElementById('app');
+const navLinks = [...document.querySelectorAll('[data-nav]')];
 let dailyTraining = null;
 const dailyTrainingActivities = ['memory', 'word', 'sequence', 'findObject', 'situations'];
 const categoryByGame = { memory: 'memoria', whatDidYouSee: 'memoria', word: 'linguagem', image: 'linguagem', sentence: 'linguagem', odd: 'raciocinio', sequence: 'raciocinio', findObject: 'atencao', tapOnly: 'atencao', routine: 'cotidiano', association: 'associacao', situations: 'cotidiano' };
 
 function renderHome(trainingMessage = '') {
+  setActiveNav('inicio');
   const progress = getProgress();
   app.innerHTML = `<section class="page-card"><h2>Bem-vindo ao ReConecta!</h2><p>Escolha uma atividade para exercitar sua memória, linguagem e atenção.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><h3>Treino de Hoje</h3><p>Faça cinco atividades variadas em sequência.</p><button id="start-training">Começar treino</button></div><div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.erros}</strong>Erros</div></div><div class="game-grid">${games.map((game) => `<article class="game-card"><div role="img" aria-label="${game.name}">${game.icon}</div><h3>${game.name}</h3><p>${game.id === 'memory' ? 'Encontre os pares.' : 'Atividade cognitiva.'}</p><button data-game="${game.id}">Abrir atividade</button></article>`).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
   app.querySelectorAll('.game-card').forEach((card, index) => {
@@ -40,6 +42,7 @@ function renderHome(trainingMessage = '') {
 }
 
 function renderEvolution() {
+  setActiveNav('evolucao');
   const progress = getProgress();
   const best = getBestCategory(progress);
   const practice = getPracticeCategory(progress);
@@ -66,11 +69,12 @@ function startDailyTraining() {
 }
 
 function openGame(gameId, { trainingMode = false } = {}) {
+  document.body.classList.add('is-focus-mode');
   const game = games.find((item) => item.id === gameId);
   const level = getCurrentLevel(getProgress());
   const category = categoryByGame[gameId];
   const onComplete = (result) => { if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); registerActivity({ ...result, category, stars: calculateStars({ ...result, completed: true }) }); if (trainingMode) advanceTraining(); };
-  const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { dailyTraining = null; renderHome(); } };
+  const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { dailyTraining = null; document.body.classList.remove('is-focus-mode'); renderHome(); } };
   if (gameId === 'memory') renderMemory(app, callbacks, { level });
   else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, callbacks, { level });
   else if (gameId === 'word') renderWordBuilder(app, callbacks, { level });
@@ -86,5 +90,24 @@ function openGame(gameId, { trainingMode = false } = {}) {
   else renderDevelopment(game);
 }
 
-renderHome();
+function setActiveNav(route) {
+  navLinks.forEach((link) => {
+    if (link.dataset.nav === route) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+}
+
+function routeFromHash() {
+  const route = location.hash.replace(/^#\/?/, '') || 'inicio';
+  if (route === 'inicio') renderHome();
+  else if (route === 'evolucao') renderEvolution();
+  else if (route === 'atividades') { renderHome(); setActiveNav('atividades'); }
+  else if (route === 'ajustes') { renderHome(); setActiveNav('ajustes'); }
+  else if (route.startsWith('jogo/') && games.some((game) => game.id === route.slice(5))) openGame(route.slice(5));
+  else renderHome('Não encontramos esta página. Volte ao início para continuar.');
+}
+
+window.addEventListener('hashchange', routeFromHash);
+
+routeFromHash();
 export { app, renderHome };
