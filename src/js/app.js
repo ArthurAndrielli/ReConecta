@@ -6,6 +6,7 @@ import { render as renderImageWord } from './games/imageWord.js';
 import { render as renderOddOneOut } from './games/oddOneOut.js';
 import { render as renderSequence } from './games/sequence.js';
 import { render as renderRoutine } from './games/organizeRoutine.js';
+import { render as renderFindObject } from './games/findObject.js';
 import { games } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
@@ -35,6 +36,7 @@ function openGame(gameId) {
   else if (gameId === 'odd') renderOddOneOut(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else if (gameId === 'sequence') renderSequence(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else if (gameId === 'routine') renderRoutine(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
+  else if (gameId === 'findObject') renderFindObject(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else renderDevelopment(game);
 }
 

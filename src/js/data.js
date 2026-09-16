@@ -59,3 +59,10 @@ export const routineRounds = [
   { level: 4, title: 'Preparar uma refeição', steps: ['Separar os ingredientes', 'Lavar os alimentos', 'Preparar a refeição', 'Servir a comida'] },
   { level: 5, title: 'Colocar uma roupa', steps: ['Escolher a roupa', 'Vestir a camiseta', 'Vestir a calça', 'Calçar os sapatos'] }
 ];
+
+export const findObjectRounds = [
+  { level: 1, instruction: 'Encontre a maçã', target: '🍎', options: ['🍎', '🏠', '🐶'] },
+  { level: 2, instruction: 'Encontre o cachorro', target: '🐶', options: ['🍎', '🐶', '🚗', '🏠', '⚽'] },
+  { level: 3, instruction: 'Encontre a fruta', target: '🍐', options: ['🍎', '🍐', '🍏', '🍈', '🥝', '🍋'] },
+  { level: 4, instruction: 'Encontre o limão', target: '🍋', options: ['🍋', '🍊', '🍈', '🥝', '🍐', '🍏', '🍎'] }
+];
