@@ -126,7 +126,7 @@ Fase 14 — Associação de Objetos
 Fase 15 — Situações do Cotidiano
 
 [x] T64 — Implementar o jogo “Situações do Cotidiano”.
-[ ] T65 — Adicionar situações simples como chuva→guarda-chuva e beber água→copo.
+[x] T65 — Adicionar situações simples como chuva→guarda-chuva e beber água→copo.
 [ ] T66 — Adicionar novas situações para evitar repetição excessiva.
 
 Fase 16 — Complete a Frase
