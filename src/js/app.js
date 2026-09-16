@@ -10,6 +10,7 @@ import { render as renderFindObject } from './games/findObject.js';
 import { render as renderTapOnly } from './games/tapOnly.js';
 import { render as renderAssociation } from './games/objectAssociation.js';
 import { render as renderDailySituations } from './games/dailySituations.js';
+import { render as renderCompleteSentence } from './games/completeSentence.js';
 import { games } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
@@ -43,6 +44,7 @@ function openGame(gameId) {
   else if (gameId === 'tapOnly') renderTapOnly(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else if (gameId === 'association') renderAssociation(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else if (gameId === 'situations') renderDailySituations(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
+  else if (gameId === 'sentence') renderCompleteSentence(app, { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete: (result) => registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }), onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: renderHome }, { level });
   else renderDevelopment(game);
 }
 

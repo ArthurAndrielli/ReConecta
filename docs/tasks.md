@@ -131,7 +131,7 @@ Fase 15 — Situações do Cotidiano
 
 Fase 16 — Complete a Frase
 
-[ ] T67 — Implementar o jogo “Complete a Frase”.
+[x] T67 — Implementar o jogo “Complete a Frase”.
 [ ] T68 — Criar frases simples nos níveis iniciais.
 [ ] T69 — Criar frases maiores nos níveis avançados.
 

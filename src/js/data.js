@@ -82,3 +82,10 @@ export const dailySituationRounds = [
   { question: 'Você quer beber água. O que deve pegar?', options: ['Copo', 'Sapato', 'Livro'], answer: 'Copo' },
   { question: 'Está frio. O que você deve vestir?', options: ['Casaco', 'Chinelo', 'Óculos de sol'], answer: 'Casaco' }
 ];
+
+export const sentenceRounds = [
+  { level: 1, sentence: 'Eu bebo ______.', options: ['Água', 'Cadeira', 'Sapato'], answer: 'Água' },
+  { level: 2, sentence: 'Eu durmo na ______.', options: ['Cama', 'Mesa', 'Janela'], answer: 'Cama' },
+  { level: 3, sentence: 'Quando está chovendo, eu uso um ______ para não me molhar.', options: ['Guarda-chuva', 'Garfo', 'Travesseiro'], answer: 'Guarda-chuva' },
+  { level: 4, sentence: 'Antes de dormir, eu escovo os ______ e guardo meus brinquedos.', options: ['Dentes', 'Sapatos', 'Pratos'], answer: 'Dentes' }
+];
