@@ -133,7 +133,7 @@ Fase 16 — Complete a Frase
 
 [x] T67 — Implementar o jogo “Complete a Frase”.
 [x] T68 — Criar frases simples nos níveis iniciais.
-[ ] T69 — Criar frases maiores nos níveis avançados.
+[x] T69 — Criar frases maiores nos níveis avançados.
 
 Fase 17 — Treino Diário
 
