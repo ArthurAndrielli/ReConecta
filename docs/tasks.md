@@ -124,7 +124,7 @@ Validar: quatro níveis, clique duplo na mesma carta, terceiro clique, tentativa
 
 Commit: feat: implementa a task 08.
 
-[ ] Task 09 — Finalizar O Que Você Viu?
+[x] Task 09 — Finalizar O Que Você Viu?
 
 Depende de: Tasks 06–07. Requisitos: RF026–RF027.
 
