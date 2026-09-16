@@ -164,7 +164,7 @@ Validar: todos os níveis, existência de exatamente um intruso em cada conjunto
 
 Commit: feat: implementa a task 12.
 
-[ ] Task 13 — Finalizar Complete a Sequência
+[x] Task 13 — Finalizar Complete a Sequência
 
 Depende de: Tasks 06–07. Requisitos: RF035–RF037.
 
