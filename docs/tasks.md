@@ -94,7 +94,7 @@ Fase 10 — Complete a Sequência
 
 [x] T46 — Implementar sequências simples com dois elementos alternados.
 [x] T47 — Implementar sequências com três elementos.
-[ ] T48 — Implementar sequências numéricas simples.
+[x] T48 — Implementar sequências numéricas simples.
 [ ] T49 — Implementar padrões mais complexos nos níveis avançados.
 
 Fase 11 — Organize a Rotina
