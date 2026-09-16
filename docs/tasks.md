@@ -100,7 +100,7 @@ Validar: erro, ajuda, acerto e conclusão; estrelas para zero, dois e três erro
 
 Commit: feat: implementa a task 06.
 
-[ ] Task 07 — Consolidar conteúdo, níveis e progressão dos jogos
+[x] Task 07 — Consolidar conteúdo, níveis e progressão dos jogos
 
 Depende de: Tasks 05–06. Requisitos: RF014–RF018, RF022, RNF008, RNF009, RNF012.
 

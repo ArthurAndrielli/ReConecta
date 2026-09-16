@@ -8,7 +8,7 @@ export const categories = [
 ];
 
 export const games = [
-  { id: 'memory', icon: 'cards', name: 'Jogo da Memória', category: 'memoria', description: 'Observe, descubra e encontre os pares.' },
+  { id: 'memory', icon: 'cards', name: 'Jogo da Memória', category: 'memoria', group: 'memoria', description: 'Observe, descubra e encontre os pares.' },
   { id: 'whatDidYouSee', icon: 'eye', name: 'O Que Você Viu?', category: 'memoria', description: 'Observe imagens e reconheça o que apareceu.' },
   { id: 'word', icon: 'letters', name: 'Monte a Palavra', category: 'linguagem', description: 'Organize as sílabas para formar uma palavra.' },
   { id: 'image', icon: 'image', name: 'Imagem e Palavra', category: 'linguagem', description: 'Relacione imagens e palavras conhecidas.' },
@@ -22,12 +22,21 @@ export const games = [
   { id: 'sentence', icon: 'message', name: 'Complete a Frase', category: 'linguagem', description: 'Escolha a palavra que completa cada frase.' }
 ];
 
+export const levelSettings = {
+  memory: { 1: { cards: 4 }, 2: { cards: 6 }, 3: { cards: 8 }, 4: { cards: 12 } },
+  whatDidYouSee: { 1: { items: 2, options: 2 }, 2: { items: 3, options: 3 }, 3: { items: 4, options: 4 }, 4: { items: 5, options: 4 } },
+  word: { 1: { syllables: 2 }, 2: { syllables: 3 }, 3: { syllables: 3 }, 4: { syllables: 4 } },
+  findObject: { 1: { options: 4 }, 2: { options: 6 }, 3: { options: 8 }, 4: { options: 9 } },
+  tapOnly: { 1: { options: 4 }, 2: { options: 6 }, 3: { options: 8 }, 4: { options: 9 } },
+  association: { 1: { pairs: 2 }, 2: { pairs: 3 }, 3: { pairs: 4 }, 4: { pairs: 5 } }
+};
+
 export const memoryCards = ['🍎', '🍎', '🍌', '🍌'];
 export const memoryCardsByLevel = {
   1: memoryCards,
   2: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇'],
   3: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇', '🍉', '🍉'],
-  4: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇', '🍉', '🍉', '🍐', '🍐']
+  4: ['🍎', '🍎', '🍌', '🍌', '🍇', '🍇', '🍉', '🍉', '🍐', '🍐', '🍓', '🍓']
 };
 
 export const whatDidYouSeeRounds = [
