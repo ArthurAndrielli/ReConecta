@@ -107,7 +107,7 @@ Fase 11 — Organize a Rotina
 Fase 12 — Encontre o Objeto
 
 [x] T54 — Implementar o jogo “Encontre o Objeto”.
-[ ] T55 — Criar nível inicial com poucos objetos bem diferentes.
+[x] T55 — Criar nível inicial com poucos objetos bem diferentes.
 [ ] T56 — Criar nível intermediário com mais objetos.
 [ ] T57 — Criar nível avançado com elementos visualmente semelhantes.
 
