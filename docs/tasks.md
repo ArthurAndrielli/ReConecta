@@ -483,7 +483,7 @@ Validar: orientação estreita e paisagem quando disponível, texto ampliado, am
 
 Commit: feat: implementa a task 43.
 
-[ ] Task 44 — Fazer a revisão visual final e corrigir o acabamento
+[x] Task 44 — Fazer a revisão visual final e corrigir o acabamento
 
 Depende de: Tasks 27–43. Requisitos: RUI034, RNF017 e critérios de reformulação da seção 11 de requirements.md.
 
