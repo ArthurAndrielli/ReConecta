@@ -154,7 +154,7 @@ Validar: os dois modos, os quatro níveis, alternativas sem duplicação, respos
 
 Commit: feat: implementa a task 11.
 
-[ ] Task 12 — Finalizar Qual Não Combina?
+[x] Task 12 — Finalizar Qual Não Combina?
 
 Depende de: Tasks 06–07. Requisitos: RF033–RF034.
 
