@@ -16,6 +16,7 @@ import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
 import { calculateStars } from './scoring.js';
 import { getBestCategory, getPracticeCategory, getRecommendation } from './evolution.js';
+import { renderIcon } from './utils/icons.js';
 
 const app = document.getElementById('app');
 let dailyTraining = null;
@@ -25,6 +26,12 @@ const categoryByGame = { memory: 'memoria', whatDidYouSee: 'memoria', word: 'lin
 function renderHome(trainingMessage = '') {
   const progress = getProgress();
   app.innerHTML = `<section class="page-card"><h2>Bem-vindo ao ReConecta!</h2><p>Escolha uma atividade para exercitar sua memória, linguagem e atenção.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><h3>Treino de Hoje</h3><p>Faça cinco atividades variadas em sequência.</p><button id="start-training">Começar treino</button></div><div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.erros}</strong>Erros</div></div><div class="game-grid">${games.map((game) => `<article class="game-card"><div role="img" aria-label="${game.name}">${game.icon}</div><h3>${game.name}</h3><p>${game.id === 'memory' ? 'Encontre os pares.' : 'Atividade cognitiva.'}</p><button data-game="${game.id}">Abrir atividade</button></article>`).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
+  app.querySelectorAll('.game-card').forEach((card, index) => {
+    const game = games[index];
+    const icon = card.firstElementChild;
+    icon.className = 'game-icon';
+    icon.innerHTML = renderIcon(game.id, game.name);
+  });
   app.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
   app.querySelector('#start-training').addEventListener('click', startDailyTraining);
   app.querySelector('.progress-card').insertAdjacentHTML('afterend', '<div class="actions"><button class="secondary" id="show-evolution">Ver evolução</button></div>');

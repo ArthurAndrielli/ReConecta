@@ -48,7 +48,7 @@ Validar: abrir pelo servidor local; conferir legibilidade, contraste dos pares u
 
 Commit: feat: implementa a task 01.
 
-[ ] Task 02 — Padronizar componentes, ícones e ativos visuais
+[x] Task 02 — Padronizar componentes, ícones e ativos visuais
 
 Depende de: Task 01. Requisitos: RUI005, RUI008, RUI009, RUI012, RUI013, RNF003, RNF014.
 

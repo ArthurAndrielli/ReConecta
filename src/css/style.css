@@ -64,6 +64,8 @@ p { max-width: 65ch; }
 .game-card { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-6); transition: box-shadow var(--transition-ui), border-color var(--transition-ui); }
 .game-card:hover { border-color: var(--color-control-border); box-shadow: 0 6px 20px rgb(30 53 48 / 0.09); }
 .game-card h3 { margin: 0; }
+.game-icon { display: grid; place-items: center; width: 48px; height: 48px; color: var(--color-primary); background: var(--color-primary-soft); border-radius: 50%; }
+.icon { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .game-card p { margin: 0 0 var(--space-2); color: var(--color-text-muted); }
 button { min-height: 48px; padding: var(--space-3) var(--space-4); border: 1px solid transparent; border-radius: var(--radius-control); color: var(--color-surface); background: var(--color-primary); font: 600 1.125rem/1.35 var(--font-ui); cursor: pointer; transition: background-color var(--transition-ui), border-color var(--transition-ui), box-shadow var(--transition-ui); }
 button:hover { background: var(--color-primary-hover); }
@@ -86,6 +88,7 @@ button:focus-visible, .game-card:focus-within { outline: 3px solid var(--color-f
 .choice-button:disabled { opacity: .55; cursor: default; }
 .choice-button.hint { box-shadow: 0 0 0 4px var(--color-help); }
 .choice-button.is-selected { color: var(--color-success); background: var(--color-success-soft); }
+.choice-button.is-resolved, .memory-card.is-matched { border: 2px solid var(--color-success); }
 .word-image { margin: var(--space-4) auto; font-size: 4rem; text-align: center; }
 .selected-syllables { min-height: 2rem; padding: var(--space-3); border: 1px dashed var(--color-control-border); border-radius: var(--radius-control); text-align: center; font-weight: 700; }
 .sequence-display { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin: var(--space-6) 0; font-size: 2rem; }
