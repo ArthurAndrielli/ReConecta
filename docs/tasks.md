@@ -268,7 +268,7 @@ Commit: feat: implementa a task 22.
 
 Acabamento e verificação final
 
-[ ] Task 23 — Ajustar todas as telas para celular e tablet
+[x] Task 23 — Ajustar todas as telas para celular e tablet
 
 Depende de: Tasks 08–22. Requisitos: RUI007, RUI014, RNF005, RNF016.
 
