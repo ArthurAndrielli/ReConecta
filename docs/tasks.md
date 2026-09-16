@@ -383,7 +383,7 @@ Validar: verificar imagens nos quatro níveis quando os conjuntos variarem; nenh
 
 Commit: feat: implementa a task 33.
 
-[ ] Task 34 — Redesenhar os tabuleiros de memória e observação
+[x] Task 34 — Redesenhar os tabuleiros de memória e observação
 
 Depende de: Tasks 27–28 e 33. Requisitos: RUI024, RF023–RF027.
 
