@@ -38,7 +38,8 @@ function render(container, callbacks, context = {}) {
   };
   container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
   container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
-  window.setTimeout(showOptions, 1200);
+  const exposureTime = Math.max(650, 1200 - ((context.level || 1) - 1) * 180);
+  window.setTimeout(showOptions, exposureTime);
 }
 
 export { render };
