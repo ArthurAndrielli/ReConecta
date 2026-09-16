@@ -113,7 +113,7 @@ Fase 12 — Encontre o Objeto
 
 Fase 13 — Toque Somente em...
 
-[ ] T58 — Implementar o jogo “Toque Somente em...”.
+[x] T58 — Implementar o jogo “Toque Somente em...”.
 [ ] T59 — Permitir selecionar vários itens corretos de uma categoria.
 [ ] T60 — Validar itens corretos e incorretos sem encerrar a atividade no primeiro clique.
 

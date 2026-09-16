@@ -35,6 +35,7 @@ button:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
 .choice-button { background: #dbeafe; }
 .choice-button:disabled { opacity: .55; cursor: default; }
 .choice-button.hint { box-shadow: 0 0 0 4px #f59e0b; }
+.choice-button.is-selected { background: #dcfce7; color: #166534; }
 .word-image { margin: 1rem auto; font-size: 4rem; text-align: center; }
 .selected-syllables { min-height: 2rem; padding: .75rem; border: 1px dashed #94a3b8; border-radius: 10px; text-align: center; font-weight: bold; }
 .sequence-display { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin: 1.5rem 0; font-size: 2rem; }

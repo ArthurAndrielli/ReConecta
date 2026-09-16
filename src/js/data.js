@@ -66,3 +66,8 @@ export const findObjectRounds = [
   { level: 3, instruction: 'Encontre a fruta', target: '🍐', options: ['🍎', '🍐', '🍏', '🍈', '🥝', '🍋'] },
   { level: 4, instruction: 'Encontre o limão', target: '🍋', options: ['🍋', '🍊', '🍈', '🥝', '🍐', '🍏', '🍎'] }
 ];
+
+export const tapOnlyRounds = [
+  { level: 1, instruction: 'Toque somente nas frutas', options: [{ value: '🍎', correct: true }, { value: '🐶', correct: false }, { value: '🍌', correct: true }, { value: '🚗', correct: false }] },
+  { level: 3, instruction: 'Toque somente nos animais', options: [{ value: '🐶', correct: true }, { value: '🐱', correct: true }, { value: '🍎', correct: false }, { value: '🏠', correct: false }, { value: '🐭', correct: true }] }
+];
