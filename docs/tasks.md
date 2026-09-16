@@ -204,7 +204,7 @@ Validar: não concluir no primeiro toque, clique repetido em item resolvido sem 
 
 Commit: feat: implementa a task 16.
 
-[ ] Task 17 — Finalizar Associação de Objetos
+[x] Task 17 — Finalizar Associação de Objetos
 
 Depende de: Tasks 06–07. Requisitos: RF044–RF045.
 
