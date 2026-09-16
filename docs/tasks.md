@@ -343,7 +343,7 @@ Validar: trocar entre as quatro áreas, testar rota direta e foco, conferir alin
 
 Commit: feat: implementa a task 29.
 
-[ ] Task 30 — Redesenhar a página inicial com destaque e três atividades
+[x] Task 30 — Redesenhar a página inicial com destaque e três atividades
 
 Depende de: Tasks 27–29. Requisitos: RF001, RF002, RUI020, RUI004.
 
