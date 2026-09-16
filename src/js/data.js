@@ -51,3 +51,10 @@ export const sequenceRounds = [
   { level: 3, sequence: ['1', '2', '3', '4'], options: ['5', '6', '7'], answer: '5' },
   { level: 4, sequence: ['2', '4', '8', '16'], options: ['18', '24', '32'], answer: '32' }
 ];
+
+export const routineRounds = [
+  { level: 1, title: 'Lavar as mãos', steps: ['Abrir a torneira', 'Molhar as mãos', 'Usar sabão', 'Enxaguar', 'Secar'] },
+  { level: 2, title: 'Beber água', steps: ['Pegar o copo', 'Abrir a torneira', 'Encher o copo', 'Beber a água'] },
+  { level: 3, title: 'Escovar os dentes', steps: ['Pegar a escova', 'Colocar pasta', 'Escovar os dentes', 'Enxaguar a boca'] },
+  { level: 4, title: 'Preparar uma refeição', steps: ['Separar os ingredientes', 'Lavar os alimentos', 'Preparar a refeição', 'Servir a comida'] }
+];
