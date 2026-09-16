@@ -1,23 +1,34 @@
 const STORAGE_KEY = 'reconecta_progress';
+const PREFERENCES_KEY = 'reconecta_preferences';
 const categoryNames = ['memoria', 'linguagem', 'atencao', 'raciocinio', 'associacao', 'cotidiano'];
-const initialCategories = () => Object.fromEntries(categoryNames.map((category) => [category, { atividades: 0, acertos: 0, erros: 0, tentativas: 0 }]));
-const initialProgress = () => ({ atividades: 0, acertos: 0, erros: 0, tentativas: 0, tempoRespostaTotal: 0, estrelas: 0, nivelAtual: 1, memoria: { pares: 0, tentativas: 0, erros: 0, tempoTotal: 0 }, desempenhoPorCategoria: initialCategories() });
+const memoryFallback = new Map();
 
-function getProgress() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    const initial = initialProgress();
-    const desempenhoPorCategoria = Object.fromEntries(categoryNames.map((category) => [category, { ...initial.desempenhoPorCategoria[category], ...((saved.desempenhoPorCategoria || {})[category] || {}) }]));
-    return { ...initial, ...saved, memoria: { ...initial.memoria, ...(saved.memoria || {}) }, desempenhoPorCategoria };
-  } catch { return initialProgress(); }
+const initialCategories = () => Object.fromEntries(categoryNames.map((category) => [category, { atividades: 0, acertos: 0, erros: 0, tentativas: 0 }]));
+const initialProgress = () => ({ schemaVersion: 2, atividades: 0, acertos: 0, erros: 0, tentativas: 0, tempoRespostaTotal: 0, estrelas: 0, nivelAtual: 1, memoria: { pares: 0, tentativas: 0, erros: 0, tempoTotal: 0 }, desempenhoPorCategoria: initialCategories(), sessions: [], levelState: {}, dailyPlans: {} });
+const defaultPreferences = () => ({ schemaVersion: 1, textSize: 'standard', reduceMotion: false, observationMode: 'self-paced', appearance: 'system' });
+
+function storageAvailable() { try { return typeof localStorage !== 'undefined'; } catch { return false; } }
+function readRaw(key) { if (storageAvailable()) { try { return localStorage.getItem(key); } catch { return memoryFallback.get(key) ?? null; } } return memoryFallback.get(key) ?? null; }
+function writeRaw(key, value) { try { if (storageAvailable()) localStorage.setItem(key, value); else memoryFallback.set(key, value); return true; } catch { memoryFallback.set(key, value); return false; } }
+function mergeProgress(saved) {
+  const initial = initialProgress();
+  const categories = Object.fromEntries(categoryNames.map((category) => [category, { ...initial.desempenhoPorCategoria[category], ...((saved.desempenhoPorCategoria || {})[category] || {}) }]));
+  return { ...initial, ...saved, schemaVersion: 2, memoria: { ...initial.memoria, ...(saved.memoria || {}) }, desempenhoPorCategoria: categories, sessions: Array.isArray(saved.sessions) ? saved.sessions : [], levelState: saved.levelState && typeof saved.levelState === 'object' ? saved.levelState : {}, dailyPlans: saved.dailyPlans && typeof saved.dailyPlans === 'object' ? saved.dailyPlans : {} };
 }
-function saveProgress(progress) { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
-function updateProgress(field) { const progress = getProgress(); progress[field] += 1; saveProgress(progress); return progress; }
-function registerCategoryValue(progress, category, field) { if (category && progress.desempenhoPorCategoria[category]) progress.desempenhoPorCategoria[category][field] += 1; }
+function getProgress() { const raw = readRaw(STORAGE_KEY); if (!raw) return initialProgress(); try { return mergeProgress(JSON.parse(raw)); } catch { return { ...initialProgress(), storageIssue: 'invalid-data' }; } }
+function saveProgress(progress) { return writeRaw(STORAGE_KEY, JSON.stringify(progress)); }
+function updateProgress(field) { const progress = getProgress(); progress[field] = Math.max(0, Number(progress[field]) || 0) + 1; saveProgress(progress); return progress; }
+function registerCategoryValue(progress, category, field, amount = 1) { if (category && progress.desempenhoPorCategoria[category]) progress.desempenhoPorCategoria[category][field] = Math.max(0, Number(progress.desempenhoPorCategoria[category][field]) || 0) + amount; }
 function registerCorrect(category) { const progress = updateProgress('acertos'); registerCategoryValue(progress, category, 'acertos'); saveProgress(progress); return progress; }
 function registerWrong(category) { const progress = updateProgress('erros'); registerCategoryValue(progress, category, 'erros'); saveProgress(progress); return progress; }
-function registerActivity({ elapsedTime = 0, stars = 1, category } = {}) { const progress = updateProgress('atividades'); registerCategoryValue(progress, category, 'atividades'); progress.tempoRespostaTotal += Number.isFinite(elapsedTime) ? Math.max(0, elapsedTime) : 0; progress.estrelas += Math.max(0, Number(stars) || 0); saveProgress(progress); return progress; }
 function registerAttempt(category) { const progress = updateProgress('tentativas'); registerCategoryValue(progress, category, 'tentativas'); saveProgress(progress); return progress; }
+function registerActivity({ elapsedTime = 0, stars = 1, category, session } = {}) { const progress = updateProgress('atividades'); registerCategoryValue(progress, category, 'atividades'); progress.tempoRespostaTotal += Number.isFinite(elapsedTime) ? Math.max(0, elapsedTime) : 0; progress.estrelas += Math.max(0, Number(stars) || 0); if (session) progress.sessions = [...progress.sessions.filter((item) => item.id !== session.id), { ...session, status: 'completed', endedAt: session.endedAt || new Date().toISOString() }]; saveProgress(progress); return progress; }
 function registerMemoryMetrics({ pairs = 0, attempts = 0, errors = 0, elapsedTime = 0 } = {}) { const progress = getProgress(); progress.memoria.pares += Math.max(0, Number(pairs) || 0); progress.memoria.tentativas += Math.max(0, Number(attempts) || 0); progress.memoria.erros += Math.max(0, Number(errors) || 0); progress.memoria.tempoTotal += Number.isFinite(elapsedTime) ? Math.max(0, elapsedTime) : 0; saveProgress(progress); return progress; }
-function resetProgress() { if (!window.confirm('Tem certeza que deseja apagar o progresso desta versão de teste?')) return false; saveProgress(initialProgress()); return true; }
-export { getProgress, saveProgress, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress };
+function getPreferences() { const raw = readRaw(PREFERENCES_KEY); if (!raw) return defaultPreferences(); try { const saved = JSON.parse(raw); return { ...defaultPreferences(), ...saved, textSize: ['standard', 'large'].includes(saved.textSize) ? saved.textSize : 'standard', observationMode: ['self-paced', 'suggested-time'].includes(saved.observationMode) ? saved.observationMode : 'self-paced', appearance: ['light', 'dark', 'system'].includes(saved.appearance) ? saved.appearance : 'system' }; } catch { return { ...defaultPreferences(), storageIssue: 'invalid-preferences' }; } }
+function savePreferences(preferences) { return writeRaw(PREFERENCES_KEY, JSON.stringify({ ...defaultPreferences(), ...preferences })); }
+function createSession({ gameId, category, level = 1, trainingRef = null } = {}) { const session = { id: `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, gameId, category, level, status: 'active', startedAt: new Date().toISOString(), endedAt: null, elapsedMs: 0, attempts: [], stars: 0, trainingRef }; const progress = getProgress(); progress.sessions.push(session); saveProgress(progress); return session; }
+function recordSessionAttempt(sessionId, attempt) { const progress = getProgress(); const session = progress.sessions.find((item) => item.id === sessionId && item.status === 'active'); if (!session || session.attempts.some((item) => item.id === attempt.id)) return false; session.attempts.push({ ...attempt, at: attempt.at || new Date().toISOString() }); saveProgress(progress); return true; }
+function finishSession(sessionId, { elapsedMs = 0, stars = 0 } = {}) { const progress = getProgress(); const session = progress.sessions.find((item) => item.id === sessionId && item.status === 'active'); if (!session) return false; session.status = 'completed'; session.endedAt = new Date().toISOString(); session.elapsedMs = Math.max(0, elapsedMs); session.stars = Math.max(0, stars); saveProgress(progress); return session; }
+function abandonSession(sessionId, elapsedMs = 0) { const progress = getProgress(); const session = progress.sessions.find((item) => item.id === sessionId && item.status === 'active'); if (!session) return false; session.status = 'abandoned'; session.endedAt = new Date().toISOString(); session.elapsedMs = Math.max(0, elapsedMs); saveProgress(progress); return session; }
+function resetProgress() { if (typeof window !== 'undefined' && !window.confirm('Tem certeza que deseja apagar o progresso desta versão de teste?')) return false; return saveProgress(initialProgress()); }
+export { getProgress, saveProgress, getPreferences, savePreferences, createSession, recordSessionAttempt, finishSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress, STORAGE_KEY, PREFERENCES_KEY };

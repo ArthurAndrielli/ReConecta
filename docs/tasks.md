@@ -80,7 +80,7 @@ Commit: feat: implementa a task 04.
 
 Dados e funcionamento compartilhado
 
-[ ] Task 05 — Preservar o progresso e centralizar o armazenamento
+[x] Task 05 — Preservar o progresso e centralizar o armazenamento
 
 Depende de: Tasks 03–04. Requisitos: RF006, RF007, RF008, RF009, RF011, RF012, RF013, RF053, RNF010, RNF015.
 
