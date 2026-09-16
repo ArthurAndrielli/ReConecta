@@ -11,7 +11,7 @@ import { render as renderTapOnly } from './games/tapOnly.js';
 import { render as renderAssociation } from './games/objectAssociation.js';
 import { render as renderDailySituations } from './games/dailySituations.js';
 import { render as renderCompleteSentence } from './games/completeSentence.js';
-import { games } from './data.js';
+import { games, categories } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
 import { calculateStars } from './scoring.js';
@@ -23,22 +23,45 @@ const navLinks = [...document.querySelectorAll('[data-nav]')];
 let dailyTraining = null;
 const dailyTrainingActivities = ['memory', 'word', 'sequence', 'findObject', 'situations'];
 const categoryByGame = { memory: 'memoria', whatDidYouSee: 'memoria', word: 'linguagem', image: 'linguagem', sentence: 'linguagem', odd: 'raciocinio', sequence: 'raciocinio', findObject: 'atencao', tapOnly: 'atencao', routine: 'cotidiano', association: 'associacao', situations: 'cotidiano' };
+const normalize = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const categoryLabel = (id) => categories.find((category) => category.id === id)?.name || id;
+
+function gameCard(game) {
+  return `<article class="game-card" data-category="${game.category}">
+    <div class="game-icon" aria-hidden="true">${renderIcon(game.id, game.name)}</div>
+    <div class="game-card-content"><span class="category-label category-${game.category}">${categoryLabel(game.category)}</span>
+    <h3>${game.name}</h3><p>${game.description}</p></div>
+    <button data-game="${game.id}">Conhecer atividade</button>
+  </article>`;
+}
 
 function renderHome(trainingMessage = '') {
   setActiveNav('inicio');
   const progress = getProgress();
-  app.innerHTML = `<section class="page-card"><h2>Bem-vindo ao ReConecta!</h2><p>Escolha uma atividade para exercitar sua memória, linguagem e atenção.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><h3>Treino de Hoje</h3><p>Faça cinco atividades variadas em sequência.</p><button id="start-training">Começar treino</button></div><div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.erros}</strong>Erros</div></div><div class="game-grid">${games.map((game) => `<article class="game-card"><div role="img" aria-label="${game.name}">${game.icon}</div><h3>${game.name}</h3><p>${game.id === 'memory' ? 'Encontre os pares.' : 'Atividade cognitiva.'}</p><button data-game="${game.id}">Abrir atividade</button></article>`).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
-  app.querySelectorAll('.game-card').forEach((card, index) => {
-    const game = games[index];
-    const icon = card.firstElementChild;
-    icon.className = 'game-icon';
-    icon.innerHTML = renderIcon(game.id, game.name);
-  });
+  const featured = games.filter((game) => ['memory', 'word', 'sentence'].includes(game.id));
+  app.innerHTML = `<section class="page-card home-page"><h2>Bom te ver por aqui.</h2><p class="lead">Escolha uma atividade. Cada pequeno passo conta.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><div><span class="eyebrow">Treino de Hoje</span><h3>Um momento para reconectar.</h3><p>Faça cinco atividades variadas em sequência, no seu ritmo.</p><button id="start-training">Começar treino</button></div></div>${progress.atividades ? `<div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.estrelas}</strong>Estrelas</div></div>` : `<p class="empty-note">Seu progresso começa com a primeira atividade.</p>`}<div class="section-heading"><div><span class="eyebrow">Para começar</span><h3>Escolha uma atividade</h3></div><a href="#/atividades">Ver todas</a></div><div class="game-grid featured-grid">${featured.map(gameCard).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
   app.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
   app.querySelector('#start-training').addEventListener('click', startDailyTraining);
-  app.querySelector('.progress-card').insertAdjacentHTML('afterend', '<div class="actions"><button class="secondary" id="show-evolution">Ver evolução</button></div>');
-  app.querySelector('#show-evolution').addEventListener('click', renderEvolution);
   app.querySelector('#reset-progress').addEventListener('click', () => { if (resetProgress()) renderHome(); });
+}
+
+function renderActivities() {
+  setActiveNav('atividades');
+  app.innerHTML = `<section class="page-card catalog-page"><h2>Atividades</h2><p class="lead">Encontre uma atividade para praticar com calma.</p><div class="catalog-controls"><label for="game-search">Buscar atividade</label><input id="game-search" type="search" placeholder="Digite um nome" autocomplete="off"><div class="filter-list" role="group" aria-label="Filtrar por categoria"><button class="filter-chip is-selected" data-filter="all">Todas</button>${categories.map((category) => `<button class="filter-chip" data-filter="${category.id}">${category.name}</button>`).join('')}</div></div><p id="catalog-count" class="catalog-count" role="status"></p><div id="catalog-grid" class="game-grid">${games.map(gameCard).join('')}</div></section>`;
+  const search = app.querySelector('#game-search');
+  const grid = app.querySelector('#catalog-grid');
+  const count = app.querySelector('#catalog-count');
+  let filter = 'all';
+  const update = () => {
+    const query = normalize(search.value.trim());
+    const visible = games.filter((game) => (filter === 'all' || game.category === filter) && (!query || normalize(`${game.name} ${game.description}`).includes(query)));
+    grid.innerHTML = visible.length ? visible.map(gameCard).join('') : `<div class="empty-state"><h3>Nenhuma atividade encontrada</h3><p>Tente outra busca ou limpe os filtros para ver todas as atividades.</p><button class="secondary" id="clear-filters">Limpar filtros</button></div>`;
+    count.textContent = `${visible.length} ${visible.length === 1 ? 'atividade encontrada' : 'atividades encontradas'}`;
+    grid.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
+    grid.querySelector('#clear-filters')?.addEventListener('click', () => { search.value = ''; filter = 'all'; app.querySelectorAll('[data-filter]').forEach((item) => item.classList.toggle('is-selected', item.dataset.filter === 'all')); update(); search.focus(); });
+  };
+  app.querySelectorAll('[data-filter]').forEach((button) => button.addEventListener('click', () => { filter = button.dataset.filter; app.querySelectorAll('[data-filter]').forEach((item) => item.classList.toggle('is-selected', item === button)); update(); }));
+  search.addEventListener('input', update); update();
 }
 
 function renderEvolution() {
@@ -101,7 +124,7 @@ function routeFromHash() {
   const route = location.hash.replace(/^#\/?/, '') || 'inicio';
   if (route === 'inicio') renderHome();
   else if (route === 'evolucao') renderEvolution();
-  else if (route === 'atividades') { renderHome(); setActiveNav('atividades'); }
+  else if (route === 'atividades') renderActivities();
   else if (route === 'ajustes') { renderHome(); setActiveNav('ajustes'); }
   else if (route.startsWith('jogo/') && games.some((game) => game.id === route.slice(5))) openGame(route.slice(5));
   else renderHome('Não encontramos esta página. Volte ao início para continuar.');
