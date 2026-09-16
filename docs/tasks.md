@@ -109,7 +109,7 @@ Fase 12 — Encontre o Objeto
 [x] T54 — Implementar o jogo “Encontre o Objeto”.
 [x] T55 — Criar nível inicial com poucos objetos bem diferentes.
 [x] T56 — Criar nível intermediário com mais objetos.
-[ ] T57 — Criar nível avançado com elementos visualmente semelhantes.
+[x] T57 — Criar nível avançado com elementos visualmente semelhantes.
 
 Fase 13 — Toque Somente em...
 
