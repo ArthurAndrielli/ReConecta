@@ -224,7 +224,7 @@ Validar: cenários chuva/guarda-chuva e água/copo, variedade, níveis, instruç
 
 Commit: feat: implementa a task 18.
 
-[ ] Task 19 — Finalizar Complete a Frase
+[x] Task 19 — Finalizar Complete a Frase
 
 Depende de: Tasks 06–07. Requisitos: RF048–RF049.
 
