@@ -152,7 +152,7 @@ Fase 18 — Acompanhamento da evolução
 [x] T79 — Registrar acertos, erros, tentativas, tempo e nível atual.
 [x] T80 — Identificar a categoria com maior facilidade.
 [x] T81 — Identificar a categoria que precisa de mais prática.
-[ ] T82 — Criar uma tela simples de acompanhamento da evolução.
+[x] T82 — Criar uma tela simples de acompanhamento da evolução.
 [ ] T83 — Usar o histórico para sugerir mais atividades das categorias que precisam de prática, mantendo variedade.
 
 Fase 19 — Acessibilidade e responsividade

@@ -15,7 +15,7 @@ import { games } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
 import { calculateStars } from './scoring.js';
-import { getBestCategory, getPracticeCategory } from './evolution.js';
+import { getBestCategory, getPracticeCategory, getRecommendation } from './evolution.js';
 
 const app = document.getElementById('app');
 let dailyTraining = null;
@@ -27,7 +27,18 @@ function renderHome(trainingMessage = '') {
   app.innerHTML = `<section class="page-card"><h2>Bem-vindo ao ReConecta!</h2><p>Escolha uma atividade para exercitar sua memória, linguagem e atenção.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><h3>Treino de Hoje</h3><p>Faça cinco atividades variadas em sequência.</p><button id="start-training">Começar treino</button></div><div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.erros}</strong>Erros</div></div><div class="game-grid">${games.map((game) => `<article class="game-card"><div role="img" aria-label="${game.name}">${game.icon}</div><h3>${game.name}</h3><p>${game.id === 'memory' ? 'Encontre os pares.' : 'Atividade cognitiva.'}</p><button data-game="${game.id}">Abrir atividade</button></article>`).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
   app.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
   app.querySelector('#start-training').addEventListener('click', startDailyTraining);
+  app.querySelector('.progress-card').insertAdjacentHTML('afterend', '<div class="actions"><button class="secondary" id="show-evolution">Ver evolução</button></div>');
+  app.querySelector('#show-evolution').addEventListener('click', renderEvolution);
   app.querySelector('#reset-progress').addEventListener('click', () => { if (resetProgress()) renderHome(); });
+}
+
+function renderEvolution() {
+  const progress = getProgress();
+  const best = getBestCategory(progress);
+  const practice = getPracticeCategory(progress);
+  const recommendation = getRecommendation(progress);
+  app.innerHTML = `<section class="page-card"><h2>Sua evolução</h2><p>Acompanhe seu progresso com calma e no seu ritmo.</p><div class="progress-card"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.tentativas}</strong>Tentativas</div></div><p><strong>Maior facilidade:</strong> ${best ? best.label : 'Ainda não há dados suficientes.'}</p><p><strong>Categoria para praticar mais:</strong> ${practice ? practice.label : 'Ainda não há dados suficientes.'}</p>${recommendation ? `<p><strong>Sugestão:</strong> pratique uma atividade de ${recommendation.category}.</p>` : ''}<div class="actions"><button id="back-home">← Voltar ao início</button></div></section>`;
+  app.querySelector('#back-home').addEventListener('click', renderHome);
 }
 
 function renderDevelopment(game) {
