@@ -288,7 +288,7 @@ Validar: executar um percurso completo por teclado, percorrer todos os tipos de 
 
 Commit: feat: implementa a task 24.
 
-[ ] Task 25 — Resolver estados de falha e proteger os dados
+[x] Task 25 — Resolver estados de falha e proteger os dados
 
 Depende de: Tasks 05–24. Requisitos: RF061, RF062, RUI015, RNF010, RNF013–RNF015.
 

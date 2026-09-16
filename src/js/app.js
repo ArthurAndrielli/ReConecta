@@ -23,6 +23,7 @@ const navLinks = [...document.querySelectorAll('[data-nav]')];
 let dailyTraining = null;
 let activeSession = null;
 let activeGameCleanup = null;
+let activeMountToken = 0;
 const dailyTrainingActivities = ['memory', 'word', 'sequence', 'findObject', 'situations'];
 const categoryByGame = { memory: 'memoria', whatDidYouSee: 'memoria', word: 'linguagem', image: 'linguagem', sentence: 'linguagem', odd: 'raciocinio', sequence: 'raciocinio', findObject: 'atencao', tapOnly: 'atencao', routine: 'cotidiano', association: 'associacao', situations: 'cotidiano' };
 const normalize = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -123,11 +124,12 @@ function openGame(gameId, { trainingMode = false } = {}) {
 }
 
 function mountGame(gameId, { trainingMode, game }) {
+  const mountToken = ++activeMountToken;
   const level = getCurrentLevel(getProgress());
   const category = categoryByGame[gameId];
   activeSession = createSession({ gameId, category, level, trainingRef: trainingMode ? { dateKey: new Date().toLocaleDateString('en-CA') } : null });
   let completed = false;
-  const onComplete = (result) => { if (completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); renderResult(game, stars, trainingMode); };
+  const onComplete = (result) => { if (mountToken !== activeMountToken || completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); renderResult(game, stars, trainingMode); };
   const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { if (activeSession) abandonSession(activeSession.id); activeSession = null; dailyTraining = null; document.body.classList.remove('is-focus-mode'); renderHome(); } };
   if (gameId === 'memory') renderMemory(app, callbacks, { level });
   else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, callbacks, { level });
