@@ -19,6 +19,7 @@ import { calculateStars } from './scoring.js';
 const app = document.getElementById('app');
 let dailyTraining = null;
 const dailyTrainingActivities = ['memory', 'word', 'sequence', 'findObject', 'situations'];
+const categoryByGame = { memory: 'memoria', whatDidYouSee: 'memoria', word: 'linguagem', image: 'linguagem', sentence: 'linguagem', odd: 'raciocinio', sequence: 'raciocinio', findObject: 'atencao', tapOnly: 'atencao', routine: 'cotidiano', association: 'associacao', situations: 'cotidiano' };
 
 function renderHome(trainingMessage = '') {
   const progress = getProgress();
@@ -48,8 +49,9 @@ function startDailyTraining() {
 function openGame(gameId, { trainingMode = false } = {}) {
   const game = games.find((item) => item.id === gameId);
   const level = getCurrentLevel(getProgress());
-  const onComplete = (result) => { if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); registerActivity({ ...result, stars: calculateStars({ ...result, completed: true }) }); if (trainingMode) advanceTraining(); };
-  const callbacks = { onCorrect: registerCorrect, onWrong: registerWrong, onAttempt: registerAttempt, onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { dailyTraining = null; renderHome(); } };
+  const category = categoryByGame[gameId];
+  const onComplete = (result) => { if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); registerActivity({ ...result, category, stars: calculateStars({ ...result, completed: true }) }); if (trainingMode) advanceTraining(); };
+  const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { dailyTraining = null; renderHome(); } };
   if (gameId === 'memory') renderMemory(app, callbacks, { level });
   else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, callbacks, { level });
   else if (gameId === 'word') renderWordBuilder(app, callbacks, { level });
