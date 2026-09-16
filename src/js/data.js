@@ -76,3 +76,9 @@ export const associationRounds = [
   { level: 1, pairs: [['Escova', 'Dentes'], ['Chave', 'Porta'], ['Garfo', 'Comida'], ['Cama', 'Dormir'], ['Sapato', 'Pé']] },
   { level: 3, pairs: [['Livro', 'Ler'], ['Guarda-chuva', 'Chuva'], ['Relógio', 'Hora'], ['Panela', 'Cozinhar']] }
 ];
+
+export const dailySituationRounds = [
+  { question: 'Está chovendo. O que você deve usar?', options: ['Guarda-chuva', 'Colher', 'Travesseiro'], answer: 'Guarda-chuva' },
+  { question: 'Você quer beber água. O que deve pegar?', options: ['Copo', 'Sapato', 'Livro'], answer: 'Copo' },
+  { question: 'Está frio. O que você deve vestir?', options: ['Casaco', 'Chinelo', 'Óculos de sol'], answer: 'Casaco' }
+];
