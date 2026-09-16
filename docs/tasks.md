@@ -73,7 +73,7 @@ Fase 6 — O Que Você Viu?
 Fase 7 — Monte a Palavra
 
 [x] T35 — Implementar o jogo “Monte a Palavra”.
-[ ] T36 — Permitir montar palavras de duas sílabas.
+[x] T36 — Permitir montar palavras de duas sílabas.
 [ ] T37 — Permitir montar palavras de três sílabas.
 [ ] T38 — Adicionar palavras maiores e sílabas incorretas nos níveis avançados.
 [ ] T39 — Depois de duas tentativas incorretas, oferecer uma dica destacando a primeira sílaba correta.
