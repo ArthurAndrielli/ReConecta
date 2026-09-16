@@ -1,4 +1,4 @@
-import { getProgress, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
+import { getProgress, saveProgress, getPreferences, savePreferences, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
 import { render as renderMemory } from './games/memory.js';
 import { render as renderWhatDidYouSee } from './games/whatDidYouSee.js';
 import { render as renderWordBuilder } from './games/wordBuilder.js';
@@ -11,33 +11,71 @@ import { render as renderTapOnly } from './games/tapOnly.js';
 import { render as renderAssociation } from './games/objectAssociation.js';
 import { render as renderDailySituations } from './games/dailySituations.js';
 import { render as renderCompleteSentence } from './games/completeSentence.js';
-import { games } from './data.js';
+import { games, categories } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
 import { calculateStars } from './scoring.js';
 import { getBestCategory, getPracticeCategory, getRecommendation } from './evolution.js';
+import { renderIcon } from './utils/icons.js';
 
 const app = document.getElementById('app');
+const navLinks = [...document.querySelectorAll('[data-nav]')];
 let dailyTraining = null;
+let activeSession = null;
+let activeGameCleanup = null;
+let activeMountToken = 0;
 const dailyTrainingActivities = ['memory', 'word', 'sequence', 'findObject', 'situations'];
 const categoryByGame = { memory: 'memoria', whatDidYouSee: 'memoria', word: 'linguagem', image: 'linguagem', sentence: 'linguagem', odd: 'raciocinio', sequence: 'raciocinio', findObject: 'atencao', tapOnly: 'atencao', routine: 'cotidiano', association: 'associacao', situations: 'cotidiano' };
+const normalize = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const categoryLabel = (id) => categories.find((category) => category.id === id)?.name || id;
+
+function gameCard(game) {
+  return `<article class="game-card" data-category="${game.category}">
+    <div class="game-icon" aria-hidden="true">${renderIcon(game.id, game.name)}</div>
+    <div class="game-card-content"><span class="category-label category-${game.category}">${categoryLabel(game.category)}</span>
+    <h3>${game.name}</h3><p>${game.description}</p></div>
+    <button data-game="${game.id}">Conhecer atividade</button>
+  </article>`;
+}
 
 function renderHome(trainingMessage = '') {
+  setActiveNav('inicio');
   const progress = getProgress();
-  app.innerHTML = `<section class="page-card"><h2>Bem-vindo ao ReConecta!</h2><p>Escolha uma atividade para exercitar sua memória, linguagem e atenção.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><h3>Treino de Hoje</h3><p>Faça cinco atividades variadas em sequência.</p><button id="start-training">Começar treino</button></div><div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.erros}</strong>Erros</div></div><div class="game-grid">${games.map((game) => `<article class="game-card"><div role="img" aria-label="${game.name}">${game.icon}</div><h3>${game.name}</h3><p>${game.id === 'memory' ? 'Encontre os pares.' : 'Atividade cognitiva.'}</p><button data-game="${game.id}">Abrir atividade</button></article>`).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
+  const featured = games.filter((game) => ['memory', 'word', 'sentence'].includes(game.id));
+  app.innerHTML = `<section class="page-card home-page"><h2>Bom te ver por aqui.</h2><p class="lead">Escolha uma atividade. Cada pequeno passo conta.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><div><span class="eyebrow">Treino de Hoje</span><h3>Um momento para reconectar.</h3><p>Faça cinco atividades variadas em sequência, no seu ritmo.</p><button id="start-training">Começar treino</button></div></div>${progress.atividades ? `<div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.estrelas}</strong>Estrelas</div></div>` : `<p class="empty-note">Seu progresso começa com a primeira atividade.</p>`}<div class="section-heading"><div><span class="eyebrow">Para começar</span><h3>Escolha uma atividade</h3></div><a href="#/atividades">Ver todas</a></div><div class="game-grid featured-grid">${featured.map(gameCard).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
   app.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
   app.querySelector('#start-training').addEventListener('click', startDailyTraining);
-  app.querySelector('.progress-card').insertAdjacentHTML('afterend', '<div class="actions"><button class="secondary" id="show-evolution">Ver evolução</button></div>');
-  app.querySelector('#show-evolution').addEventListener('click', renderEvolution);
   app.querySelector('#reset-progress').addEventListener('click', () => { if (resetProgress()) renderHome(); });
 }
 
+function renderActivities() {
+  setActiveNav('atividades');
+  app.innerHTML = `<section class="page-card catalog-page"><h2>Atividades</h2><p class="lead">Encontre uma atividade para praticar com calma.</p><div class="catalog-controls"><label for="game-search">Buscar atividade</label><input id="game-search" type="search" placeholder="Digite um nome" autocomplete="off"><div class="filter-list" role="group" aria-label="Filtrar por categoria"><button class="filter-chip is-selected" data-filter="all">Todas</button>${categories.map((category) => `<button class="filter-chip" data-filter="${category.id}">${category.name}</button>`).join('')}</div></div><p id="catalog-count" class="catalog-count" role="status"></p><div id="catalog-grid" class="game-grid">${games.map(gameCard).join('')}</div></section>`;
+  const search = app.querySelector('#game-search');
+  const grid = app.querySelector('#catalog-grid');
+  const count = app.querySelector('#catalog-count');
+  let filter = 'all';
+  const update = () => {
+    const query = normalize(search.value.trim());
+    const visible = games.filter((game) => (filter === 'all' || game.category === filter) && (!query || normalize(`${game.name} ${game.description}`).includes(query)));
+    grid.innerHTML = visible.length ? visible.map(gameCard).join('') : `<div class="empty-state"><h3>Nenhuma atividade encontrada</h3><p>Tente outra busca ou limpe os filtros para ver todas as atividades.</p><button class="secondary" id="clear-filters">Limpar filtros</button></div>`;
+    count.textContent = `${visible.length} ${visible.length === 1 ? 'atividade encontrada' : 'atividades encontradas'}`;
+    grid.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
+    grid.querySelector('#clear-filters')?.addEventListener('click', () => { search.value = ''; filter = 'all'; app.querySelectorAll('[data-filter]').forEach((item) => item.classList.toggle('is-selected', item.dataset.filter === 'all')); update(); search.focus(); });
+  };
+  app.querySelectorAll('[data-filter]').forEach((button) => button.addEventListener('click', () => { filter = button.dataset.filter; app.querySelectorAll('[data-filter]').forEach((item) => item.classList.toggle('is-selected', item === button)); update(); }));
+  search.addEventListener('input', update); update();
+}
+
 function renderEvolution() {
+  setActiveNav('evolucao');
   const progress = getProgress();
   const best = getBestCategory(progress);
   const practice = getPracticeCategory(progress);
   const recommendation = getRecommendation(progress);
-  app.innerHTML = `<section class="page-card"><h2>Sua evolução</h2><p>Acompanhe seu progresso com calma e no seu ritmo.</p><div class="progress-card"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.tentativas}</strong>Tentativas</div></div><p><strong>Maior facilidade:</strong> ${best ? best.label : 'Ainda não há dados suficientes.'}</p><p><strong>Categoria para praticar mais:</strong> ${practice ? practice.label : 'Ainda não há dados suficientes.'}</p>${recommendation ? `<p><strong>Sugestão:</strong> pratique uma atividade de ${recommendation.category}.</p>` : ''}<div class="actions"><button id="back-home">← Voltar ao início</button></div></section>`;
+  const sessions = (progress.sessions || []).filter((session) => session.status === 'completed').slice(-10).reverse();
+  const history = sessions.length ? `<ul class="history-list">${sessions.map((session) => `<li><strong>${games.find((game) => game.id === session.gameId)?.name || 'Atividade'}</strong><span>${new Date(session.endedAt).toLocaleDateString('pt-BR')} · ${session.stars} ${session.stars === 1 ? 'estrela' : 'estrelas'}</span></li>`).join('')}</ul>` : '<div class="empty-state"><h3>Seu histórico começa aqui</h3><p>Conclua uma atividade para acompanhar seus dados reais.</p></div>';
+  app.innerHTML = `<section class="page-card"><h2>Minha evolução</h2><p>Acompanhe seu progresso com calma e no seu ritmo.</p><div class="progress-card"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.estrelas}</strong>Estrelas</div></div><p><strong>Maior facilidade:</strong> ${best ? best.label : 'Ainda não há dados suficientes.'}</p><p><strong>Uma sugestão para continuar:</strong> ${recommendation ? `pratique uma atividade de ${recommendation.category}.` : 'conclua uma atividade para receber uma sugestão.'}</p><h3>Histórico recente</h3>${history}<div class="actions"><button id="back-home">← Voltar ao início</button></div></section>`;
   app.querySelector('#back-home').addEventListener('click', renderHome);
 }
 
@@ -46,24 +84,53 @@ function renderDevelopment(game) {
   app.querySelector('#back-home').addEventListener('click', renderHome);
 }
 
+function renderSettings() {
+  setActiveNav('ajustes');
+  const preferences = getPreferences();
+  app.innerHTML = `<section class="page-card settings-page"><h2>Ajustes</h2><p class="lead">Escolha uma experiência confortável para você.</p><div class="settings-list"><label for="appearance">Aparência<select id="appearance"><option value="system">Sistema</option><option value="light">Claro</option><option value="dark">Escuro</option></select></label><label for="text-size">Tamanho do texto<select id="text-size"><option value="standard">Padrão</option><option value="large">Ampliado</option></select></label><label for="observation-mode">Observação<select id="observation-mode"><option value="self-paced">No meu ritmo</option><option value="suggested-time">Tempo sugerido</option></select></label><label class="setting-check"><input id="reduce-motion" type="checkbox"> Reduzir animações</label></div><section class="danger-zone"><h3>Meu progresso</h3><p>Apagar o progresso remove somente os dados do ReConecta e mantém estes ajustes.</p><button class="danger" id="reset-progress">Apagar meu progresso</button></section></section>`;
+  app.querySelector('#appearance').value = preferences.appearance; app.querySelector('#text-size').value = preferences.textSize; app.querySelector('#observation-mode').value = preferences.observationMode; app.querySelector('#reduce-motion').checked = preferences.reduceMotion;
+  const persist = () => { savePreferences({ appearance: app.querySelector('#appearance').value, textSize: app.querySelector('#text-size').value, observationMode: app.querySelector('#observation-mode').value, reduceMotion: app.querySelector('#reduce-motion').checked }); document.documentElement.dataset.appearance = app.querySelector('#appearance').value; document.documentElement.dataset.textSize = app.querySelector('#text-size').value; document.documentElement.classList.toggle('reduce-motion', app.querySelector('#reduce-motion').checked); };
+  app.querySelectorAll('select, input').forEach((control) => control.addEventListener('change', persist)); persist();
+  app.querySelector('#reset-progress').addEventListener('click', () => { if (resetProgress()) renderSettings(); });
+}
+
 function advanceTraining() {
   if (!dailyTraining) return;
   dailyTraining.currentIndex += 1;
+  const progress = getProgress();
+  const dateKey = new Date().toLocaleDateString('en-CA');
+  if (progress.dailyPlans[dateKey]) { progress.dailyPlans[dateKey].currentIndex = dailyTraining.currentIndex; progress.dailyPlans[dateKey].completed = dailyTraining.currentIndex >= dailyTraining.activities.length; saveProgress(progress); }
   if (dailyTraining.currentIndex >= dailyTraining.activities.length) { dailyTraining = null; renderHome('Parabéns! Você concluiu o treino de hoje.'); return; }
   openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true });
 }
 
 function startDailyTraining() {
-  dailyTraining = { activities: [...dailyTrainingActivities], currentIndex: 0, completed: false };
-  openGame(dailyTraining.activities[0], { trainingMode: true });
+  const progress = getProgress();
+  const dateKey = new Date().toLocaleDateString('en-CA');
+  const saved = progress.dailyPlans[dateKey] || { dateKey, activities: [...dailyTrainingActivities], currentIndex: 0, completed: false, createdAt: new Date().toISOString() };
+  progress.dailyPlans[dateKey] = saved; saveProgress(progress);
+  dailyTraining = { activities: [...saved.activities], currentIndex: Math.min(saved.currentIndex || 0, dailyTrainingActivities.length - 1), completed: saved.completed };
+  if (dailyTraining.completed) renderHome('Parabéns! Você concluiu o treino de hoje.');
+  else openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true });
 }
 
 function openGame(gameId, { trainingMode = false } = {}) {
+  document.body.classList.add('is-focus-mode');
   const game = games.find((item) => item.id === gameId);
+  if (!game) return renderHome('Não encontramos essa atividade. Escolha uma opção disponível.');
+  app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">${game.category}</span><h2>${game.name}</h2><p>${game.description}</p><p>Faça a atividade com calma. Você poderá pedir ajuda ou voltar quando quiser.</p><div class="actions"><button id="start-activity">Começar atividade</button><button class="secondary" id="cancel-activity">Voltar ao início</button></div></section>`;
+  app.querySelector('#cancel-activity').addEventListener('click', () => { document.body.classList.remove('is-focus-mode'); renderHome(); });
+  app.querySelector('#start-activity').addEventListener('click', () => mountGame(gameId, { trainingMode, game }));
+}
+
+function mountGame(gameId, { trainingMode, game }) {
+  const mountToken = ++activeMountToken;
   const level = getCurrentLevel(getProgress());
   const category = categoryByGame[gameId];
-  const onComplete = (result) => { if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); registerActivity({ ...result, category, stars: calculateStars({ ...result, completed: true }) }); if (trainingMode) advanceTraining(); };
-  const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { dailyTraining = null; renderHome(); } };
+  activeSession = createSession({ gameId, category, level, trainingRef: trainingMode ? { dateKey: new Date().toLocaleDateString('en-CA') } : null });
+  let completed = false;
+  const onComplete = (result) => { if (mountToken !== activeMountToken || completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); renderResult(game, stars, trainingMode); };
+  const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { if (activeSession) abandonSession(activeSession.id); activeSession = null; dailyTraining = null; document.body.classList.remove('is-focus-mode'); renderHome(); } };
   if (gameId === 'memory') renderMemory(app, callbacks, { level });
   else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, callbacks, { level });
   else if (gameId === 'word') renderWordBuilder(app, callbacks, { level });
@@ -79,5 +146,33 @@ function openGame(gameId, { trainingMode = false } = {}) {
   else renderDevelopment(game);
 }
 
-renderHome();
+function renderResult(game, stars, trainingMode) {
+  const starText = '★'.repeat(stars);
+  app.innerHTML = `<section class="activity-card result-card"><span class="eyebrow">Atividade concluída</span><h2>Muito bem!</h2><p>Você concluiu ${game.name}.</p><p class="result-stars" aria-label="${stars} ${stars === 1 ? 'estrela recebida' : 'estrelas recebidas'}">${starText}</p><p class="feedback" role="status">${stars === 3 ? 'Você foi muito bem e manteve a calma.' : 'Cada tentativa faz parte do seu caminho.'}</p><div class="actions"><button id="next-action">${trainingMode ? 'Próxima atividade' : 'Voltar ao início'}</button></div></section>`;
+  app.querySelector('#next-action').addEventListener('click', () => { activeSession = null; if (trainingMode) advanceTraining(); else { document.body.classList.remove('is-focus-mode'); renderHome(); } });
+}
+
+function setActiveNav(route) {
+  navLinks.forEach((link) => {
+    if (link.dataset.nav === route) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+}
+
+function focusApp() { window.requestAnimationFrame(() => app.focus({ preventScroll: true })); }
+
+function routeFromHash() {
+  const route = location.hash.replace(/^#\/?/, '') || 'inicio';
+  if (route === 'inicio') renderHome();
+  else if (route === 'evolucao') renderEvolution();
+  else if (route === 'atividades') renderActivities();
+  else if (route === 'ajustes') renderSettings();
+  else if (route.startsWith('jogo/') && games.some((game) => game.id === route.slice(5))) openGame(route.slice(5));
+  else renderHome('Não encontramos esta página. Volte ao início para continuar.');
+  if (document.activeElement === document.body) focusApp();
+}
+
+window.addEventListener('hashchange', routeFromHash);
+
+routeFromHash();
 export { app, renderHome };

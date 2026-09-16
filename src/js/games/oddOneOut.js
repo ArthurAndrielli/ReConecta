@@ -13,7 +13,7 @@ function render(container, callbacks, context = {}) {
     if (completed) return;
     attempts += 1;
     callbacks.onAttempt();
-    if (button.dataset.answer === round.answer) { completed = true; callbacks.onCorrect(); callbacks.onMessage('correct'); callbacks.onComplete({ attempts, errors, elapsedTime: Date.now() - startTime }); container.querySelector('#feedback').textContent = 'Muito bem! Você encontrou o diferente.'; }
+    if (button.dataset.answer === round.answer) { completed = true; callbacks.onCorrect(); callbacks.onMessage('correct'); callbacks.onComplete({ attempts, errors, elapsedTime: Date.now() - startTime }); container.querySelector('#feedback').textContent = 'Muito bem! Esse item não combina com os demais.'; }
     else { errors += 1; callbacks.onWrong(); callbacks.onMessage('wrong'); }
   }));
   container.querySelector('#back-home').addEventListener('click', callbacks.onBack);

@@ -11,7 +11,7 @@ function render(container, callbacks, context = {}) {
   const startTime = Date.now();
   const syllables = shuffle([...round.syllables, ...(round.distractors || [])]);
 
-  container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Monte a Palavra</h2><p>Escolha as sílabas na ordem correta para formar a palavra.</p><div class="word-image" role="img" aria-label="Imagem da palavra">${round.image}</div><p id="selected-syllables" class="selected-syllables" aria-live="polite">Escolha uma sílaba</p><div id="syllable-options" class="choice-grid"></div><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="undo-syllable">Desfazer</button><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
+  container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Monte a Palavra</h2><p>Escolha as sílabas na ordem correta para formar a palavra.</p><div class="word-image" role="img" aria-label="Imagem da palavra">${round.image}</div><p id="selected-syllables" class="selected-syllables" aria-live="polite">Escolha uma sílaba</p><div id="syllable-options" class="choice-grid"></div><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="undo-syllable">Desfazer</button><button class="secondary" id="hint">Preciso de uma dica</button><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
   const options = container.querySelector('#syllable-options');
   const selectedElement = container.querySelector('#selected-syllables');
   const draw = () => {
@@ -44,6 +44,7 @@ function render(container, callbacks, context = {}) {
     }
   };
   container.querySelector('#undo-syllable').addEventListener('click', () => { if (!completed) { selectedIndices.pop(); draw(); } });
+  container.querySelector('#hint').addEventListener('click', () => { hintVisible = true; container.querySelector('#feedback').textContent = 'A primeira sílaba correta está destacada.'; draw(); });
   container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
   container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
   draw();
