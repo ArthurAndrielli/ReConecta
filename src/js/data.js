@@ -56,5 +56,6 @@ export const routineRounds = [
   { level: 1, title: 'Lavar as mãos', steps: ['Abrir a torneira', 'Molhar as mãos', 'Usar sabão', 'Enxaguar', 'Secar'] },
   { level: 2, title: 'Beber água', steps: ['Pegar o copo', 'Abrir a torneira', 'Encher o copo', 'Beber a água'] },
   { level: 3, title: 'Escovar os dentes', steps: ['Pegar a escova', 'Colocar pasta', 'Escovar os dentes', 'Enxaguar a boca'] },
-  { level: 4, title: 'Preparar uma refeição', steps: ['Separar os ingredientes', 'Lavar os alimentos', 'Preparar a refeição', 'Servir a comida'] }
+  { level: 4, title: 'Preparar uma refeição', steps: ['Separar os ingredientes', 'Lavar os alimentos', 'Preparar a refeição', 'Servir a comida'] },
+  { level: 5, title: 'Colocar uma roupa', steps: ['Escolher a roupa', 'Vestir a camiseta', 'Vestir a calça', 'Calçar os sapatos'] }
 ];

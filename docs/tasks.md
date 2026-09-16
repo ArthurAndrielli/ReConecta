@@ -101,7 +101,7 @@ Fase 11 — Organize a Rotina
 
 [x] T50 — Implementar o jogo “Organize a Rotina”.
 [x] T51 — Adicionar a rotina de lavar as mãos.
-[ ] T52 — Adicionar outras rotinas: beber água, escovar os dentes, colocar roupa e preparar refeição simples.
+[x] T52 — Adicionar outras rotinas: beber água, escovar os dentes, colocar roupa e preparar refeição simples.
 [ ] T53 — Permitir reorganizar as etapas sem depender exclusivamente de arrastar e soltar.
 
 Fase 12 — Encontre o Objeto
