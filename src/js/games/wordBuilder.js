@@ -7,6 +7,7 @@ function render(container, callbacks, context = {}) {
   let completed = false;
   let attempts = 0;
   let errors = 0;
+  let hintVisible = false;
   const startTime = Date.now();
   const syllables = shuffle([...round.syllables, ...(round.distractors || [])]);
 
@@ -16,7 +17,7 @@ function render(container, callbacks, context = {}) {
   const draw = () => {
     const selected = selectedIndices.map((index) => syllables[index]);
     selectedElement.textContent = selected.length ? selected.join(' - ') : 'Escolha uma sílaba';
-    options.innerHTML = syllables.map((syllable, index) => `<button class="choice-button" data-index="${index}" ${selectedIndices.includes(index) ? 'disabled' : ''}>${syllable}</button>`).join('');
+    options.innerHTML = syllables.map((syllable, index) => `<button class="choice-button ${hintVisible && syllable === round.syllables[0] ? 'hint' : ''}" data-index="${index}" ${selectedIndices.includes(index) ? 'disabled' : ''}>${syllable}</button>`).join('');
     options.querySelectorAll('[data-index]').forEach((button) => button.addEventListener('click', () => select(Number(button.dataset.index))));
   };
   const select = (index) => {
@@ -37,6 +38,7 @@ function render(container, callbacks, context = {}) {
       errors += 1;
       callbacks.onWrong();
       callbacks.onMessage('wrong');
+      hintVisible = errors >= 2;
       selectedIndices = [];
       draw();
     }

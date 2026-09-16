@@ -76,7 +76,7 @@ Fase 7 — Monte a Palavra
 [x] T36 — Permitir montar palavras de duas sílabas.
 [x] T37 — Permitir montar palavras de três sílabas.
 [x] T38 — Adicionar palavras maiores e sílabas incorretas nos níveis avançados.
-[ ] T39 — Depois de duas tentativas incorretas, oferecer uma dica destacando a primeira sílaba correta.
+[x] T39 — Depois de duas tentativas incorretas, oferecer uma dica destacando a primeira sílaba correta.
 
 Fase 8 — Imagem e Palavra
 

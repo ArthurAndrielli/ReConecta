@@ -34,6 +34,7 @@ button:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
 .choice-item { background: #f1f5f9; border: 1px solid #dbe4f0; }
 .choice-button { background: #dbeafe; }
 .choice-button:disabled { opacity: .55; cursor: default; }
+.choice-button.hint { box-shadow: 0 0 0 4px #f59e0b; }
 .word-image { margin: 1rem auto; font-size: 4rem; text-align: center; }
 .selected-syllables { min-height: 2rem; padding: .75rem; border: 1px dashed #94a3b8; border-radius: 10px; text-align: center; font-weight: bold; }
 @media (max-width: 560px) { main { width: min(100% - 1rem, 960px); padding-top: 1rem; } .progress-card { grid-template-columns: 1fr; } .game-grid { grid-template-columns: 1fr; } }
