@@ -15,6 +15,7 @@ import { games } from './data.js';
 import { getFeedbackMessage } from './utils/feedback.js';
 import { getCurrentLevel } from './levels.js';
 import { calculateStars } from './scoring.js';
+import { getBestCategory, getPracticeCategory } from './evolution.js';
 
 const app = document.getElementById('app');
 let dailyTraining = null;
