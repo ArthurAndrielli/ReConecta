@@ -166,7 +166,7 @@ Fase 19 — Acessibilidade e responsividade
 
 Fase 20 — Testes finais
 
-[ ] T90 — Testar abertura e retorno dos 12 minijogos.
+[x] T90 — Testar abertura e retorno dos 12 minijogos.
 [ ] T91 — Testar resposta correta e incorreta em todos os jogos.
 [ ] T92 — Testar feedback, estrelas e dicas.
 [ ] T93 — Testar todos os níveis de dificuldade.
