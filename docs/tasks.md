@@ -82,7 +82,7 @@ Fase 8 — Imagem e Palavra
 
 [x] T40 — Implementar o modo imagem → palavra.
 [x] T41 — Implementar o modo palavra → imagem.
-[ ] T42 — Registrar acertos, erros, tentativas e conclusão da atividade.
+[x] T42 — Registrar acertos, erros, tentativas e conclusão da atividade.
 
 Fase 9 — Qual Não Combina?
 
