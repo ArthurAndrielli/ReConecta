@@ -1,813 +1,569 @@
-ReConecta — Plano de Tarefas
+ReConecta — Plano de implementação
 
-Versão: 1.0 — Aplicação acadêmica completa
+Versão: 2.1 · Reformulação visual e aplicação acadêmica completa
+Data: 16/09/2026
+Base: requirements.md e design.md.
+Atualização: foram acrescentadas 18 tarefas de reformulação visual, da Task 27 à Task 44. As Tasks 01–26 e seus checkboxes foram preservados. As novas tarefas seguem requirements.md, seção 11, e design.md, seção 15. A prioridade é melhorar a aparência do sistema existente.
+Ao incorporar esta atualização ao VS Code, preserve os [x] e os registros que já existirem na cópia do projeto. Se ela estiver mais avançada que este documento, acrescente somente a seção de reformulação visual com as Tasks 27–44, sem substituir os status anteriores. Esta revisão não acessou o repositório do VS Code para conferir seu andamento.
 
-Objetivo deste documento
+Como executar este plano
 
-Este arquivo organiza o desenvolvimento do ReConecta em tarefas pequenas, sequenciais e testáveis.
+O objetivo é aplicar o design profissional e completar as funcionalidades previstas para os 12 minijogos. As tarefas começam com mudanças reais na aplicação. Não há tarefas para criar documentação, index.html ou README.md****. Esses arquivos já existem.
+Antes da primeira alteração, ler os três documentos, as instruções do repositório e o código atual. Localizar o CSS, o ponto de entrada JavaScript, os jogos e a persistência existentes. Essa leitura faz parte da execução da Task 01; não é uma tarefa de preparação isolada.
 
-A proposta é desenvolver seguindo SDD: requisitos → design → tarefas → implementação → testes → validação.
+Trabalhar na primeira task pendente, na ordem numérica, respeitando dependências.
 
-Regra de conclusão
+Reaproveitar o que já funciona. Quando uma parte já estiver implementada, verificar e ajustar somente o necessário para atender a esta revisão.
 
-Uma tarefa só pode ser marcada como concluída quando:
+Preservar código, dados e alterações anteriores do usuário. Não substituir o aplicativo por um projeto novo, não adicionar framework e não reescrever histórico Git.
 
-o código necessário tiver sido criado ou alterado;
+Os caminhos de design.md são referências. Usar os caminhos reais do projeto quando já estiverem corretos. Fazer ajustes pontuais no HTML existente somente para integração necessária.
 
-o comportamento esperado tiver sido validado;
+Implementar, verificar o comportamento descrito, corrigir problemas encontrados e só então mudar o checkbox da task de [ ] para [x].
 
-não houver erro conhecido que impeça a funcionalidade;
+Incluir a implementação e a atualização deste checkbox no mesmo commit. Criar um commit por task, exatamente no padrão feat: implementa a task 01, trocando apenas o número.
 
-o tasks.md tiver sido atualizado;
+Confirmar que o commit foi criado. Se falhar, não afirmar que a task foi entregue; manter a indicação de pendência até resolver o commit. Não fazer commits vazios nem alterar código que já atende ao requisito só para produzir diferença.
 
-o commit da tarefa tiver sido criado.
+Continuar automaticamente para a próxima task. Comunicar de forma breve a conclusão e os testes relevantes, sem substituir a implementação por explicações longas.
 
-Status
+Se houver bloqueio real de acesso, dado essencial ausente ou dependência externa indisponível, registrar o ponto exato e não marcar a task como concluída. Resolver problemas locais reversíveis antes de interromper.
 
-pendente
+As marcações começam pendentes porque o repositório atual não foi verificado nesta revisão. Elas não afirmam que todas as funcionalidades estão ausentes. A numeração pertence a este plano; commits anteriores permanecem intactos.
 
-concluída e validada
+Critério comum de conclusão
 
-Padrão de commit
+Uma task precisa entregar suas alterações aplicáveis, passar pelas verificações indicadas, manter o fluxo já existente funcional e ser registrada em commit próprio. Não marcar como pronta uma tela com botões sem ação, números fictícios, jogos simulados ou erros conhecidos que impeçam o uso.
+Usar o ambiente de execução e testes já disponível. Alterações de aparência exigem inspeção visual; regras de persistência, pontuação e navegação exigem verificações de comportamento. Não criar testes que apenas repitam a implementação ou valores de CSS. Não declarar comandos ou testes que não foram executados.
 
-Cada tarefa concluída deve gerar um commit separado:
+Base visual e navegação
 
-feat: implementa a task 01
-feat: implementa a task 02
-feat: implementa a task 03
+[ ] Task 01 — Aplicar a identidade visual à interface existente
 
-Não agrupar várias tasks no mesmo commit.
+Depende de: nenhuma. Requisitos: RUI001, RUI007, RNF004, RNF007, RNF009.
 
-FASE 1 — Preparação
+Implementar: localizar o CSS e a estrutura atuais; criar ou ajustar tokens de cores, tipografia, espaçamento, raios, sombras e foco de acordo com design.md, seção 2. Aplicar os tokens ao fundo, títulos, botões e cards que já existem. Manter a estrutura funcional e os imports válidos. A task deve produzir uma mudança visual concreta na tela existente, além da leitura dos arquivos.
 
-T01 — Validar a pasta principal
+Validar: abrir pelo servidor local; conferir legibilidade, contraste dos pares usados, comportamento dos botões existentes e ausência de erro de CSS/JavaScript que impeça navegação. Conferir pelo menos 390 e 1440 px.
 
-Concluída
+Commit: feat: implementa a task 01.
 
-Objetivo: confirmar que o workspace aberto no VS Code é ReConecta.
+[ ] Task 02 — Padronizar componentes, ícones e ativos visuais
 
-Critério de conclusão: todo o projeto será criado dentro dessa pasta.
+Depende de: Task 01. Requisitos: RUI005, RUI008, RUI009, RUI012, RUI013, RNF003, RNF014.
 
-T02 — Inicializar o Git
+Implementar: componentes compartilhados de botão/link, card de jogo, categoria, alternativa, feedback e estado vazio. Aplicar estados normal, hover, foco, selecionado, resolvido e indisponível. Manter logotipo existente utilizável; na ausência dele, aplicar marca tipográfica e símbolo simples conforme o design. Organizar ícones e imagens locais com estilo consistente, dimensões e descrições acessíveis. Reaproveitar ativos adequados; substituir emojis de interface pela coleção visual definida.
 
-Concluída
+Validar: usar os componentes em pelo menos uma tela real; conferir que todos os estados são distinguíveis, que não há botão dentro de link e que imagens não deslocam o conteúdo ao carregar. Confirmar que recursos não dependem de CDN.
 
-Ações: verificar se existe .git; se não existir, executar git init; conferir git status.
+Commit: feat: implementa a task 02.
 
-Critério de conclusão: a pasta é reconhecida como repositório Git.
+[ ] Task 03 — Implementar a estrutura de navegação responsiva
 
-T03 — Criar a estrutura principal
+Depende de: Tasks 01–02. Requisitos: RF001, RF003, RF004, RUI002, RUI003, RUI006, RNF002, RNF008.
 
-Concluída
+Implementar: navegação para Início, Atividades, Minha evolução e Ajustes, mantendo o roteamento existente quando adequado. Implementar estado ativo, modo de foco para jogos, destino para treino e tratamento inicial de rota inválida. Criar/adaptar barra lateral no desktop, navegação horizontal no tablet e barra inferior no celular. Atualizar título da página, foco e região #app a cada troca.
 
-Criar:
+Validar: acessar os destinos, recarregar uma rota válida e usar Voltar/Avançar do navegador sem erros. Conferir link de pular conteúdo, estado ativo acessível e espaço reservado para a barra inferior. Não criar outro arquivo HTML por tela.
 
-ReConecta/
-├── docs/
-├── src/
-│   ├── css/
-│   ├── js/
-│   │   ├── games/
-│   │   └── utils/
-│   └── assets/
+Commit: feat: implementa a task 03.
 
-Critério de conclusão: todas as pastas aparecem corretamente no Explorer.
+[ ] Task 04 — Construir o Início e o catálogo dos 12 jogos
 
-FASE 2 — Documentação SDD
+Depende de: Tasks 02–03. Requisitos: RF001, RF002, RF057, RF062, RUI004, RUI005, RUI015, RNF001.
 
-T04 — Criar docs/requerimentos.md
+Implementar: Início na ordem definida no design: abertura, destaque do treino, resumo quando houver dados, sugestão quando aplicável e os 12 cards. Construir Atividades com busca por nome, filtros das seis categorias, contagem acessível e estado sem resultados. Usar os IDs e categorias oficiais. Buscar métricas no serviço existente; se ainda não houver dados/serviço, apresentar o estado vazio verdadeiro até a conexão da Task 05, sem números de demonstração.
 
-Concluída
+Validar: conferir os 12 nomes e destinos, busca sem distinção de acentos/caixa, combinação de filtro e busca, ação de limpar e preservação dos filtros ao voltar. Conferir títulos longos, primeiro acesso e resumo com dados reais disponíveis.
 
-Documentar objetivo, escopo, requisitos funcionais e não funcionais, regras dos 12 minijogos, níveis, pontuação, feedback, treino diário, evolução e funcionalidades futuras.
+Commit: feat: implementa a task 04.
 
-Critério de conclusão: o documento explica claramente o que o sistema deve fazer.
+Dados e funcionamento compartilhado
 
-T05 — Criar docs/design.md
+[ ] Task 05 — Preservar o progresso e centralizar o armazenamento
 
-Concluída
+Depende de: Tasks 03–04. Requisitos: RF006, RF007, RF008, RF009, RF011, RF012, RF013, RF053, RNF010, RNF015.
 
-Documentar arquitetura, SPA, módulos, pastas, armazenamento, dados, navegação, acessibilidade, responsividade, níveis e pontuação.
+Implementar: leitura, validação, migração e gravação centralizadas conforme design.md, seção 9. Preservar os totais válidos existentes e separar progresso de preferências. Criar operações para sessão, tentativa, conclusão e reset sem chamar localStorage nos jogos. Conectar resumos ao estado real. Preservar dados desconhecidos/ilegíveis e sinalizar modo temporário em memória, sem sobrescrevê-los como vazio.
 
-Critério de conclusão: o documento explica como o sistema será construído.
+Validar: salvar e recarregar progresso; migrar amostra da estrutura anterior sem duplicar totais após duas aberturas; manter JSON ilegível intacto; simular falha de gravação e continuar em memória. Confirmar que reset do serviço não apaga preferências ou dados de outras aplicações.
 
-T06 — Revisar coerência entre requisitos, design e tasks
+Commit: feat: implementa a task 05.
 
-Concluída
+[ ] Task 06 — Integrar tela de exercício, sessão, feedback e resultado
 
-Critério de conclusão: nenhuma funcionalidade exigida ficou sem representação nos documentos.
+Depende de: Tasks 02–03 e 05. Requisitos: RF005–RF010, RF019–RF022, RF060, RF062, RUI006, RUI009, RUI010, RNF011, RNF013.
 
-FASE 3 — Base da aplicação
+Implementar: GameShell e contrato comum de jogos; tela de instruções, começo explícito, registro de tentativa, cálculo de estrelas, região de feedback, dicas, pausa, confirmação de saída e resultado. Implementar tempo ativo sem contagem competitiva, desmontagem e bloqueio de conclusão duplicada. Adaptar ao menos um jogo existente ao contrato para exercitar o fluxo real. Preservar o estado anterior ao cancelar saída.
 
-T07 — Criar index.html
+Validar: erro, ajuda, acerto e conclusão; estrelas para zero, dois e três erros; clique duplo em resposta/conclusão; pausa e aba oculta; cancelar e confirmar saída, inclusive pelo Voltar do navegador. Confirmar que resultado repetido não soma novamente e que sessão interrompida não concede estrelas.
 
-Concluída
+Commit: feat: implementa a task 06.
 
-Implementar HTML5, lang="pt-BR", UTF-8, viewport, título, CSS, <main id="app"></main> e script ES Module.
+[ ] Task 07 — Consolidar conteúdo, níveis e progressão dos jogos
 
-Critério de conclusão: abre pelo Live Server sem erros.
+Depende de: Tasks 05–06. Requisitos: RF014–RF018, RF022, RNF008, RNF009, RNF012.
 
-T08 — Criar src/css/style.css
+Implementar: catálogo como fonte única de ID, nome, categoria, módulo e grupo diário; configurações dos quatro níveis; função de progressão por jogo com janela de três sessões e limiares de 85%/50%. Consolidar dados e ativos por nível, com pelo menos três desafios distintos nos jogos de sequência e conjuntos suficientes nos de tabuleiro. Completar conteúdo faltante conforme cada jogo for adaptado, sem deixar a entrega final com nível vazio.
 
-Concluída
+Validar: limiares exatos, amostra insuficiente, mínimo 1/máximo 4, avaliação executada uma vez por janela e nível fixo durante a sessão. Conferir IDs únicos, existência dos ativos referenciados e ausência de respostas corretas duplicadas entre alternativas.
 
-Criar estilos base para corpo, cabeçalho, cards, botões, mensagens, controles e telas dos jogos.
+Commit: feat: implementa a task 07.
 
-Critério de conclusão: a aplicação possui aparência consistente.
+Adaptação e conclusão dos minijogos
 
-T09 — Criar src/js/app.js
+Para as Tasks 08–19, adaptar o módulo existente; implementar somente o que faltar. Cada task deve terminar com o jogo integrado à navegação, à sessão, ao resultado e à persistência. Não entregar apenas a função isolada ou o card de acesso.
 
-Concluída
+[ ] Task 08 — Finalizar o Jogo da Memória
 
-Responsável pela navegação principal, tela inicial, abertura dos jogos, retorno ao início e atualização do progresso.
+Depende de: Tasks 06–07. Requisitos: RF023–RF025.
 
-Critério de conclusão: a aplicação renderiza conteúdo em #app.
+Implementar: tabuleiros de 4, 6, 8 e 12 cartas com a aparência comum. Comparar duas cartas diferentes; manter pares corretos; impedir terceiro clique durante avaliação; manter par incorreto visível até “Tentar outro par”. Contar uma tentativa por comparação e concluir o tabuleiro uma vez. Cartas fechadas não expõem a resposta ao leitor de tela.
 
-T10 — Criar src/js/data.js
+Validar: quatro níveis, clique duplo na mesma carta, terceiro clique, tentativa de selecionar par já resolvido, erro, dica, conclusão e persistência. Conferir grid estreito sem carta menor que 64 px e saída durante comparação.
 
-Concluída
+Commit: feat: implementa a task 08.
 
-Centralizar palavras, sílabas, imagens/emoji, categorias, sequências, rotinas, associações, situações e frases.
+[ ] Task 09 — Finalizar O Que Você Viu?
 
-Critério de conclusão: dados fixos não ficam espalhados pelos módulos.
+Depende de: Tasks 06–07. Requisitos: RF026–RF027.
 
-T11 — Criar utilidades compartilhadas
+Implementar: três desafios por sessão, com fases separadas de observação e resposta. Oferecer “No meu ritmo” com “Já observei” e modo temporizado com 12/10/8/6 segundos conforme o nível. Usar quantidades de imagens/opções do design, carregar imagens antes de iniciar a exposição e remover as observadas da árvore acessível após ocultar.
 
-Concluída
+Validar: ordem das fases, resposta única válida, níveis, modo sem limite, pausa/retomada do tempo restante e saída antes de o timer terminar. Confirmar que nenhum timer antigo altera outra tela e que só o terceiro desafio finaliza a atividade.
 
-Criar funções para embaralhar arrays, selecionar itens aleatórios e gerar mensagens de feedback.
+Commit: feat: implementa a task 09.
 
-Critério de conclusão: funções genéricas não ficam duplicadas.
+[ ] Task 10 — Finalizar Monte a Palavra
 
-FASE 4 — Tela inicial e navegação
+Depende de: Tasks 06–07. Requisitos: RF028–RF030.
 
-T12 — Criar cabeçalho
+Implementar: imagem, banco de sílabas, espaços da resposta, seleção em ordem, desfazer e verificação. Cada peça recebe ID próprio; comparar a resposta pelo texto das sílabas. Implementar quatro níveis, três desafios por sessão e dica da primeira sílaba, destacada após dois erros.
 
-Concluída
+Validar: CASA, BANANA com duas peças NA e palavra com distratores; desfazer sem perder peça; erro sem apagar a atividade; dica sem resolver automaticamente; teclado, persistência e conclusão no terceiro desafio.
 
-Mostrar nome ReConecta e subtítulo simples.
+Commit: feat: implementa a task 10.
 
-T13 — Criar mensagem de boas-vindas
+[ ] Task 11 — Finalizar Imagem e Palavra
 
-Concluída
+Depende de: Tasks 06–07. Requisitos: RF031–RF032.
 
-Mostrar orientação curta para escolher uma atividade.
+Implementar: direções imagem→palavra e palavra→imagem dentro de três desafios por sessão. Usar 2/3/4/4 alternativas conforme o nível, imagens consistentes e uma única resposta válida por desafio. Conectar seleção, feedback, dica e “Continuar”.
 
-T14 — Criar cards dos 12 minijogos
+Validar: os dois modos, os quatro níveis, alternativas sem duplicação, resposta incorreta, correção, texto acessível das imagens e conclusão/persistência. Conferir que o foco chega ao novo comando apenas após avançar.
 
-Concluída
+Commit: feat: implementa a task 11.
 
-Exibir:
+[ ] Task 12 — Finalizar Qual Não Combina?
 
-Jogo da Memória
+Depende de: Tasks 06–07. Requisitos: RF033–RF034.
 
-O Que Você Viu?
+Implementar: três desafios de quatro elementos por sessão, com um item fora da categoria. Variar complexidade sem alterar arbitrariamente a quantidade. Apresentar a relação da categoria na explicação após acerto e usar a aparência comum de alternativa.
 
-Monte a Palavra
+Validar: todos os níveis, existência de exatamente um intruso em cada conjunto, erro/dica/acerto e finalização. Conferir que nenhuma imagem tem destaque visual que entregue a resposta antes da escolha.
 
-Imagem e Palavra
+Commit: feat: implementa a task 12.
 
-Qual Não Combina?
+[ ] Task 13 — Finalizar Complete a Sequência
 
-Complete a Sequência
+Depende de: Tasks 06–07. Requisitos: RF035–RF037.
 
-Organize a Rotina
+Implementar: três desafios por sessão combinando padrões visuais e numéricos, com níveis AB, ABC, AAB/ABB e padrões avançados definidos no conteúdo. Exibir sequência, lacuna e alternativas com ordem de leitura correta. Cores têm apoio de formas, imagens ou nomes.
 
-Encontre o Objeto
+Validar: solução de cada padrão, alternativas inequívocas, sequência numérica, uso sem distinguir cores, erro, ajuda e conclusão. Conferir quebra de linha no celular sem inverter a ordem ou exigir rolagem horizontal.
 
-Toque Somente em...
+Commit: feat: implementa a task 13.
 
-Associação de Objetos
+[ ] Task 14 — Finalizar Organize a Rotina
 
-Situações do Cotidiano
+Depende de: Tasks 06–07. Requisitos: RF038–RF039.
 
-Complete a Frase
+Implementar: três rotinas por sessão com 3/4/5/6 etapas conforme o nível. Ordenar por controles de subir/descer e validar por “Verificar ordem”. Preparar conteúdo para os exemplos previstos e declarar ordens aceitas quando houver variação válida. Atualizar posição e anúncio mantendo foco no item movido.
 
-Critério de conclusão: os 12 jogos aparecem na tela inicial.
+Validar: primeira/última posição, deslocamentos por teclado, ordem incorreta, sequência correta, duas ordens válidas quando existirem e conclusão. Confirmar que arrastar não é obrigatório e que tocar em mover não conta como tentativa.
 
-T15 — Criar navegação SPA
+Commit: feat: implementa a task 14.
 
-Concluída
+[ ] Task 15 — Finalizar Encontre o Objeto
 
-Trocar telas sem múltiplos arquivos HTML.
+Depende de: Tasks 06–07. Requisitos: RF040–RF041.
 
-T16 — Criar botão “← Voltar ao início”
+Implementar: três desafios por sessão, comando explícito, alvo único e grades de 4/6/8/9 objetos conforme o nível. Aumentar semelhança nos níveis superiores preservando reconhecimento, espaço e tamanho dos alvos.
 
-Concluída
+Validar: alvo presente exatamente uma vez, erro, dica, acerto e conclusão. Conferir quatro níveis, imagens locais carregadas, navegação por teclado e grade em 320 px.
 
-Critério de conclusão: qualquer atividade permite retornar à tela inicial.
+Commit: feat: implementa a task 15.
 
-FASE 5 — Progresso e armazenamento
+[ ] Task 16 — Finalizar Toque Somente em...
 
-T17 — Criar storage.js
+Depende de: Tasks 06–07. Requisitos: RF042–RF043.
 
-Concluída
+Implementar: três desafios de seleção por categoria. Usar quantidade de objetos e alvos do design. Avaliar novos itens individualmente, marcar os corretos, orientar sobre incorretos e encerrar o desafio apenas quando todos os alvos estiverem resolvidos. Mostrar progresso textual dos alvos encontrados.
 
-Centralizar todo acesso ao localStorage.
+Validar: não concluir no primeiro toque, clique repetido em item resolvido sem contar tentativa, item incorreto sem apagar acertos, seleção por teclado e níveis. Conferir que acertos/tentativas correspondem às avaliações efetivas.
 
-T18 — Definir modelo de progresso
+Commit: feat: implementa a task 16.
 
-Concluída
+[ ] Task 17 — Finalizar Associação de Objetos
 
-Estrutura mínima:
+Depende de: Tasks 06–07. Requisitos: RF044–RF045.
 
-{
-  atividadesRealizadas: 0,
-  acertos: 0,
-  erros: 0,
-  tentativas: 0,
-  tempoRespostaTotal: 0,
-  estrelas: 0,
-  nivelAtual: 1,
-  desempenhoPorCategoria: {}
-}
+Implementar: um tabuleiro por sessão, com 2/3/4/5 pares conforme o nível. Selecionar origem e destino, permitir cancelar origem e marcar pares resolvidos. Apresentar grupos verticais no celular com condução de foco, sem depender de linhas, arrastar ou gestos precisos. Classificar a sessão somente em Associação.
 
-T19 — Criar leitura e gravação de progresso
+Validar: par correto/incorreto, troca de origem, alvo já resolvido, relações sem ambiguidade, teclado e conclusão única. Confirmar que cancelar origem não gera tentativa e que os dados não são duplicados em Cotidiano.
 
-Concluída
+Commit: feat: implementa a task 17.
 
-Critério de conclusão: atualizar a página não apaga os dados.
+[ ] Task 18 — Finalizar Situações do Cotidiano
 
-T20 — Registrar atividade concluída
+Depende de: Tasks 06–07. Requisitos: RF046–RF047.
 
-Concluída
+Implementar: três situações por sessão, com vocabulário familiar e 2/3/3/4 alternativas por nível. Garantir no mínimo três conteúdos distintos por nível e evitar repetição imediata quando houver escolha. Pergunta e alternativas devem permitir uma resposta inequívoca.
 
-Registrar categoria, acertos, erros, tentativas, tempo e nível.
+Validar: cenários chuva/guarda-chuva e água/copo, variedade, níveis, instrução legível, erro, dica, acerto e conclusão persistida. Não depender de uma imagem decorativa para compreender a situação.
 
-T21 — Criar reset de progresso
+Commit: feat: implementa a task 18.
 
-Concluída
+[ ] Task 19 — Finalizar Complete a Frase
 
-Pedir confirmação antes de apagar.
+Depende de: Tasks 06–07. Requisitos: RF048–RF049.
 
-T22 — Criar resumo de evolução na tela inicial
+Implementar: três desafios por sessão, cada um com frase, uma lacuna e 2/3/3/4 alternativas conforme o nível. Aumentar complexidade do conteúdo, preservar frases familiares e anunciar a frase completa após o acerto.
 
-Concluída
+Validar: concordância e resposta única, frases maiores, erro sem avanço indevido, dica, conclusão e dados salvos. Conferir leitor de tela, acentos e texto ampliado sem cortar frase ou botões.
 
-Mostrar atividades, acertos, erros, estrelas e nível atual.
+Commit: feat: implementa a task 19.
 
-FASE 6 — Níveis
+Fluxos completos e personalização
 
-T23 — Criar modelo de níveis
+[ ] Task 20 — Implementar o Treino de Hoje e a retomada
 
-Concluída
+Depende de: Tasks 05–19. Requisitos: RF050–RF052, RF059, RUI004.
 
-Implementar internamente:
+Implementar: plano diário persistido com cinco grupos oficiais; resumo antes de começar; indicação da etapa atual; uso dos módulos reais dos jogos; “Próxima atividade”; conclusão do treino. Criar plano por data local, manter escolha após F5 e creditar cada etapa uma vez. Retomar a primeira etapa pendente reiniciando sua atividade. Atualizar o card do Início nos estados novo, parcial e concluído.
 
-Nível 1 — Inicial
+Validar: cinco grupos e cinco etapas, avanço manual, retomada após duas etapas, sessão interrompida sem avanço, duplo clique no resultado, F5 e mudança de data local. Confirmar que treino aberto pode concluir na data original e que concluir o treino não duplica estrelas dos jogos.
 
-Nível 2 — Fácil
+Commit: feat: implementa a task 20.
 
-Nível 3 — Intermediário
+[ ] Task 21 — Implementar Minha evolução e recomendações
 
-Nível 4 — Avançado
+Depende de: Tasks 05–07 e 20. Requisitos: RF053–RF056, RF062, RUI011, RUI015.
 
-T24 — Criar regras de progressão
+Implementar: totais, períodos de 7/30 dias e todo o período, participação por dia/semana, alternativa textual, categorias, histórico e detalhes. Preservar totais legados sem inventar datas. Implementar elegibilidade mínima, taxa ponderada por tentativas, desempate e escolha de jogo definidos nos requisitos. Conectar sugestões ao Início e ao gerador de planos futuros, sem modificar um plano diário já salvo.
 
-Concluída
+Validar: histórico vazio, poucas tentativas, uma única categoria elegível, empate, duas categorias elegíveis, sessões interrompidas e dados legados sem data. Conferir totais do gráfico e tabela, filtros em data local e recomendações baseadas nos registros efetivos.
 
-Considerar atividades, acertos, erros, tentativas e desempenho recente.
+Commit: feat: implementa a task 21.
 
-T25 — Permitir dificuldade interna sem exibir números
+[ ] Task 22 — Implementar Ajustes e exclusão confirmada de progresso
 
-Concluída
+Depende de: Tasks 05–06 e 20–21. Requisitos: RF013, RF058, RUI013, RUI016, RNF005, RNF011.
 
-Critério de conclusão: o sistema ajusta dificuldade sem transformar a experiência em competição.
+Implementar: texto Padrão/Ampliado com prévia, redução de movimento e modo de observação. Aplicar e persistir preferências. Respeitar redução solicitada pelo sistema. Integrar “Apagar meu progresso” ao serviço, com diálogo de confirmação, foco em Cancelar e mensagem clara. Atualizar Início, evolução e treino depois do reset; preservar preferências.
 
-FASE 7 — Pontuação, feedback e dicas
+Validar: alteração imediata, F5, preferência do sistema, modo sem tempo e temporizado. Cancelar/Escape não apagam; confirmar remove só progresso do ReConecta; dados de outra chave e ajustes visuais permanecem.
 
-T26 — Criar sistema de estrelas
+Commit: feat: implementa a task 22.
 
-Concluída
+Acabamento e verificação final
 
-⭐⭐⭐ excelente desempenho
+[ ] Task 23 — Ajustar todas as telas para celular e tablet
 
-⭐⭐ bom desempenho
+Depende de: Tasks 08–22. Requisitos: RUI007, RUI014, RNF005, RNF016.
 
-⭐ atividade concluída
+Implementar: corrigir os layouts encontrados na inspeção de 320, 390, 768, 1024 e 1440 px. Ajustar margens, colunas, títulos longos, botões, navegação inferior, área segura e tabuleiros. Preservar os tamanhos mínimos; preferir mais linhas a encolher alvos. Carregar ativos de jogos sob demanda, reservar dimensões e medir o orçamento inicial proposto.
 
-T27 — Criar feedback positivo de acerto
+Validar: Início, catálogo, os 12 jogos, resultado, treino, evolução e Ajustes. Conferir rolagem vertical natural, ausência de rolagem horizontal obrigatória, controle encoberto ou imagem esticada. Não esconder overflow para disfarçar um layout quebrado.
 
-Concluída
+Commit: feat: implementa a task 23.
 
-Mensagens: “Excelente!”, “Muito bem!”, “Você conseguiu!”.
+[ ] Task 24 — Completar a acessibilidade dos fluxos
 
-T28 — Criar feedback amigável de erro
+Depende de: Tasks 08–23. Requisitos: RF039, RUI008, RUI009, RUI012, RNF002–RNF005.
 
-Concluída
+Implementar: corrigir problemas de semântica, ordem de foco, títulos, rótulos, anúncios, imagens, contrastes e diálogos. Garantir alternativa a arrastar, distinguir estados além da cor, esconder respostas de cartas fechadas e respeitar movimento reduzido. Corrigir o que a inspeção real apontar, sem adicionar ARIA desnecessária.
 
-Mensagens: “Vamos tentar novamente.”, “Quase lá!”, “Tente mais uma vez.”
+Validar: executar um percurso completo por teclado, percorrer todos os tipos de interação dos jogos e verificar leitura com tecnologia assistiva disponível. Conferir texto a 200%, refluxo em 320 CSS px, foco não encoberto, retorno de diálogos e contraste dos estados reais.
 
-T29 — Criar sistema de dicas
+Commit: feat: implementa a task 24.
 
-Concluída
+[ ] Task 25 — Resolver estados de falha e proteger os dados
 
-Depois de algumas tentativas, oferecer ajuda quando o jogo suportar dicas.
+Depende de: Tasks 05–24. Requisitos: RF061, RF062, RUI015, RNF010, RNF013–RNF015.
 
-FASE 8 — Jogo da Memória
+Implementar: finalizar mensagens e recuperação de rota inválida, imagem indisponível, falha ao salvar, JSON ilegível e versão desconhecida. Impedir gravação por callbacks de uma sessão já desmontada. Revisar cancelamento de timers/eventos, uso seguro de textos no DOM e ausência de dados fictícios ou controles sem ação.
 
-T30 — Criar memory.js
+Validar: simular cada falha sem apagar dados reais; voltar ao início após erro; tentar salvar novamente sem criar sessão duplicada. Confirmar que uma atividade desmontada não altera a atual e que a interface não afirma gravação quando houve falha.
 
-Concluída
+Commit: feat: implementa a task 25.
 
-T31 — Implementar nível inicial
+[ ] Task 26 — Validar a aplicação completa e corrigir regressões
 
-Concluída
+Depende de: Tasks 01–25. Requisitos: RNF006 e todos os critérios gerais de entrega de requirements.md e design.md.
 
-4 cartas e 2 pares.
+Implementar: corrigir somente as regressões encontradas no fluxo final. Conferir integrações, imports, navegação, métricas, persistência e consistência visual. Remover logs de depuração e código abandonado diretamente relacionado a esta implementação, preservando alterações não relacionadas do usuário.
 
-T32 — Implementar níveis seguintes
+Validar: primeiro acesso → catálogo → jogo com erro/dica/acerto → resultado → treino completo → evolução → F5 → ajustes → cancelamento e confirmação de reset. Finalizar cada um dos 12 jogos, conferir os quatro níveis, sair/retomar um treino, usar teclado e conferir celular. Executar os testes de lógica relevantes e o comando de verificação já existente no projeto. Verificar em Chrome ou Edge e em Firefox, registrando versões realmente usadas; se um navegador não estiver disponível, registrar a verificação de compatibilidade correspondente como pendente. Confirmar ausência de erros críticos no console.
 
-Concluída
+Commit: feat: implementa a task 26.
 
-6 cartas / 3 pares; 8 cartas / 4 pares; permitir crescimento gradual.
+Reformulação visual — nova etapa
 
-T33 — Registrar métricas da Memória
+Executar esta etapa após verificar a base das Tasks 01–26. Se elas já estiverem concluídas no repositório, preservar suas marcações e commits e começar pela Task 27. Se ainda houver tarefa anterior pendente, manter a regra de executar a primeira pendente. Não recriar módulos prontos para aplicar os novos estilos.
+Os critérios visuais da revisão 2.1 substituem os detalhes correspondentes da versão anterior. Em especial, o Início passa a mostrar três atividades em destaque e acesso aos 12 jogos em Atividades. O escopo funcional e os dados existentes permanecem válidos.
 
-Concluída
+[ ] Task 27 — Aplicar a nova composição visual e os tokens refinados
 
-Pares, tentativas, erros e tempo de conclusão, sem usar o tempo para pressionar.
+Depende de: Task 26. Requisitos: RUI017, RUI001, RNF004.
 
-FASE 9 — O Que Você Viu?
+Implementar: conferir a aparência atual no código e aplicar a paleta, as superfícies e as proporções da seção 15 do design. Criar tokens para destaque verde profundo, texto claro, botão verde-limão e navegação ativa. Unificar margens, largura máxima, espaçamento vertical e sombras. Aplicar as mudanças ao aplicativo real; não encerrar com uma página de amostras de cores.
 
-T34 — Criar whatDidYouSee.js
+Validar: conferir Início, catálogo e uma tela de exercício. Comparar hierarquia e distribuição de espaço antes/depois; verificar os contrastes dos novos pares e manter navegação e progresso funcionando.
 
-Concluída
+Commit: feat: implementa a task 27.
 
-T35 — Implementar exibição temporária de imagens
+[ ] Task 28 — Refinar marca, tipografia e família de ícones
 
-Concluída
+Depende de: Task 27. Requisitos: RUI018, RUI012, RNF004.
 
-Mostrar imagens, esconder e depois perguntar qual apareceu.
+Implementar: ajustar aplicação da marca existente, alinhamento do símbolo com o nome, escala de títulos, entrelinhas e pesos. Padronizar ícones da navegação e das ações, removendo misturas de emoji e famílias incompatíveis. Preservar fallback de fonte local e descrição acessível das ações.
 
-T36 — Implementar níveis
+Validar: conferir marca no desktop/celular, títulos longos, acentos, carregamento sem fonte opcional e texto ampliado. Ícones não devem substituir rótulos necessários nem aparecer desalinhados dentro de botões.
 
-Concluída
+Commit: feat: implementa a task 28.
 
-Inicial: 2 imagens / 2 opções. Depois 3 imagens / 3 ou 4 opções. Avançado: 4 ou mais imagens e menor tempo de visualização.
+[ ] Task 29 — Refinar navegação, cabeçalho e alinhamento das telas
 
-FASE 10 — Monte a Palavra
+Depende de: Tasks 27–28. Requisitos: RUI019, RUI003.
 
-T37 — Criar wordBuilder.js
+Implementar: barra lateral de 232 px no desktop com marca, menu espaçado e item ativo suave; cabeçalho com contexto breve e alinhamento ao conteúdo. Padronizar início de títulos, painéis e grades. Manter quatro destinos, versão horizontal no tablet e navegação inferior no celular. Remover elementos de navegação duplicados e espaço decorativo que comprima a área útil.
 
-Concluída
+Validar: trocar entre as quatro áreas, testar rota direta e foco, conferir alinhamentos em 768/1024/1440 px e manter o modo de foco dos exercícios.
 
-T38 — Implementar montagem por sílabas
+Commit: feat: implementa a task 29.
 
-Concluída
+[ ] Task 30 — Redesenhar a página inicial com destaque e três atividades
 
-Exemplos: CA+SA, BO+LA, GA+TO, BA+NA+NA, JA+NE+LA, CA+DEI+RA.
+Depende de: Tasks 27–29. Requisitos: RF001, RF002, RUI020, RUI004.
 
-T39 — Implementar níveis
+Implementar: abertura curta, destaque verde profundo com mensagem e botão claro, composição decorativa discreta, faixa de progresso real/convite inicial e três cards. Aplicar o estado correto do treino: novo, parcial ou concluído. “Ver todas” abre o catálogo completo. Usar a seleção dos três jogos definida no design sem duplicação ou alteração do plano diário.
 
-Concluída
+Validar: primeiro acesso sem estatísticas fictícias, usuário com histórico, treino parcial/concluído e acesso aos 12 jogos. Conferir que o destaque tem uma ação principal e que remover decoração no celular não remove informação necessária.
 
-2 sílabas, 3 sílabas, palavras maiores e opções incorretas extras.
+Commit: feat: implementa a task 30.
 
-T40 — Implementar dica de sílaba
+[ ] Task 31 — Transformar os cards e a apresentação do catálogo
 
-Concluída
+Depende de: Tasks 28 e 30. Requisitos: RF002, RF057, RUI021, RUI005.
 
-Após duas tentativas incorretas, destacar a primeira sílaba correta.
+Implementar: cards com miniatura de 100–120 px, categoria discreta, título completo, descrição curta e ação alinhada ao fim. Ajustar busca, filtros e quantidade de resultados à nova composição. Cada card possui um único destino acionável e hover leve sem deslocar a grade. Usar os mesmos cards no Início e no catálogo.
 
-FASE 11 — Imagem e Palavra
+Validar: exibir os 12 jogos, combinar busca/filtro, conferir os títulos mais longos e verificar ausência de botão aninhado em link. Testar teclado e texto ampliado com ações alinhadas e sem truncamento.
 
-T41 — Criar imageWord.js
+Commit: feat: implementa a task 31.
 
-Concluída
+[ ] Task 32 — Refinar microtextos, estados vazios e mensagens de carregamento
 
-T42 — Implementar imagem → palavra
+Depende de: Tasks 30–31. Requisitos: RF061, RF062, RUI022, RUI015.
 
-Concluída
+Implementar: aplicar linguagem e composição consistentes aos estados de primeiro acesso, busca vazia, histórico vazio, imagem indisponível e falha de gravação. Usar imagem/ícone pertinente, mensagem curta e ação útil. Ajustar proporção dos blocos e remover textos provisórios, repetições e avisos técnicos desnecessários ao usuário.
 
-Mostrar imagem/emoji e opções de palavras.
+Validar: provocar os estados com dados de teste isolados; conferir ações de recuperação e mensagens fiéis ao erro. Não mostrar animação de carregamento para uma operação que já terminou nem ocultar uma falha de salvamento.
 
-T43 — Implementar palavra → imagem
+Commit: feat: implementa a task 32.
 
-Concluída
+[ ] Task 33 — Unificar as miniaturas e imagens dos exercícios
 
-Mostrar palavra e opções de imagens.
+Depende de: Tasks 28 e 31. Requisitos: RUI023, RUI012, RNF014, RNF016.
 
-FASE 12 — Qual Não Combina?
+Implementar: revisar os ativos usados pelos 12 jogos e produzir/adaptar miniaturas que representem cada atividade. Padronizar fundo, traço, escala aparente e recorte. Substituir ativos provisórios inadequados por imagens locais reconhecíveis. Distinguir miniatura decorativa do card de imagem que integra a resposta. Otimizar arquivos e reservar dimensões.
 
-T44 — Criar oddOneOut.js
+Validar: verificar imagens nos quatro níveis quando os conjuntos variarem; nenhuma imagem deve ficar esticada, pouco reconhecível ou revelar a resposta pelo nome acessível de um item fechado. Conferir ativos ausentes, alternativas textuais e impacto no carregamento inicial.
 
-Concluída
+Commit: feat: implementa a task 33.
 
-T45 — Implementar categorias simples
+[ ] Task 34 — Redesenhar os tabuleiros de memória e observação
 
-Concluída
+Depende de: Tasks 27–28 e 33. Requisitos: RUI024, RF023–RF027.
 
-Exemplos: frutas + carro; animais + cadeira; roupas + banana.
+Implementar: aplicar cartas com verso padronizado, faces proporcionais, espaçamento regular, progresso discreto e feedback estável no Jogo da Memória e em O Que Você Viu?. Manter a área visual equilibrada nas diferentes quantidades de elementos e nas fases de observação/resposta. Posicionar ajuda e controles próximos à atividade.
 
-T46 — Implementar progressão
+Validar: conferir 4/6/8/12 cartas, revelação, erro/acerto, fase de observação e modo sem limite de tempo. A mudança visual não pode permitir cliques extras, alterar tentativas ou deixar timer ativo depois de sair.
 
-Concluída
+Commit: feat: implementa a task 34.
 
-Começar com categorias bem diferentes e avançar para diferenças mais sutis.
+[ ] Task 35 — Refinar a apresentação dos jogos de linguagem
 
-FASE 13 — Complete a Sequência
+Depende de: Tasks 28 e 33. Requisitos: RUI025, RF028–RF032, RF048–RF049.
 
-T47 — Criar sequence.js
+Implementar: redesenhar Monte a Palavra, Imagem e Palavra e Complete a Frase. Separar visualmente referência, área de resposta e opções usando espaço e hierarquia. Padronizar peças de sílabas, lacunas e alternativas; manter botões de desfazer/verificar no lugar esperado. Aplicar imagens e tipografia refinadas sem mudar as respostas.
 
-Concluída
+Validar: BANANA com sílabas repetidas, palavras/frases maiores, ambos os sentidos de Imagem e Palavra, erro/dica/acerto e texto ampliado. Nenhuma peça pode sumir, ter texto cortado ou perder seu ID por uma alteração no DOM.
 
-T48 — Implementar sequências visuais
+Commit: feat: implementa a task 35.
 
-Concluída
+[ ] Task 36 — Refinar sequências, categorização e atenção
 
-Exemplos: 🔵 🔴 🔵 🔴 ? e 🍎 🍌 🍎 🍌 ?.
+Depende de: Tasks 28 e 33. Requisitos: RUI026, RF033–RF037, RF040–RF043.
 
-T49 — Implementar sequências numéricas
+Implementar: aplicar molduras e escalas consistentes a Qual Não Combina?, Complete a Sequência, Encontre o Objeto e Toque Somente em.... Separar comando, padrão e alternativas. Padronizar seleção/resolução, contagem textual e espaçamento. Manter decoração fora da área usada para interpretar a resposta.
 
-Concluída
+Validar: padrões visuais e numéricos, leitura sem depender só de cor, seleção de múltiplos alvos e o maior tabuleiro. Conferir que mudança de aparência não sugere a resposta nem duplica a contagem de um item resolvido.
 
-Exemplo: 1 — 2 — 3 — ?.
+Commit: feat: implementa a task 36.
 
-T50 — Implementar níveis
+[ ] Task 37 — Refinar rotinas, associações e situações do cotidiano
 
-Concluída
+Depende de: Tasks 28 e 33. Requisitos: RUI027, RF038–RF039, RF044–RF047.
 
-Dois elementos alternados, três elementos e padrões mais complexos.
+Implementar: melhorar proporções de linhas, numeração, títulos de grupos e controles em Organize a Rotina e Associação de Objetos. Em Situações do Cotidiano, dar destaque à pergunta e manter alternativas com pesos equivalentes. Simplificar a composição no celular, preservando seleção, foco e indicação dos pares/etapas resolvidos.
 
-FASE 14 — Organize a Rotina
+Validar: mover etapas por teclado, manter foco no item, associar e cancelar origem, responder pergunta e concluir. Os controles devem continuar com pelo menos 48 px e a solução não pode depender de arrastar ou de linhas decorativas.
 
-T51 — Criar organizeRoutine.js
+Commit: feat: implementa a task 37.
 
-Concluída
+[ ] Task 38 — Dar acabamento aos botões, campos e filtros
 
-T52 — Implementar ordenação de etapas
+Depende de: Tasks 29–37. Requisitos: RUI028, RUI007, RUI008.
 
-Concluída
+Implementar: revisar os componentes reais e eliminar variações acidentais de altura, raio, peso de texto, alinhamento de ícone e distância entre ações. Aplicar variantes principal/secundária/discreta/destrutiva e estados de foco, seleção, indisponibilidade e processamento. Padronizar busca, filtros e seletores sem duplicar estilos por tela.
 
-Rotinas: lavar as mãos, preparar água, escovar dentes, colocar roupa e preparar refeição simples.
+Validar: controles com rótulos curtos/longos, mouse, teclado, toque e texto ampliado. Verificar foco não cortado, tamanho mínimo, contraste dos estados e ausência de deslocamento ao selecionar ou passar o mouse.
 
-T53 — Criar interação acessível para ordenar
+Commit: feat: implementa a task 38.
 
-Concluída
+[ ] Task 39 — Refinar feedback, resultado e diálogos
 
-Permitir ordenar por botões/cliques e opcionalmente arrastar.
+Depende de: Tasks 34–38. Requisitos: RUI029, RF019–RF022, RF060.
 
-FASE 15 — Encontre o Objeto
+Implementar: feedback proporcional e estável, resultado com estrelas bem desenhadas e ações claras, diálogos de pausa/saída/exclusão com a mesma linguagem visual. Evitar mensagens que cubram o tabuleiro, comemoração excessiva ou destaque punitivo para erros. Preservar regras, duração ativa e semântica acessível.
 
-T54 — Criar findObject.js
+Validar: resultado com uma, duas e três estrelas, erro, ajuda, pausa, cancelamento e saída confirmada. Conferir foco contido/devolvido, botão seguro na confirmação destrutiva, redução de movimento e ausência de dupla conclusão.
 
-Concluída
+Commit: feat: implementa a task 39.
 
-T55 — Implementar busca por objeto
+[ ] Task 40 — Redesenhar a apresentação de Minha evolução
 
-Concluída
+Depende de: Tasks 27–28 e 38. Requisitos: RUI030, RUI011, RF053–RF056.
 
-Mostrar instrução e várias imagens; o usuário toca no objeto solicitado.
+Implementar: reorganizar os totais reais, participação por período, categorias e histórico com pesos visuais distintos. Padronizar títulos, números, datas, linhas e estados vazios. Ajustar desenho do gráfico para leitura clara, mantendo valores e alternativa textual. Separar detalhes do resumo sem remover informações existentes.
 
-T56 — Implementar níveis
+Validar: histórico vazio, poucos dados, muitos registros, filtros de período e totais legados. Conferir os mesmos valores antes/depois, ausência de dados ilustrativos e legibilidade das datas e da tabela em telas pequenas.
 
-Concluída
+Commit: feat: implementa a task 40.
 
-Poucas imagens, depois mais imagens e por fim elementos visualmente semelhantes.
+[ ] Task 41 — Refinar a tela de Ajustes e suas preferências
 
-FASE 16 — Toque Somente em...
+Depende de: Tasks 38–40. Requisitos: RUI031, RF058, RUI016.
 
-T57 — Criar tapOnly.js
+Implementar: organizar seções de leitura, movimento, observação e progresso com descrição curta e controle alinhado. Preparar a composição para a seção de aparência da Task 42. Aplicar prévia de texto legível, divisórias discretas e separação clara da exclusão de dados. Não criar controles aparentes sem comportamento real.
 
-Concluída
+Validar: alteração e persistência das preferências existentes, reset cancelado/confirmado, texto ampliado e layout estreito. A preparação para aparência não pode exibir seletor inoperante.
 
-T58 — Implementar seleção por categoria
+Commit: feat: implementa a task 41.
 
-Concluída
+[ ] Task 42 — Implementar os temas Claro, Escuro e Sistema
 
-Exemplo: “Toque somente nas frutas.”
+Depende de: Tasks 27–41. Requisitos: RF063, RUI032, RNF004, RNF010.
 
-T59 — Validar múltiplas escolhas
+Implementar: tema escuro completo segundo os tokens do design e seletor funcional em Ajustes. Persistir appearance sem alterar sessões; aplicar Sistema quando o campo estiver ausente. Atualizar a aparência sem remontar o jogo, resetar foco ou perder seleções. Tratar todas as superfícies e estados, inclusive gráficos, diálogos e feedback.
 
-Concluída
+Validar: mudança imediata, F5, preferência do sistema, seleção explícita, dados anteriores e falha de armazenamento. Conferir contraste de texto/controles, imagens preservadas, exercício em andamento e texto ampliado nos dois temas.
 
-Avaliar itens corretos e incorretos individualmente até concluir.
+Commit: feat: implementa a task 42.
 
-FASE 17 — Associação de Objetos
+[ ] Task 43 — Ajustar a nova composição para celular e tablet
 
-T60 — Criar objectAssociation.js
+Depende de: Tasks 29–42. Requisitos: RUI033, RUI014, RNF005.
 
-Concluída
+Implementar: refinar a composição em 320/390/768 px: uma coluna de cards no celular, duas no tablet, decoração reduzida no destaque, navegação inferior com área segura e controles em posições confortáveis. Adaptar tabuleiros, diálogos e dados sem miniaturizar a interface de desktop nem esconder conteúdo necessário.
 
-T61 — Implementar associações simples
+Validar: orientação estreita e paisagem quando disponível, texto ampliado, ambos os temas, títulos longos e todos os tipos de interação dos jogos. Conferir alvos mínimos, nenhum botão encoberto e ausência de rolagem horizontal obrigatória.
 
-Concluída
+Commit: feat: implementa a task 43.
 
-Escova→Dentes, Chave→Porta, Garfo→Comida, Cama→Dormir, Sapato→Pé.
+[ ] Task 44 — Fazer a revisão visual final e corrigir o acabamento
 
-T62 — Implementar progressão das associações
+Depende de: Tasks 27–43. Requisitos: RUI034, RNF017 e critérios de reformulação da seção 11 de requirements.md.
 
-Concluída
+Implementar: corrigir inconsistências observadas em Início, catálogo, famílias de jogos, resultado, treino, evolução e Ajustes. Comparar as telas com a seção 15 do design e com referências visuais disponíveis, em estados equivalentes. Revisar alinhamento, proporção, contraste, escala de imagens, sombras, foco e espaçamentos. Remover CSS duplicado ou conflitante criado pela reformulação.
 
-Começar com relações diretas e avançar para relações mais abstratas.
+Validar: inspeção real em 320/390/768/1024/1440 px, temas claro/escuro, texto ampliado e redução de movimento. Registrar as telas e verificações efetivamente realizadas; conferir navegação, uma atividade por família, treino e persistência após os ajustes. Não marcar esta task apenas porque a página abre ou porque o CSS foi alterado.
 
-FASE 18 — Situações do Cotidiano
+Commit: feat: implementa a task 44.
 
-T63 — Criar dailySituations.js
+Verificações de maior risco
 
-Concluída
+RiscoTasks responsáveis
 
-T64 — Implementar perguntas do cotidiano
 
-Concluída
 
-Exemplos: chuva→guarda-chuva; beber água→copo.
+Recriar estrutura pronta ou perder código existente
 
-T65 — Criar conjunto variado de situações
+01–03 e regra de execução.
 
-Concluída
+Perder progresso antigo ou contar a migração duas vezes
 
-Critério de conclusão: o jogo não repete sempre a mesma pergunta.
+05 e 25.
 
-FASE 19 — Complete a Frase
+Duplicar tentativas, estrelas ou conclusões
 
-T66 — Criar completeSentence.js
+06, 08, 16, 17 e 20.
 
-Concluída
+Subir/descer nível com dados insuficientes
 
-T67 — Implementar frases simples
+07.
 
-Concluída
+Timer continuar depois de sair do jogo
 
-Exemplos: “Eu bebo ______.” e “Eu durmo na ______.”
+06, 09 e 25.
 
-T68 — Implementar frases mais complexas
+Perder etapas concluídas do treino
 
-Concluída
+20.
 
-Aumentar gradualmente a complexidade nos níveis avançados.
+Recomendação errada por falta de amostra
 
-FASE 20 — Treino Diário
+21.
 
-T69 — Criar dailyTraining.js
+Reset apagar preferências ou dados de outras aplicações
 
-Concluída
+05 e 22.
 
-T70 — Montar o “Treino de Hoje”
+Design bonito com controles pequenos ou inacessíveis
 
-Concluída
+23–24.
 
-Incluir:
+Aplicativo mostrar estados fictícios ou sem ação útil
 
-1 atividade de memória;
+04, 21, 25 e 26.
 
-1 de palavras;
+Trocar cores sem corrigir composição e proporções
 
-1 de raciocínio;
+27, 30, 31 e 44.
 
-1 de atenção;
+Perder acesso a jogos ao simplificar o Início
 
-1 atividade cotidiana.
+30–31.
 
-T71 — Criar fluxo sequencial do treino
+Melhorar aparência e quebrar interação ou pontuação
 
-Concluída
+34–39.
 
-Avançar automaticamente entre as cinco atividades.
+Misturar imagens e ícones de estilos incompatíveis
 
-T72 — Finalizar treino diário
+28 e 33.
 
-Concluída
+Tema escuro ilegível ou mudança de tema reiniciar jogo
 
-Mostrar: “Parabéns! Você concluiu o treino de hoje.”
+42.
 
-FASE 21 — Acompanhamento da evolução
+Miniaturizar o desktop para caber no celular
 
-T73 — Registrar desempenho por categoria
+43.
 
-Concluída
+Registro de conclusão
 
-Categorias sugeridas: memória, linguagem, atenção, raciocínio, associação e cotidiano.
-
-T74 — Identificar maior facilidade e maior dificuldade
-
-Concluída
-
-Calcular desempenho relativo sem usar rótulos negativos.
-
-T75 — Criar tela de evolução
-
-Concluída
-
-Mostrar exercícios, acertos, erros, tentativas, nível, estrelas e categorias.
-
-T76 — Criar recomendação simples de atividades
-
-Concluída
-
-Sugerir mais exercícios de categorias com maior dificuldade, mantendo variedade.
-
-FASE 22 — Acessibilidade
-
-T77 — Revisar tamanho de botões
-
-Concluída
-
-T78 — Revisar contraste e legibilidade
-
-Concluída
-
-T79 — Implementar :focus-visible
-
-Concluída
-
-T80 — Não depender apenas de cor para feedback
-
-Concluída
-
-T81 — Revisar excesso de informação por tela
-
-Concluída
-
-Manter poucos elementos, comandos objetivos e respostas visuais claras.
-
-FASE 23 — Responsividade
-
-T82 — Adaptar tela inicial para celular
-
-Concluída
-
-T83 — Adaptar os 12 jogos para celular
-
-Concluída
-
-Critério de conclusão: sem rolagem horizontal e com controles utilizáveis.
-
-FASE 24 — Testes
-
-T84 — Testar navegação completa
-
-Concluída
-
-Abrir os 12 jogos, voltar ao início, abrir treino diário e evolução.
-
-T85 — Testar persistência
-
-Concluída
-
-Realizar atividades, atualizar a página e confirmar os dados.
-
-T86 — Testar níveis
-
-Concluída
-
-T87 — Testar estrelas e feedback
-
-Concluída
-
-T88 — Testar treino diário
-
-Concluída
-
-T89 — Testar evolução e recomendações
-
-Concluída
-
-T90 — Testar os 12 minijogos
-
-Concluída
-
-Em cada jogo testar: abertura, instrução, acerto, erro, feedback, conclusão, progresso, voltar e versão mobile.
-
-FASE 25 — Revisão técnica
-
-T91 — Revisar console do navegador
-
-Concluída
-
-Critério de conclusão: nenhum erro JavaScript relevante no fluxo principal.
-
-T92 — Revisar imports, exports e caminhos
-
-Concluída
-
-T93 — Remover código não utilizado
-
-Concluída
-
-Remover funções abandonadas, variáveis sem uso, console.log de teste e duplicações óbvias.
-
-T94 — Revisar responsabilidades dos módulos
-
-Concluída
-
-Confirmar:
-
-app.js = navegação;
-
-storage.js = armazenamento;
-
-data.js = dados;
-
-um módulo por jogo;
-
-utils = funções compartilhadas.
-
-FASE 26 — README e entrega acadêmica
-
-T95 — Criar README.md
-
-Concluída
-
-Explicar projeto, objetivo, tecnologias, SDD, estrutura, execução, 12 jogos, níveis, estrelas, treino diário, evolução e armazenamento.
-
-T96 — Documentar limitações e evolução futura
-
-Concluída
-
-Registrar como futuras possibilidades:
-
-áudio;
-
-reconhecimento de voz;
-
-exercícios com sons;
-
-personalização;
-
-novos temas;
-
-criação de exercícios por profissionais;
-
-sistema inteligente mais avançado.
-
-FASE 27 — Validação final
-
-T97 — Executar fluxo completo
-
-Concluída
-
-Abrir aplicação → jogar → treino diário → estrelas → evolução → atualizar página → persistência → reset → versão mobile.
-
-T98 — Conferir todos os status do tasks.md
-
-Concluída
-
-Nenhuma task pode estar [x] sem ter sido implementada e validada.
-
-T99 — Preparar entrega final
-
-Concluída
-
-Revisar nome, documentação, arquivos, funcionamento, histórico Git, README e arquivos temporários.
-
-Resultado final
-
-Preencher apenas após concluir e validar o projeto.
-
-Funcionalidades principais
-
-12 minijogos
-
-sistema de níveis
-
-sistema de estrelas
-
-feedback positivo
-
-sistema de dicas
-
-treino diário
-
-acompanhamento da evolução
-
-recomendações simples
-
-persistência com localStorage
-
-responsividade
-
-acessibilidade básica
-
-Testes realizados
-
-Preencher ao final.
-
-Problemas encontrados
-
-Preencher ao final.
-
-Problemas corrigidos
-
-Preencher ao final.
-
-Pendências
-
-Preencher ao final.
-
-Evolução futura
-
-áudio;
-
-reconhecimento de voz;
-
-exercícios com sons;
-
-personalização avançada;
-
-novos temas;
-
-ferramentas para profissionais;
-
-recomendação inteligente mais avançada.
+Ao finalizar uma task, manter um registro curto neste espaço, sem reproduzir toda a implementação: número, comportamento entregue, verificações executadas e hash do commit. Como o hash só existe após o commit, anotar depois sem reescrever o histórico; essa anotação pode seguir no próximo commit ou no relatório final. A atualização do checkbox deve estar no commit da própria task.
+Nenhuma task foi executada apenas pela criação deste plano. O registro de implementação começa quando o código do aplicativo for efetivamente alterado ou verificado.

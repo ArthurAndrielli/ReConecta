@@ -1,815 +1,959 @@
-ReConecta — Requirements
+ReConecta — Requisitos do aplicativo
 
-Versão: 1.0 — Aplicação acadêmica completa
+Versão: 2.1 · Reformulação visual e aplicação acadêmica completa
+Data: 16/09/2026
+Documentos relacionados: design.md e tasks.md.
 
-1. Visão geral
+Prioridade desta revisão: melhorar a aparência do sistema, conforme o pedido mais recente. A seção 11 acrescenta critérios visuais para as Tasks 27–44. As tarefas anteriores mantêm seu histórico; as novas tarefas são uma etapa de reformulação, sem exigir que funcionalidades prontas sejam refeitas.
 
-O ReConecta é uma aplicação web de atividades cognitivas e de linguagem.
+1. Objetivo e base desta revisão
 
-A proposta do sistema é oferecer exercícios simples, acessíveis e progressivos, com poucos elementos por tela, comandos objetivos, respostas visuais fáceis de compreender e feedback positivo.
+O ReConecta é uma aplicação web de atividades cognitivas e de linguagem. Deve oferecer exercícios de memória, atenção, linguagem, associação, raciocínio e situações do cotidiano com instruções simples, dificuldade gradual e incentivo à participação.
 
-O aplicativo deve evitar excesso de informações, reduzir a sensação de avaliação ou competição e valorizar a participação do usuário mesmo quando houver erros.
+Esta revisão transforma a documentação existente em uma especificação de produto com direção visual definida, telas, componentes, estados e critérios de aceitação. A base é o documento “Projeto fono(1).txt” e a especificação acadêmica anterior. O escopo vigente continua sendo de 12 minijogos; a proposta inicial de cinco jogos é uma etapa histórica do projeto.
 
-2. Objetivo do projeto
+São decisões propostas nesta revisão: identidade em verde e tons claros, catálogo com filtros, navegação em quatro áreas, preferências de leitura e movimento, regras numéricas de progressão e tratamento explícito de sessões interrompidas. Essas decisões detalham a implementação; não representam funcionalidades já verificadas no código.
 
-O objetivo do ReConecta é disponibilizar atividades que trabalhem diferentes capacidades, incluindo:
+O código atual do VS Code não foi inspecionado nesta revisão. A implementação deve começar pela leitura dos arquivos existentes e reaproveitar funcionalidades prontas. index.html, README.md e a documentação já existem: não criar tarefas para refazê-los. Pequenos ajustes de integração no HTML existente são permitidos quando necessários.
 
-memória visual;
+2. Experiência desejada
 
-memória de curto prazo;
+O aplicativo deve ser acolhedor, organizado e fácil de entender por pessoas com diferentes níveis de familiaridade com tecnologia. A interface não deve pressupor um diagnóstico, uma faixa etária específica ou conhecimento técnico.
 
-atenção;
+A pessoa entende a próxima ação pela instrução e pelo botão principal.
 
-concentração;
+Cada exercício apresenta somente os elementos necessários para resolvê-lo.
 
-linguagem;
+Erros geram orientação e nova tentativa; não há perda de vidas ou bloqueio por desempenho.
 
-reconhecimento de palavras;
+A pessoa pode sair, pedir ajuda, aumentar o texto e controlar o ritmo.
 
-organização de sílabas;
+Estrelas valorizam atividades concluídas. Não há ranking, sequência diária punitiva ou comparação entre pessoas.
 
-leitura;
+O histórico descreve uso e resultados dos exercícios, sem prometer benefícios clínicos.
 
-associação;
+3. Escopo
 
-categorização;
+3.1 Áreas do aplicativo
 
-raciocínio lógico;
+Área
 
-percepção;
+Finalidade
 
-organização sequencial;
+Início
 
-compreensão de situações do cotidiano.
+Apresentar o Treino de Hoje, um resumo real e acesso aos 12 jogos.
 
-3. Escopo desta especificação
+Atividades
 
-O documento-base recomenda cinco minijogos para um MVP inicial. Para esta versão acadêmica, o escopo foi ampliado para contemplar os doze minijogos descritos no documento, além dos sistemas de níveis, pontuação, feedback, treino diário e acompanhamento da evolução.
+Explorar os jogos, filtrar por categoria e buscar pelo nome.
 
-Esta versão deverá incluir:
+Minha evolução
 
-Jogo da Memória;
+Consultar atividades realizadas, estrelas, histórico e sugestões.
 
-O Que Você Viu?;
+Ajustes
 
-Monte a Palavra;
+Alterar leitura, movimento e tempo de observação; gerenciar progresso local.
 
-Imagem e Palavra;
+Exercício e resultado
 
-Qual Não Combina?;
+Realizar um jogo, receber ajuda, concluir e escolher a próxima ação.
 
-Complete a Sequência;
+3.2 Catálogo e classificação oficial
 
-Organize a Rotina;
+A categoria principal é usada em filtros e métricas. O grupo de treino organiza a sequência diária. Cada sessão conta em uma única categoria principal.
 
-Encontre o Objeto;
+ID estável
 
-Toque Somente em...;
+Minijogo
 
-Associação de Objetos;
+Categoria principal
 
-Situações do Cotidiano;
+Grupo do treino
 
-Complete a Frase.
+memory
 
-Também fazem parte do escopo:
+Jogo da Memória
 
-níveis de dificuldade;
+Memória
 
-sistema de estrelas;
+Memória
 
-feedback positivo;
+what-did-you-see
 
-dicas em atividades compatíveis;
+O Que Você Viu?
 
-treino diário;
+Memória
 
-registro de desempenho;
+Memória
 
-resumo de evolução;
+word-builder
 
-recomendação simples de atividades;
+Monte a Palavra
 
-persistência local no navegador;
+Linguagem
 
-responsividade;
+Linguagem
 
-acessibilidade básica.
+image-word
 
-4. Fora do escopo desta versão
+Imagem e Palavra
 
-Os itens abaixo são considerados evolução futura:
+Linguagem
 
-reconhecimento de voz;
+Linguagem
 
-exercícios baseados em áudio;
+odd-one-out
 
-exercícios com sons;
+Qual Não Combina?
 
-personalização avançada;
+Raciocínio
 
-criação de exercícios por profissionais;
+Raciocínio
 
-sistema inteligente avançado de recomendação;
+sequence
 
-backend;
+Complete a Sequência
 
-autenticação;
+Raciocínio
 
-sincronização em nuvem;
+Raciocínio
 
-banco de dados remoto.
+organize-routine
 
-5. Requisitos funcionais gerais
+Organize a Rotina
 
-RF001 — Exibir tela inicial
+Cotidiano
 
-Descrição: o sistema deverá apresentar uma tela inicial identificando o aplicativo ReConecta.
+Cotidiano
 
-Prioridade: Alta.
+find-object
 
-Critério de aceitação: ao abrir a aplicação, o usuário deverá visualizar o nome ReConecta, uma orientação curta e acesso às atividades.
+Encontre o Objeto
 
-RF002 — Exibir os doze minijogos
+Atenção
 
-Descrição: a tela inicial deverá apresentar acesso aos doze minijogos definidos nesta especificação.
+Atenção
 
-Prioridade: Alta.
+tap-only
 
-Critério de aceitação: os doze jogos deverão aparecer como opções identificáveis e acionáveis.
+Toque Somente em...
 
-RF003 — Abrir uma atividade
+Atenção
 
-Descrição: o usuário deverá poder selecionar um minijogo e entrar em sua tela.
+Atenção
 
-Prioridade: Alta.
+object-association
 
-Critério de aceitação: selecionar uma atividade deverá renderizar a atividade correspondente sem abrir outro arquivo HTML.
+Associação de Objetos
 
-RF004 — Retornar ao início
+Associação
 
-Descrição: todas as atividades deverão possuir a ação “← Voltar ao início”.
+Cotidiano
 
-Prioridade: Alta.
+daily-situations
 
-Critério de aceitação: ao utilizar a ação, o usuário deverá retornar à tela inicial.
+Situações do Cotidiano
 
-RF005 — Exibir instruções simples
+Cotidiano
 
-Descrição: cada atividade deverá apresentar uma instrução curta e objetiva antes ou durante o exercício.
+Cotidiano
 
-Prioridade: Alta.
+complete-sentence
 
-Critério de aceitação: o usuário deverá conseguir identificar o que precisa fazer sem depender de explicações externas.
+Complete a Frase
 
-RF006 — Registrar tentativa
+Linguagem
 
-Descrição: o sistema deverá registrar as tentativas realizadas nas atividades.
+Linguagem
 
-Prioridade: Alta.
+3.3 Tecnologias e limites
 
-Critério de aceitação: cada tentativa relevante deverá atualizar o progresso armazenado.
+Usar HTML5, CSS3, JavaScript puro com ES Modules e localStorage, executados por servidor HTTP local, como o Live Server do VS Code. A aplicação permanece uma SPA com um único index.html. Esta versão considera uma sessão de uso em uma aba; edição simultânea e sincronização entre abas não fazem parte do escopo.
 
-RF007 — Registrar acerto
+Não incluir nesta versão backend, cadastro, login, sincronização em nuvem, banco remoto, reconhecimento de voz, exercícios de áudio, painel profissional, pagamentos ou recomendação por inteligência artificial. Não adicionar framework, biblioteca de componentes ou ferramenta de build apenas para aplicar o design.
 
-Descrição: o sistema deverá registrar respostas corretas.
+4. Requisitos funcionais preservados
 
-Prioridade: Alta.
+Os identificadores RF001–RF056 da especificação anterior são mantidos. Os critérios abaixo tornam seus comportamentos verificáveis. Todos integram a entrega desta versão.
 
-Critério de aceitação: um acerto deverá aumentar o total correspondente no progresso.
+4.1 Navegação, registro e persistência
 
-RF008 — Registrar erro
+ID
 
-Descrição: o sistema deverá registrar respostas incorretas sem tratar o erro de forma punitiva.
+Requisito
 
-Prioridade: Alta.
+Critério de aceitação
 
-Critério de aceitação: uma resposta incorreta deverá atualizar o total de erros e gerar feedback amigável.
+RF001
 
-RF009 — Registrar atividade concluída
+Exibir a tela inicial.
 
-Descrição: o sistema deverá registrar quando uma atividade for finalizada.
+Ao abrir, mostrar ReConecta, uma orientação curta, o Treino de Hoje e acesso às atividades.
 
-Prioridade: Alta.
+RF002
 
-Critério de aceitação: a conclusão válida de uma atividade deverá incrementar o total de atividades realizadas.
+Disponibilizar os 12 jogos.
 
-RF010 — Registrar tempo de resposta
+Atividades reúne os 12 jogos. Após a reformulação visual, o Início destaca três cards e oferece “Ver todas” para o catálogo completo. Nenhum jogo desaparece por falta de histórico.
 
-Descrição: o sistema poderá registrar tempo de resposta ou conclusão para acompanhamento de evolução.
+RF003
 
-Prioridade: Média.
+Abrir a atividade escolhida.
 
-Critério de aceitação: o tempo poderá ser armazenado, mas não deverá ser utilizado para pressionar o usuário.
+O card abre o jogo correspondente dentro de #app, sem novo arquivo HTML.
 
-RF011 — Salvar progresso localmente
+RF004
 
-Descrição: o sistema deverá salvar o progresso no navegador utilizando localStorage.
+Permitir voltar ao início.
 
-Prioridade: Alta.
+Todo jogo oferece “Voltar ao início”; uma sessão em andamento usa o fluxo de saída de RF060.
 
-Critério de aceitação: atualizar a página não deverá apagar o progresso.
+RF005
 
-RF012 — Recuperar progresso
+Exibir instruções simples.
 
-Descrição: o sistema deverá carregar automaticamente o progresso salvo ao iniciar.
+Antes de começar, mostrar título, instrução de uma ou duas frases e “Começar atividade”. A instrução continua disponível durante o jogo.
 
-Prioridade: Alta.
+RF006
 
-Critério de aceitação: valores salvos anteriormente deverão reaparecer na tela de progresso.
+Registrar tentativas válidas.
 
-RF013 — Limpar progresso
+Uma resposta avaliada gera exatamente uma tentativa; navegação, ajuda e clique repetido em item resolvido não geram tentativas.
 
-Descrição: o usuário deverá poder apagar o progresso local mediante confirmação.
+RF007
 
-Prioridade: Média.
+Registrar acertos.
 
-Critério de aceitação: cancelar a confirmação não apaga dados; confirmar restaura o estado inicial.
+Uma resposta correta aumenta acertos e tentativas uma vez.
 
-6. Requisitos de níveis
+RF008
 
-RF014 — Trabalhar com quatro níveis internos
+Registrar erros com acolhimento.
 
-Descrição: o sistema deverá suportar quatro faixas de dificuldade:
+Uma resposta incorreta aumenta erros e tentativas uma vez, exibe orientação e permite tentar novamente.
 
-Nível 1 — Inicial;
+RF009
 
-Nível 2 — Fácil;
+Registrar conclusão.
 
-Nível 3 — Intermediário;
+Concluir todos os objetivos aumenta atividades realizadas uma vez; duplo clique ou retorno ao resultado não duplica o registro.
 
-Nível 4 — Avançado.
+RF010
 
-Prioridade: Alta.
+Registrar tempo ativo.
 
-Critério de aceitação: jogos compatíveis deverão consultar o nível atual para ajustar dificuldade.
+Armazenar duração em milissegundos, excluindo pausas e tempo com a aba oculta. Tempo não altera estrelas ou dificuldade.
 
-RF015 — Ajustar quantidade de elementos
+RF011
 
-Descrição: níveis iniciais deverão apresentar menos elementos e níveis superiores poderão apresentar mais elementos.
+Salvar progresso.
 
-Prioridade: Alta.
+Com armazenamento disponível, tentativas avaliadas e conclusões sobrevivem à atualização da página.
 
-Critério de aceitação: a quantidade de elementos deverá variar de acordo com a dificuldade configurada.
+RF012
 
-RF016 — Ajustar complexidade de palavras e frases
+Recuperar progresso.
 
-Descrição: níveis mais altos poderão utilizar palavras, sílabas, frases e relações mais complexas.
+Carregar dados válidos na abertura; preservar dados anteriores por migração, sem inventar sessões antigas.
 
-Prioridade: Alta.
+RF013
 
-Critério de aceitação: atividades linguísticas deverão possuir conteúdo progressivo.
+Apagar progresso com confirmação.
 
-RF017 — Ajustar quantidade de ajuda
+Cancelar preserva tudo; confirmar remove somente os dados de progresso do ReConecta e mantém preferências visuais.
 
-Descrição: níveis iniciais deverão poder oferecer mais ajuda, enquanto níveis mais altos poderão oferecer menos dicas.
+4.2 Dificuldade, estrelas e ajuda
 
-Prioridade: Média.
+ID
 
-Critério de aceitação: a quantidade de ajuda deverá ser configurável por nível.
+Requisito
 
-RF018 — Permitir nível interno não exibido
+Critério de aceitação
 
-Descrição: o sistema deverá conseguir controlar dificuldade sem necessariamente mostrar “Nível 1”, “Nível 2” etc. ao usuário.
+RF014
 
-Prioridade: Média.
+Suportar quatro níveis internos.
 
-Critério de aceitação: a dificuldade poderá mudar internamente sem exibição obrigatória do número do nível.
+Cada jogo possui configurações para Inicial, Fácil, Intermediário e Avançado, equivalentes aos níveis 1–4.
 
-7. Requisitos de pontuação e feedback
+RF015
 
-RF019 — Conceder estrelas
+Variar quantidade de elementos.
 
-Descrição: o sistema deverá usar estrelas como incentivo.
+Os jogos com tabuleiros ou alternativas usam as quantidades definidas em design.md, sem reduzir os alvos abaixo do tamanho mínimo.
 
-Regras gerais:
+RF016
 
-⭐⭐⭐ — excelente desempenho;
+Variar complexidade linguística.
 
-⭐⭐ — bom desempenho;
+Palavras, frases e relações têm conteúdo válido para os quatro níveis.
 
-⭐ — atividade concluída.
+RF017
 
-Prioridade: Alta.
+Ajustar ajuda.
 
-Critério de aceitação: toda atividade concluída deverá conceder pelo menos uma estrela.
+Cada conteúdo tem instrução e dica compatível; o botão de ajuda permanece disponível em todos os níveis.
 
-RF020 — Exibir feedback de acerto
+RF018
 
-Descrição: respostas corretas deverão produzir mensagens positivas.
+Manter níveis discretos.
 
-Exemplos:
+O nível pode mudar entre sessões; a tela principal não exibe número, ranking ou mensagem de rebaixamento.
 
-“Excelente!”;
+RF019
 
-“Muito bem!”;
+Conceder estrelas.
 
-“Você conseguiu!”.
+Sessão concluída recebe 3 estrelas com zero erros, 2 com um ou dois erros, 1 com três ou mais. Incompleta recebe zero; ajuda e tempo não descontam estrelas.
 
-Prioridade: Alta.
+RF020
 
-Critério de aceitação: um acerto deverá gerar mensagem textual positiva.
+Dar feedback positivo de acerto.
 
-RF021 — Exibir feedback de erro
+Exibir texto, ícone e estado visual, por exemplo “Muito bem!”.
 
-Descrição: respostas incorretas deverão gerar incentivo para tentar novamente.
+RF021
 
-Exemplos:
+Dar feedback amigável de erro.
 
-“Vamos tentar novamente.”;
+Exibir “Vamos tentar novamente.” ou equivalente; não usar “Você perdeu”, tremor da tela ou efeito de punição.
 
-“Quase lá!”;
+RF022
 
-“Tente mais uma vez.”.
+Oferecer dicas úteis.
 
-Prioridade: Alta.
+“Preciso de uma dica” funciona desde a primeira tentativa; depois de dois erros no mesmo desafio, destacar a disponibilidade de ajuda sem resolver o desafio sozinho.
 
-Critério de aceitação: o sistema não deverá exibir mensagens punitivas.
+4.3 Minijogos
 
-RF022 — Oferecer dicas
+ID
 
-Descrição: atividades compatíveis poderão oferecer uma dica depois de algumas tentativas.
+Requisito
 
-Prioridade: Média.
+Critério de aceitação
 
-Critério de aceitação: a dica deverá ajudar sem entregar imediatamente toda a resposta.
+RF023
 
-8. Requisitos dos minijogos
+Encontrar pares na Memória.
 
-8.1 Jogo da Memória
+Duas cartas diferentes são comparadas; pares encontrados permanecem visíveis; concluir ao encontrar todos os pares.
 
-RF023 — Implementar Jogo da Memória
+RF024
 
-Descrição: o usuário deverá selecionar duas cartas por vez para encontrar pares iguais.
+Graduar a Memória.
 
-Prioridade: Alta.
+Níveis 1–4 usam 4, 6, 8 e 12 cartas, respectivamente.
 
-Critério de aceitação: o jogo deverá permitir concluir a atividade encontrando todos os pares.
+RF025
 
-RF024 — Aplicar progressão na Memória
+Medir a Memória.
 
-Descrição:
+Uma comparação de duas cartas é uma tentativa; registrar pares, erros e duração sem cronômetro competitivo.
 
-nível inicial: 4 cartas / 2 pares;
+RF026
 
-próximo nível: 6 cartas / 3 pares;
+Mostrar e ocultar imagens em O Que Você Viu?.
 
-seguinte: 8 cartas / 4 pares;
+Separar observação e resposta. No modo “No meu ritmo”, “Já observei” oculta as imagens; no temporizado, a ocultação segue o tempo configurado.
 
-níveis posteriores: mais cartas e possibilidade de imagens mais parecidas.
+RF027
 
-Prioridade: Alta.
+Graduar O Que Você Viu?.
 
-Critério de aceitação: a quantidade e dificuldade visual das cartas deverão variar por nível.
+Variar de 2 a 5 imagens observadas e de 2 a 4 alternativas. O modo temporizado pode reduzir a exposição; o modo sem limite permanece disponível.
 
-RF025 — Registrar métricas da Memória
+RF028
 
-Descrição: registrar pares encontrados, tentativas, tempo e erros.
+Montar palavras por sílabas.
 
-Prioridade: Média.
+Selecionar sílabas em ordem, desfazer e verificar a palavra; duas sílabas iguais são peças distintas e utilizáveis.
 
-Critério de aceitação: as métricas deverão ser registradas sem transformar velocidade em pressão.
+RF029
 
-8.2 O Que Você Viu?
+Graduar Monte a Palavra.
 
-RF026 — Implementar O Que Você Viu?
+Começar com duas sílabas, passar a três e depois a palavras maiores e distratores.
 
-Descrição: o sistema deverá exibir imagens por alguns segundos, ocultá-las e perguntar qual delas apareceu.
+RF030
 
-Prioridade: Alta.
+Dar dica de sílaba.
 
-Critério de aceitação: a pergunta só deverá aparecer depois da etapa de visualização.
+Depois de dois erros, oferecer destaque da primeira sílaba correta sem completar o restante.
 
-RF027 — Aplicar níveis em O Que Você Viu?
+RF031
 
-Descrição:
+Associar imagem a palavra.
 
-nível inicial: 2 imagens / 2 opções;
+Mostrar imagem e alternativas textuais com uma única resposta correta.
 
-nível seguinte: 3 imagens / 3 ou 4 opções;
+RF032
 
-níveis superiores: 4 ou mais imagens e possível redução gradual do tempo de visualização.
+Associar palavra a imagem.
 
-Prioridade: Alta.
+Disponibilizar também a direção inversa dentro de Imagem e Palavra.
 
-Critério de aceitação: quantidade de imagens e opções deverá variar conforme o nível.
+RF033
 
-8.3 Monte a Palavra
+Identificar o item que não combina.
 
-RF028 — Implementar Monte a Palavra
+Mostrar quatro itens, dos quais exatamente um está fora da categoria declarada no conteúdo.
 
-Descrição: apresentar uma imagem conhecida e sílabas embaralhadas para formar a palavra correspondente.
+RF034
 
-Prioridade: Alta.
+Graduar categorização.
 
-Critério de aceitação: o usuário deverá conseguir selecionar/ordenar sílabas e formar a palavra correta.
+Aumentar a sutileza das categorias sem criar mais de uma interpretação correta.
 
-RF029 — Aplicar níveis em Monte a Palavra
+RF035
 
-Descrição:
+Completar sequências visuais.
 
-inicial: palavras de duas sílabas;
+Mostrar padrão e alternativas; distinguir elementos por forma, desenho ou rótulo, além da cor.
 
-seguinte: palavras de três sílabas;
+RF036
 
-avançado: palavras maiores e opções incorretas misturadas.
+Completar sequências numéricas.
 
-Prioridade: Alta.
+Incluir padrões simples, como 1, 2, 3, ?, com uma única continuação correta entre as alternativas.
 
-Critério de aceitação: a dificuldade deverá acompanhar o nível.
+RF037
 
-RF030 — Oferecer dica de sílaba
+Graduar sequências.
 
-Descrição: após duas tentativas, o sistema poderá destacar a primeira sílaba correta.
+Oferecer alternância AB, repetição ABC e padrões mais complexos explicitamente definidos nos dados.
 
-Prioridade: Média.
+RF038
 
-Critério de aceitação: a dica deverá ser apresentada sem completar automaticamente a palavra.
+Ordenar rotinas.
 
-8.4 Imagem e Palavra
+Reorganizar etapas de lavar as mãos, preparar água, escovar os dentes, vestir uma roupa e preparar refeição simples. Validar a ordem escolhida.
 
-RF031 — Implementar imagem para palavra
+RF039
 
-Descrição: mostrar uma imagem e opções de palavras.
+Ordenar sem arrastar.
 
-Prioridade: Alta.
+Cada etapa possui controles “Mover para cima” e “Mover para baixo”, acionáveis por teclado e toque.
 
-Critério de aceitação: o usuário deverá conseguir escolher a palavra correspondente.
+RF040
 
-RF032 — Implementar palavra para imagem
+Encontrar o objeto solicitado.
 
-Descrição: mostrar uma palavra e opções de imagens.
+Exibir instrução e um alvo único entre as opções; selecionar o alvo é um acerto.
 
-Prioridade: Média.
+RF041
 
-Critério de aceitação: o usuário deverá conseguir escolher a imagem correspondente.
+Graduar busca visual.
 
-8.5 Qual Não Combina?
+Aumentar a quantidade e a semelhança dos objetos mantendo imagens reconhecíveis e alvos grandes.
 
-RF033 — Implementar Qual Não Combina?
+RF042
 
-Descrição: apresentar quatro elementos e pedir qual não pertence ao grupo.
+Selecionar objetos de uma categoria.
 
-Prioridade: Alta.
+“Toque Somente em...” aceita vários itens corretos e preserva os já encontrados.
 
-Critério de aceitação: o usuário deverá conseguir identificar o item diferente.
+RF043
 
-RF034 — Aplicar progressão de categorização
+Validar cada seleção.
 
-Descrição: começar com categorias bem distintas e evoluir para diferenças mais sutis.
+Cada novo item é avaliado individualmente; concluir somente após selecionar todos os corretos. Repetir item resolvido não pontua.
 
-Prioridade: Média.
+RF044
 
-Critério de aceitação: o conjunto de opções deverá variar conforme o nível.
+Associar objetos.
 
-8.6 Complete a Sequência
+Selecionar um item de origem e um destino, verificar o par e continuar até resolver todos.
 
-RF035 — Implementar sequências visuais
+RF045
 
-Descrição: apresentar padrões visuais e pedir o próximo elemento.
+Graduar associações.
 
-Prioridade: Alta.
+Ampliar quantidade e complexidade das relações; cada item possui um destino correto no conjunto.
 
-Critério de aceitação: o sistema deverá reconhecer a opção correta.
+RF046
 
-RF036 — Implementar sequências numéricas simples
+Resolver situações do cotidiano.
 
-Descrição: permitir padrões como 1 — 2 — 3 — ?.
+Pergunta curta e alternativas permitem escolher a ação adequada, com feedback e nova tentativa.
 
-Prioridade: Média.
+RF047
 
-Critério de aceitação: o usuário deverá conseguir selecionar o próximo número correto.
+Variar situações.
 
-RF037 — Aplicar progressão de sequência
+Disponibilizar pelo menos três desafios distintos por nível e evitar repetição imediata quando houver alternativas.
 
-Descrição: variar entre dois elementos alternados, três elementos e padrões mais complexos.
+RF048
 
-Prioridade: Alta.
+Completar frases.
 
-Critério de aceitação: a complexidade deverá acompanhar o nível.
+Uma lacuna e alternativas permitem completar a frase; o leitor de tela recebe a frase completa após o acerto.
 
-8.7 Organize a Rotina
+RF049
 
-RF038 — Implementar Organize a Rotina
+Graduar frases.
 
-Descrição: apresentar etapas de atividades do cotidiano fora de ordem.
+Aumentar extensão e complexidade mantendo vocabulário familiar e resposta inequívoca.
 
-Exemplos:
+4.4 Treino e evolução
 
-lavar as mãos;
+ID
 
-preparar um copo de água;
+Requisito
 
-escovar os dentes;
+Critério de aceitação
 
-colocar uma roupa;
+RF050
 
-preparar uma refeição simples.
+Montar Treino de Hoje.
 
-Prioridade: Alta.
+Gerar cinco atividades: uma de Memória, Linguagem, Raciocínio, Atenção e Cotidiano. Persistir a seleção por data local.
 
-Critério de aceitação: o usuário deverá conseguir reorganizar as etapas na ordem correta.
+RF051
 
-RF039 — Permitir ordenação acessível
+Avançar no treino.
 
-Descrição: a atividade não deverá depender exclusivamente de arrastar e soltar.
+Após cada resultado, “Próxima atividade” abre a etapa seguinte. A transição depende da ação da pessoa.
 
-Prioridade: Alta.
+RF052
 
-Critério de aceitação: deverá existir alternativa por clique ou botões.
+Concluir o treino.
 
-8.8 Encontre o Objeto
+Mostrar “Parabéns! Você concluiu o treino de hoje.” somente após cinco etapas concluídas; voltar à tela não duplica o treino.
 
-RF040 — Implementar Encontre o Objeto
+RF053
 
-Descrição: pedir para localizar um objeto específico entre várias imagens.
+Consultar histórico real.
 
-Prioridade: Alta.
+Mostrar totais de atividades e estrelas, sessões e detalhes de acertos, erros, tentativas, tempo e dificuldade. Não preencher com números de demonstração.
 
-Critério de aceitação: tocar no item solicitado deverá ser reconhecido como acerto.
+RF054
 
-RF041 — Aplicar progressão visual
+Identificar categoria de facilidade.
 
-Descrição: começar com poucas imagens, depois aumentar quantidade e semelhança visual.
+Comparar categorias elegíveis usando dados recentes e o mínimo de amostra definido nas regras.
 
-Prioridade: Média.
+RF055
 
-Critério de aceitação: dificuldade deverá variar conforme o nível.
+Identificar categoria para praticar.
 
-8.9 Toque Somente em...
+Apresentar “Uma sugestão para continuar” com linguagem acolhedora; ausência de amostra não é tratada como dificuldade.
 
-RF042 — Implementar seleção por categoria
+RF056
 
-Descrição: apresentar vários objetos e uma instrução como “Toque somente nas frutas”.
+Recomendar com variedade.
 
-Prioridade: Alta.
+Usar histórico válido para sugerir um jogo; manter a diversidade dos cinco grupos no treino e permitir escolha livre.
 
-Critério de aceitação: o usuário deverá conseguir selecionar todos os itens corretos.
+5. Requisitos acrescentados para a experiência profissional
 
-RF043 — Validar múltiplas seleções
+ID
 
-Descrição: a atividade deverá avaliar itens ao longo da seleção sem encerrar no primeiro toque.
+Requisito
 
-Prioridade: Alta.
+Critério de aceitação
 
-Critério de aceitação: o jogo só deverá terminar quando o conjunto necessário for concluído.
+RF057
 
-8.10 Associação de Objetos
+Buscar e filtrar o catálogo.
 
-RF044 — Implementar Associação de Objetos
+Busca ignora diferenças de maiúsculas e acentos; filtros incluem Todas e as seis categorias. Busca e filtro se combinam; zero resultados oferece “Limpar filtros”.
 
-Descrição: permitir relacionar elementos como:
+RF058
 
-Escova → Dentes;
+Ajustar leitura e movimento.
 
-Chave → Porta;
+Oferecer texto Padrão/Ampliado, redução de animações e observação “No meu ritmo”/“Tempo sugerido”. Aplicar imediatamente e persistir localmente.
 
-Garfo → Comida;
+RF059
 
-Cama → Dormir;
+Retomar treino do dia.
 
-Sapato → Pé.
+Após sair ou atualizar, manter as etapas concluídas e reiniciar apenas a atividade pendente. Não prometer retomada no meio de um tabuleiro.
 
-Prioridade: Alta.
+RF060
 
-Critério de aceitação: todos os pares deverão poder ser associados.
+Pausar e confirmar saída.
 
-RF045 — Aplicar progressão de associações
+“Pausar” interrompe a interação e o tempo ativo; voltar à atividade retoma. Sair durante uma sessão exige escolha entre continuar ou sair, sem dar estrelas por abandono.
 
-Descrição: começar com relações simples e avançar para relações mais abstratas.
+RF061
 
-Prioridade: Média.
+Tratar falhas recuperáveis.
 
-Critério de aceitação: a complexidade das relações deverá variar por nível.
+Falha de armazenamento, conteúdo indisponível ou rota inválida mostra orientação e uma ação útil; não deixa página vazia ou botão sem função.
 
-8.11 Situações do Cotidiano
+RF062
 
-RF046 — Implementar Situações do Cotidiano
+Apresentar estados sem dados e de conclusão.
 
-Descrição: apresentar situações simples com alternativas.
+Primeiro acesso convida a começar; histórico vazio não apresenta gráfico fictício; resultado mostra mensagem, estrelas recebidas e próxima ação.
 
-Exemplos:
+RF063
 
-“Está chovendo. O que você deve usar?”;
+Escolher a aparência.
 
-“Você quer beber água. O que deve pegar?”.
+Em Ajustes, oferecer Claro, Escuro e Sistema; aplicar e persistir a escolha sem alterar progresso ou preferência de texto. Sistema acompanha a aparência do dispositivo.
 
-Prioridade: Alta.
+6. Requisitos de interface
 
-Critério de aceitação: a resposta adequada deverá ser reconhecida.
+ID
 
-RF047 — Variar situações
+Requisito
 
-Descrição: o jogo deverá possuir mais de uma situação.
+Critério verificável
 
-Prioridade: Média.
+RUI001
 
-Critério de aceitação: iniciar atividades repetidamente não deverá mostrar sempre o mesmo cenário.
+Identidade consistente.
 
-8.12 Complete a Frase
+Usar a paleta, tipografia, espaçamento e raios de design.md por variáveis CSS compartilhadas.
 
-RF048 — Implementar Complete a Frase
+RUI002
 
-Descrição: mostrar uma frase com lacuna e opções de palavras.
+Hierarquia clara.
 
-Exemplos:
+Cada tela tem um h1, descrição curta e uma ação principal visualmente destacada por bloco de decisão.
 
-“Eu bebo ______.”;
+RUI003
 
-“Eu durmo na ______.”.
+Navegação previsível.
 
-Prioridade: Alta.
+Início, Atividades, Minha evolução e Ajustes mantêm ordem e rótulos; destino atual tem texto, ícone e marcação acessível.
 
-Critério de aceitação: a palavra adequada deverá completar corretamente a frase.
+RUI004
 
-RF049 — Aumentar complexidade das frases
+Início com foco no treino.
 
-Descrição: níveis superiores poderão usar frases maiores.
+O destaque do Treino de Hoje antecede o resumo e o catálogo; métricas não disputam atenção com “Começar treino”.
 
-Prioridade: Média.
+RUI005
 
-Critério de aceitação: o conteúdo textual deverá acompanhar o nível.
+Cards padronizados.
 
-9. Treino Diário
+Todos mostram ilustração ou ícone consistente, título, categoria, descrição curta e acesso identificável. Títulos não são truncados.
 
-RF050 — Criar Treino de Hoje
+RUI006
 
-Descrição: o sistema deverá poder montar automaticamente um pequeno treinamento.
+Exercícios com área de foco.
 
-Composição:
+Durante a atividade, recolher a navegação global e manter título, instrução, tabuleiro, feedback e controles necessários.
 
-1 atividade de memória;
+RUI007
 
-1 atividade de palavras;
+Controles confortáveis.
 
-1 atividade de raciocínio;
+Botões e controles isolados têm pelo menos 48 × 48 CSS px; cartas e alternativas visuais, pelo menos 64 × 64 CSS px.
 
-1 atividade de atenção;
+RUI008
 
-1 atividade cotidiana.
+Estados completos.
 
-Prioridade: Alta.
+Botões, cards, opções e filtros possuem normal, hover quando aplicável, foco, selecionado e indisponível. Estado não depende só de cor.
 
-Critério de aceitação: o sistema deverá gerar uma sequência com cinco atividades.
+RUI009
 
-RF051 — Executar treino em sequência
+Feedback estável.
 
-Descrição: ao concluir uma atividade do treino, o sistema deverá permitir avançar para a próxima.
+Reservar espaço no fluxo para mensagens; feedback não cobre o tabuleiro nem desaparece antes de poder ser lido.
 
-Prioridade: Alta.
+RUI010
 
-Critério de aceitação: as cinco atividades deverão poder ser completadas sem retornar manualmente à tela inicial entre elas.
+Resultado acolhedor.
 
-RF052 — Finalizar treino diário
+Mostrar as estrelas efetivamente recebidas, conclusão e ações. Não desenhar estrelas vazias como punição ou tabela de erros em destaque.
 
-Descrição: após concluir as cinco atividades, exibir mensagem de conclusão.
+RUI011
 
-Mensagem esperada: “Parabéns! Você concluiu o treino de hoje.”
+Evolução legível.
 
-Prioridade: Alta.
+Até três métricas de destaque; detalhes em seção secundária. Visualizações devem ter valores e alternativa textual.
 
-Critério de aceitação: a mensagem deverá aparecer somente após o treino completo.
+RUI012
 
-10. Acompanhamento da evolução
+Ícones e imagens coerentes.
 
-RF053 — Registrar histórico de desempenho
+Usar uma única linguagem de ícones e ativos locais reconhecíveis. Imagem decorativa não substitui texto de ação.
 
-Descrição: registrar:
+RUI013
 
-exercícios realizados;
+Movimento discreto.
 
-acertos;
+Transições de interface duram 120–180 ms; respeitar redução de movimento; não usar efeitos contínuos, flashes ou som automático.
 
-erros;
+RUI014
 
-tentativas;
+Responsividade real.
 
-tempo de resposta;
+Layout adaptado a 320, 390, 768, 1024 e 1440 CSS px; nenhum controle fica encoberto ou exige arrastar a página horizontalmente.
 
-nível atual;
+RUI015
 
-desempenho por categoria.
+Textos de produto completos.
 
-Prioridade: Alta.
+Toda ação visível tem função real. Não usar “Lorem ipsum”, nomes de usuário inventados, números falsos ou comandos técnicos na interface.
 
-Critério de aceitação: os dados deverão permanecer salvos localmente.
+RUI016
 
-RF054 — Identificar maior facilidade
+Gerenciamento cuidadoso de dados.
 
-Descrição: o sistema deverá calcular qual categoria apresenta melhor desempenho relativo.
+A ação “Apagar meu progresso” fica em Ajustes, visualmente separada da navegação e acompanhada de confirmação clara.
 
-Prioridade: Média.
+7. Requisitos não funcionais
 
-Critério de aceitação: o resultado deverá ser baseado nos dados armazenados.
+ID
 
-RF055 — Identificar categoria que precisa de mais prática
+Requisito e aceite
 
-Descrição: o sistema deverá calcular qual categoria apresenta maior dificuldade relativa.
+RNF001
 
-Prioridade: Média.
+Simplicidade: instruções curtas, agrupamento consistente e ausência de elementos decorativos que atrapalhem a tarefa.
 
-Critério de aceitação: a apresentação deverá evitar linguagem negativa ou punitiva.
+RNF002
 
-RF056 — Recomendar atividades
+Acessibilidade: HTML semântico, navegação completa por teclado, foco visível e ordem lógica. Diálogos mantêm foco interno e devolvem ao acionador.
 
-Descrição: o sistema poderá priorizar atividades de categorias com maior dificuldade, mantendo também outras categorias.
+RNF003
 
-Prioridade: Média.
+Feedback multimodal: estados importantes combinam texto e indicação visual; mudanças relevantes são anunciadas sem repetição excessiva.
 
-Critério de aceitação: a recomendação deverá utilizar dados reais do histórico.
+RNF004
 
-11. Requisitos não funcionais
+Legibilidade: corpo padrão de 18 px, entrelinha 1,6 e contraste mínimo de 4,5:1 para os textos de conteúdo e controles previstos neste projeto. Ver referência de contraste abaixo.
 
-RNF001 — Simplicidade
+RNF005
 
-A interface deverá apresentar poucos elementos por tela e comandos objetivos.
+Refluxo: suportar ampliação de texto e zoom sem cortes de conteúdo ou sobreposição de ações. Não bloquear o zoom do navegador.
 
-RNF002 — Acessibilidade básica
+RNF006
 
-O sistema deverá utilizar HTML semântico, botões reais, foco visível e áreas clicáveis adequadas.
+Compatibilidade: validar em Chrome ou Edge e em Firefox disponíveis no desenvolvimento; registrar versões realmente testadas. Executar por HTTP local.
 
-RNF003 — Feedback multimodal
+RNF007
 
-Acertos e erros não deverão ser comunicados apenas por cor.
+Modularidade: usar ES Modules, preservar os caminhos válidos do projeto e não introduzir framework para esta revisão visual.
 
-RNF004 — Legibilidade
+RNF008
 
-Textos deverão possuir tamanho confortável e contraste adequado.
+Responsabilidades: separar navegação, armazenamento, conteúdo, componentes de interface e regras dos jogos.
 
-RNF005 — Responsividade
+RNF009
 
-A aplicação deverá funcionar em computador e celular sem rolagem horizontal desnecessária.
+Manutenção: nomes claros e funções pequenas; comentários explicam regras relevantes, sem abstrações desnecessárias.
 
-RNF006 — Compatibilidade
+RNF010
 
-A aplicação deverá funcionar em navegadores modernos quando executada via Live Server.
+Persistência: acesso a localStorage centralizado, validação de dados e tratamento de leitura/gravação indisponível.
 
-RNF007 — JavaScript modular
+RNF011
 
-O sistema deverá usar ES Modules com import e export.
+Ritmo: sem tempo máximo para responder, perda por demora ou avanço automático entre desafios. Observação temporizada é opcional.
 
-RNF008 — Separação de responsabilidades
+RNF012
 
-Navegação, armazenamento, dados e regras dos jogos deverão ficar em módulos distintos.
+Incentivo: sem competição, perda de estrelas anteriores ou classificação negativa da pessoa.
 
-RNF009 — Manutenibilidade
+RNF013
 
-O código deverá ser simples e compreensível para um estudante iniciante.
+Integridade: tentativas e conclusões idempotentes, descarte de eventos de tela desmontada e cancelamento de timers ao sair.
 
-RNF010 — Persistência local
+RNF014
 
-O armazenamento deverá utilizar localStorage nesta versão, sem banco de dados remoto.
+Recursos locais: fontes opcionais e imagens devem estar no projeto; atividades não dependem de uma API ou CDN para funcionar depois que o servidor local está disponível.
 
-RNF011 — Ausência de pressão por velocidade
+RNF015
 
-Métricas de tempo poderão ser registradas, mas não deverão ser usadas como elemento punitivo ou de pressão.
+Conteúdo seguro no DOM: inserir textos por textContent e construir elementos de forma controlada; não executar HTML vindo do armazenamento ou dos campos de busca.
 
-RNF012 — Experiência não competitiva
+RNF016
 
-A dificuldade poderá ser ajustada internamente sem obrigar a exibição de números de nível.
+Desempenho: reservar dimensões de imagens, evitar carregamentos artificiais e renderizar apenas a atividade ativa. A meta de carregamento e sua medição estão em design.md.
 
-12. Critérios gerais de aceitação
+8. Regras de negócio e consistência
 
-A versão será considerada funcional quando:
+8.1 Unidade de atividade e contabilização
 
-os 12 minijogos abrirem e puderem ser concluídos;
+Uma sessão de atividade corresponde a um tabuleiro completo na Memória e na Associação de Objetos. Nos outros dez jogos, corresponde a três desafios distintos, um de cada vez. A tela mostra “Etapa 1 de 3” quando existir sequência, ou progresso de pares/itens quando apropriado.
 
-o sistema registrar acertos, erros, tentativas e atividades;
+Uma tentativa é uma resposta efetivamente avaliada: comparação de cartas, envio de palavra ou ordem, seleção de alternativa, seleção de novo objeto ou comparação de associação. Deve sempre valer tentativas = acertos + erros.
 
-os dados persistirem após atualizar a página;
+Abrir instruções, pedir dica, desfazer seleção, pausar e apertar um botão desabilitado não contam como tentativa. Acertos de objetivos já resolvidos não podem ser contados novamente. Nos jogos de múltipla escolha, um acerto aguarda “Continuar”; não há troca automática de pergunta.
 
-níveis alterarem a dificuldade quando aplicável;
+Sessões interrompidas preservam as tentativas já avaliadas, mas não recebem estrelas nem aumentam atividades concluídas. A evolução identifica essas sessões como “Interrompida”. Recomendações e progressão usam apenas sessões concluídas. O estado de um tabuleiro em andamento não precisa sobreviver ao recarregamento.
 
-estrelas forem atribuídas após atividades;
+8.2 Progressão
 
-feedback positivo aparecer em acertos e erros;
+Cada jogo mantém nível próprio de 1 a 4. Após três sessões concluídas desde a última avaliação daquele jogo, calcular a razão entre a soma de acertos e a soma de tentativas dessas três sessões: pelo menos 85% aumenta um nível; abaixo de 50% reduz um nível; os demais resultados mantêm o nível. Respeitar os limites 1–4 e iniciar uma nova janela após a avaliação.
 
-treino diário puder ser concluído;
+O nível de uma sessão iniciada fica congelado até ela terminar. Dicas e duração não entram na decisão. A interface não anuncia redução de nível. Dados legados só inicializam dificuldade quando houver um valor válido; na ausência dele, usar 1.
 
-a tela de evolução mostrar dados reais;
+8.3 Treino de Hoje
 
-recomendações simples utilizarem o histórico;
+Gerar o plano uma vez por data local no formato AAAA-MM-DD, usando o fuso do dispositivo. A estimativa “Cerca de 5 a 10 minutos, no seu ritmo” é orientação, nunca prazo.
 
-todos os jogos possuírem botão de retorno;
+Persistir jogos e etapas concluídas. Cada etapa concluída recebe um identificador próprio e só pode ser creditada uma vez. Ao retomar, iniciar uma nova sessão para a primeira etapa pendente. Após concluir as cinco, oferecer “Escolher outra atividade”; a pessoa continua podendo praticar livremente.
 
-a aplicação funcionar em telas pequenas;
+Se o dia mudar durante um treino aberto, permitir concluí-lo com sua data original. Ao voltar ao Início, apresentar o plano da data atual. Abandonar ou interromper não elimina etapas já concluídas.
 
-não houver erros JavaScript críticos no fluxo principal.
+8.4 Histórico e recomendações
 
-13. Evolução futura
+Para uma categoria ser elegível à comparação, exigir pelo menos três sessões concluídas e dez tentativas no conjunto de até dez sessões concluídas mais recentes daquela categoria. Calcular a taxa pela soma de acertos dividida pela soma de tentativas, nunca pela média simples das porcentagens de sessões.
 
-A documentação de origem prevê como possibilidades futuras:
+Só comparar facilidade e necessidade de prática quando houver pelo menos duas categorias elegíveis. Em empate de desempenho, não declarar uma melhor/pior categoria; priorizar variedade. Com poucos dados, mostrar convite para explorar, sem concluir que a categoria não praticada é uma dificuldade.
 
-áudio;
+Para sugerir um jogo, priorizar a categoria elegível de menor taxa e, dentro dela, um jogo menos recente. Sem comparação válida, sugerir o jogo menos praticado e menos recente. Desempatar pela ordem do catálogo. O treino preserva os cinco grupos, podendo usar a recomendação dentro do grupo correspondente.
 
-reconhecimento de voz;
+Totais anteriores podem ser preservados como totais legados; não criar datas, sessões, categorias ou taxas para informações ausentes. Filtros por período e recomendações usam apenas registros com data e métricas válidas.
 
-exercícios com sons;
+9. Critério de entrega
 
-personalização de atividades;
+A implementação estará concluída quando os 12 jogos puderem ser abertos e finalizados, o treino funcionar de ponta a ponta, o progresso sobreviver ao recarregamento, os dados antigos válidos forem preservados e os estados de falha tiverem saída útil.
 
-novos temas;
+O design deve estar aplicado às telas Início, Atividades, Exercício, Resultado, Treino, Minha evolução e Ajustes. Validar uso por teclado, telas pequenas, texto ampliado, redução de movimento e ausência de dupla contagem. A aparência isolada não permite marcar uma funcionalidade como concluída.
 
-criação de exercícios por profissionais;
+O tasks.md define a ordem de implementação. Somente tarefas implementadas e verificadas recebem [x] e commit próprio.
 
-sistema inteligente capaz de recomendar treinamentos automaticamente conforme a evolução do usuário.
+10. Referências de acessibilidade
+
+O contraste de 4,5:1 para texto comum segue a referência de contraste mínimo da W3C. Este projeto adota esse valor também para seus títulos como decisão simplificadora.
+
+Os alvos de 48 px e as alternativas visuais de 64 px são decisões de conforto do ReConecta, acima do mínimo de 24 × 24 CSS px descrito, com exceções, na referência de tamanho de alvo da W3C.
+
+A opção de observação sem limite de tempo considera a referência de tempo ajustável da W3C. Estes documentos definem critérios de implementação; não constituem uma auditoria de conformidade do aplicativo.
+
+11. Reformulação visual — Tasks 27–44
+
+11.1 Resultado esperado
+
+A nova interface deve ter composição mais cuidadosa, uma ação principal clara e linguagem visual consistente. O Início ganha um destaque verde profundo com botão claro, fundo geral neutro e apenas três atividades em evidência. O catálogo completo permanece disponível em Atividades.
+
+O objetivo é corrigir hierarquia, proporções, distribuição dos elementos e acabamento em todas as telas. Uma troca isolada de cores não conclui esta etapa. O sistema continua com os mesmos 12 jogos, dados e regras de negócio.
+
+São acrescentados somente a escolha de aparência e os refinamentos visuais descritos abaixo. Backend, conta, áudio, novos jogos e publicação não são necessários para executar esta revisão.
+
+11.2 Critérios de interface adicionais
+
+ID
+
+Melhoria
+
+Critério de aceitação
+
+RUI017
+
+Composição e paleta refinadas.
+
+Aplicar os tokens da seção 15 de design.md; concentrar o verde profundo no destaque e nas ações, mantendo superfícies de leitura tranquilas.
+
+RUI018
+
+Marca e ícones bem acabados.
+
+Identidade legível no desktop e celular; uma família de ícones, sem mistura de emoji e ícone nas ações.
+
+RUI019
+
+Navegação profissional.
+
+Menu, marca e conteúdo têm alinhamento comum; estado ativo é claro e o conteúdo não parece comprimido pela navegação.
+
+RUI020
+
+Início reorganizado.
+
+Mostrar abertura curta, destaque de treino, resumo real quando existir e três cards de atividades; “Ver todas” abre o catálogo completo.
+
+RUI021
+
+Cards com hierarquia.
+
+Miniatura consistente, categoria, título completo, descrição e ação formam a mesma sequência; ações se alinham na mesma linha dentro da grade.
+
+RUI022
+
+Textos e estados vazios integrados ao design.
+
+Usar mensagens curtas, uma imagem/ícone pertinente e ação útil; não exibir zeros decorativos, dados fictícios ou blocos de texto desproporcionais.
+
+RUI023
+
+Imagens com unidade visual.
+
+Todos os exercícios usam ativos reconhecíveis, sem distorção, com recorte e escala consistentes; ícones de navegação e imagens de resposta têm papéis distintos.
+
+RUI024
+
+Tabuleiros de memória refinados.
+
+Cartas têm verso consistente, espaçamento regular e estados claros; a fase de observação não muda de tamanho de forma brusca.
+
+RUI025
+
+Jogos de linguagem refinados.
+
+Sílabas, frases, lacunas e alternativas têm tipografia legível, alinhamento e espaço suficiente para palavras longas.
+
+RUI026
+
+Atenção e padrões com leitura clara.
+
+Tabuleiros de seleção e sequências distinguem comando, opções e progresso; decoração não se confunde com objeto do exercício.
+
+RUI027
+
+Rotinas e associações organizadas.
+
+Etapas e pares apresentam ordem, seleção e resolução de maneira clara em desktop e celular.
+
+RUI028
+
+Controles com acabamento consistente.
+
+Botões, busca, filtros e seletores usam a mesma escala de altura, raio e estados; foco e toque continuam funcionais.
+
+RUI029
+
+Feedback, resultado e diálogos coesos.
+
+Mensagens respeitam o fluxo da tela; estrelas e ações são proporcionais; diálogos preservam legibilidade e foco.
+
+RUI030
+
+Evolução com hierarquia visual.
+
+Totais, gráfico e histórico têm pesos distintos; gráficos mantêm valores e alternativa textual, sem números ilustrativos.
+
+RUI031
+
+Ajustes organizados.
+
+Agrupar aparência, leitura, movimento, observação e dados; controles ficam alinhados às descrições e explicam seu efeito.
+
+RUI032
+
+Tema escuro completo.
+
+Toda superfície, texto, ícone, controle e estado tem contraste adequado no tema escuro; imagens de conteúdo mantêm identificação correta.
+
+RUI033
+
+Composição própria para telas pequenas.
+
+Em 320/390 px, usar uma coluna de cards, reduzir decoração e manter botões confortáveis; não miniaturizar o desktop.
+
+RUI034
+
+Revisão visual com evidência.
+
+Inspecionar as telas e variantes realmente renderizadas, corrigir cortes/desalinhamentos e registrar as verificações realizadas antes de concluir a etapa.
+
+11.3 Qualidade e compatibilidade
+
+RNF017 — Verificação visual da reformulação: conferir Início, catálogo, um representante de cada família de jogo, resultado, treino, evolução e Ajustes nas larguras 320, 390, 768, 1024 e 1440 CSS px. Validar também os temas claro/escuro, texto ampliado e redução de movimento. Capturas de referência devem usar o mesmo tamanho de janela e estado de dados para permitir comparação. Testar a interface de verdade; não registrar como executada uma inspeção indisponível.
+
+11.4 Regra de aplicação
+
+As Tasks 01–26 descrevem a implementação base. As Tasks 27–44 refinam essa implementação; um critério visual antigo substituído por esta seção não deve ser reaplicado depois da reformulação. Em particular, a antiga exigência de 12 cards no Início passa a ser três destaques com acesso ao catálogo completo. A lógica e a disponibilidade dos 12 jogos permanecem obrigatórias.
+
+Os exemplos de telas são referências de composição. Ao implementar, conectar totais, treino, seleção de atividades e histórico às fontes reais existentes. Um protótipo visual não substitui as regras dos jogos nem comprova que as alterações foram aplicadas ao código do usuário.
