@@ -71,3 +71,8 @@ export const tapOnlyRounds = [
   { level: 1, instruction: 'Toque somente nas frutas', options: [{ value: '🍎', correct: true }, { value: '🐶', correct: false }, { value: '🍌', correct: true }, { value: '🚗', correct: false }] },
   { level: 3, instruction: 'Toque somente nos animais', options: [{ value: '🐶', correct: true }, { value: '🐱', correct: true }, { value: '🍎', correct: false }, { value: '🏠', correct: false }, { value: '🐭', correct: true }] }
 ];
+
+export const associationRounds = [
+  { level: 1, pairs: [['Escova', 'Dentes'], ['Chave', 'Porta'], ['Garfo', 'Comida'], ['Cama', 'Dormir'], ['Sapato', 'Pé']] },
+  { level: 3, pairs: [['Livro', 'Ler'], ['Guarda-chuva', 'Chuva'], ['Relógio', 'Hora'], ['Panela', 'Cozinhar']] }
+];
