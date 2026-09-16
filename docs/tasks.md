@@ -38,7 +38,7 @@ Usar o ambiente de execução e testes já disponível. Alterações de aparênc
 
 Base visual e navegação
 
-[ ] Task 01 — Aplicar a identidade visual à interface existente
+[x] Task 01 — Aplicar a identidade visual à interface existente
 
 Depende de: nenhuma. Requisitos: RUI001, RUI007, RNF004, RNF007, RNF009.
 
