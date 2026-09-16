@@ -443,7 +443,7 @@ Validar: resultado com uma, duas e três estrelas, erro, ajuda, pausa, cancelame
 
 Commit: feat: implementa a task 39.
 
-[ ] Task 40 — Redesenhar a apresentação de Minha evolução
+[x] Task 40 — Redesenhar a apresentação de Minha evolução
 
 Depende de: Tasks 27–28 e 38. Requisitos: RUI030, RUI011, RF053–RF056.
 
