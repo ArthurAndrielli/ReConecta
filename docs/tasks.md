@@ -88,7 +88,7 @@ Fase 9 — Qual Não Combina?
 
 [x] T43 — Implementar o jogo “Qual Não Combina?” com quatro elementos.
 [x] T44 — Criar atividades iniciais com categorias bem diferentes.
-[ ] T45 — Criar atividades mais avançadas com diferenças mais sutis.
+[x] T45 — Criar atividades mais avançadas com diferenças mais sutis.
 
 Fase 10 — Complete a Sequência
 
