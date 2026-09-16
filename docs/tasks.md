@@ -333,7 +333,7 @@ Validar: conferir marca no desktop/celular, títulos longos, acentos, carregamen
 
 Commit: feat: implementa a task 28.
 
-[ ] Task 29 — Refinar navegação, cabeçalho e alinhamento das telas
+[x] Task 29 — Refinar navegação, cabeçalho e alinhamento das telas
 
 Depende de: Tasks 27–28. Requisitos: RUI019, RUI003.
 
