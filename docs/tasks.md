@@ -278,7 +278,7 @@ Validar: Início, catálogo, os 12 jogos, resultado, treino, evolução e Ajuste
 
 Commit: feat: implementa a task 23.
 
-[ ] Task 24 — Completar a acessibilidade dos fluxos
+[x] Task 24 — Completar a acessibilidade dos fluxos
 
 Depende de: Tasks 08–23. Requisitos: RF039, RUI008, RUI009, RUI012, RNF002–RNF005.
 

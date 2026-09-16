@@ -157,6 +157,8 @@ function setActiveNav(route) {
   });
 }
 
+function focusApp() { window.requestAnimationFrame(() => app.focus({ preventScroll: true })); }
+
 function routeFromHash() {
   const route = location.hash.replace(/^#\/?/, '') || 'inicio';
   if (route === 'inicio') renderHome();
@@ -165,6 +167,7 @@ function routeFromHash() {
   else if (route === 'ajustes') renderSettings();
   else if (route.startsWith('jogo/') && games.some((game) => game.id === route.slice(5))) openGame(route.slice(5));
   else renderHome('Não encontramos esta página. Volte ao início para continuar.');
+  if (document.activeElement === document.body) focusApp();
 }
 
 window.addEventListener('hashchange', routeFromHash);
