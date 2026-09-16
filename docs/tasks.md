@@ -157,7 +157,7 @@ Fase 18 — Acompanhamento da evolução
 
 Fase 19 — Acessibilidade e responsividade
 
-[ ] T84 — Garantir poucos elementos e comandos objetivos em cada tela.
+[x] T84 — Garantir poucos elementos e comandos objetivos em cada tela.
 [ ] T85 — Garantir botões grandes e textos legíveis.
 [ ] T86 — Adicionar foco visível para navegação por teclado.
 [ ] T87 — Garantir que acertos e erros não sejam comunicados somente por cor.
