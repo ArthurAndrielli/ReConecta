@@ -44,3 +44,10 @@ export const oddOneOutRounds = [
   { level: 1, items: ['🍎', '🍌', '🍊', '🚗'], answer: '🚗' },
   { level: 3, items: ['🐶', '🐱', '🐭', '🍎'], answer: '🍎' }
 ];
+
+export const sequenceRounds = [
+  { level: 1, sequence: ['🔵', '🔴', '🔵', '🔴'], options: ['🔵', '🟢', '🟡'], answer: '🔵' },
+  { level: 2, sequence: ['🔵', '🔴', '🟢', '🔵', '🔴'], options: ['🟢', '🟡', '🔵'], answer: '🟢' },
+  { level: 3, sequence: ['1', '2', '3', '4'], options: ['5', '6', '7'], answer: '5' },
+  { level: 4, sequence: ['2', '4', '8', '16'], options: ['18', '24', '32'], answer: '32' }
+];
