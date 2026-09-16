@@ -27,3 +27,7 @@ export const whatDidYouSeeRounds = [
   { level: 3, items: ['🍎', '🍌', '🍇', '🍉'], options: ['🍎', '🍌', '🍇', '🍉', '🍐'], answer: '🍉' },
   { level: 4, items: ['🍎', '🍌', '🍇', '🍉', '🍐'], options: ['🍎', '🍌', '🍇', '🍉', '🍐', '🍓'], answer: '🍐' }
 ];
+
+export const wordRounds = [
+  { level: 1, word: 'CASA', syllables: ['CA', 'SA'], image: '🏠' }
+];
