@@ -194,7 +194,7 @@ Validar: alvo presente exatamente uma vez, erro, dica, acerto e conclusão. Conf
 
 Commit: feat: implementa a task 15.
 
-[ ] Task 16 — Finalizar Toque Somente em...
+[x] Task 16 — Finalizar Toque Somente em...
 
 Depende de: Tasks 06–07. Requisitos: RF042–RF043.
 
