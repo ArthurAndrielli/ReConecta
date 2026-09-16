@@ -214,7 +214,7 @@ Validar: par correto/incorreto, troca de origem, alvo já resolvido, relações 
 
 Commit: feat: implementa a task 17.
 
-[ ] Task 18 — Finalizar Situações do Cotidiano
+[x] Task 18 — Finalizar Situações do Cotidiano
 
 Depende de: Tasks 06–07. Requisitos: RF046–RF047.
 
