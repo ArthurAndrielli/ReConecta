@@ -298,7 +298,7 @@ Validar: simular cada falha sem apagar dados reais; voltar ao início após erro
 
 Commit: feat: implementa a task 25.
 
-[ ] Task 26 — Validar a aplicação completa e corrigir regressões
+[x] Task 26 — Validar a aplicação completa e corrigir regressões
 
 Depende de: Tasks 01–25. Requisitos: RNF006 e todos os critérios gerais de entrega de requirements.md e design.md.
 
