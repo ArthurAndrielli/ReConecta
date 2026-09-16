@@ -34,3 +34,8 @@ export const wordRounds = [
   { level: 3, word: 'MACACO', syllables: ['MA', 'CA', 'CO'], image: '🐒', distractors: ['SA', 'LA'] },
   { level: 4, word: 'BORBOLETA', syllables: ['BOR', 'BO', 'LE', 'TA'], image: '🦋', distractors: ['CA', 'MA', 'NA'] }
 ];
+
+export const imageWordRounds = [
+  { mode: 'imageToWord', prompt: '🍎', promptLabel: 'Imagem de uma maçã', options: ['Maçã', 'Banana', 'Casa'], answer: 'Maçã' },
+  { mode: 'wordToImage', prompt: 'Banana', promptLabel: 'Palavra Banana', options: ['🍎', '🍌', '🏠'], answer: '🍌' }
+];

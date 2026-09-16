@@ -80,7 +80,7 @@ Fase 7 — Monte a Palavra
 
 Fase 8 — Imagem e Palavra
 
-[ ] T40 — Implementar o modo imagem → palavra.
+[x] T40 — Implementar o modo imagem → palavra.
 [ ] T41 — Implementar o modo palavra → imagem.
 [ ] T42 — Registrar acertos, erros, tentativas e conclusão da atividade.
 
