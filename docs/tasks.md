@@ -171,7 +171,7 @@ Fase 20 — Testes finais
 [x] T92 — Testar feedback, estrelas e dicas.
 [x] T93 — Testar todos os níveis de dificuldade.
 [x] T94 — Testar persistência do progresso após atualizar a página.
-[ ] T95 — Testar limpeza do progresso.
+[x] T95 — Testar limpeza do progresso.
 [ ] T96 — Testar o Treino de Hoje do início ao fim.
 [ ] T97 — Testar a tela de evolução e as recomendações.
 [ ] T98 — Testar navegação por teclado e versão mobile.
