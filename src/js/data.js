@@ -39,3 +39,8 @@ export const imageWordRounds = [
   { mode: 'imageToWord', prompt: '🍎', promptLabel: 'Imagem de uma maçã', options: ['Maçã', 'Banana', 'Casa'], answer: 'Maçã' },
   { mode: 'wordToImage', prompt: 'Banana', promptLabel: 'Palavra Banana', options: ['🍎', '🍌', '🏠'], answer: '🍌' }
 ];
+
+export const oddOneOutRounds = [
+  { level: 1, items: ['🍎', '🍌', '🍊', '🚗'], answer: '🚗' },
+  { level: 3, items: ['🐶', '🐱', '🐭', '🍎'], answer: '🍎' }
+];
