@@ -24,6 +24,7 @@ button.secondary:hover { background: #bfdbfe; }
 button:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
 .progress-card { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1rem; margin-top: 1.25rem; text-align: center; }
 .progress-card strong { display: block; font-size: 1.5rem; color: #1d4ed8; }
+.daily-card { margin-top: 1.25rem; padding: 1rem; border: 2px solid #bfdbfe; border-radius: 12px; background: #eff6ff; }
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.25rem; }
 .feedback { min-height: 1.75rem; margin: 1rem 0 0; font-weight: bold; color: #166534; }
 .memory-grid { display: grid; grid-template-columns: repeat(2, minmax(100px, 150px)); justify-content: center; gap: .75rem; margin: 1.5rem 0; }
