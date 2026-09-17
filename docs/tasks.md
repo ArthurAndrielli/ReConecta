@@ -318,7 +318,7 @@ Executar esta etapa após verificar a base das Tasks 01–26. Se elas já estive
 
 Os critérios visuais da revisão 2.1 substituem os detalhes correspondentes da versão anterior. Em especial, o Início passa a mostrar três atividades em destaque e acesso aos 12 jogos em Atividades. O escopo funcional e os dados existentes permanecem válidos.
 
-[ ] Task 27 — Aplicar a nova composição visual e os tokens refinados
+[x] Task 27 — Aplicar a nova composição visual e os tokens refinados
 
 Depende de: Task 26. Requisitos: RUI017, RUI001, RNF004.
 
