@@ -21,6 +21,7 @@ import { getPhase, getGamePhases } from './phases/catalog.js';
 import { canStartPhase } from './phases/progression.js';
 import { renderPhaseMap } from './ui/phaseMap.js';
 import { getNextPhase } from './phases/progression.js';
+import { getPhaseSummary } from './phases/progression.js';
 
 const app = document.getElementById('app');
 const navLinks = [...document.querySelectorAll('[data-nav]')];
@@ -34,10 +35,11 @@ const normalize = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, 
 const categoryLabel = (id) => categories.find((category) => category.id === id)?.name || id;
 
 function gameCard(game) {
+  const phaseSummary = getPhaseSummary(getProgress(), game.id);
   return `<article class="game-card" data-category="${game.category}">
     <div class="game-icon" aria-hidden="true">${renderIcon(game.id, game.name)}</div>
     <div class="game-card-content"><span class="category-label category-${game.category}">${categoryLabel(game.category)}</span>
-    <h3>${game.name}</h3><p>${game.description}</p></div>
+    <h3>${game.name}</h3><p>${game.description}</p><p class="phase-progress">Percurso: ${phaseSummary.completed} de ${phaseSummary.total} fases · ${phaseSummary.stars} estrelas</p></div>
     <button data-game="${game.id}">Conhecer atividade</button>
   </article>`;
 }

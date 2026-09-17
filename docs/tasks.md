@@ -694,7 +694,7 @@ Validar: treino novo e parcial; recarga; fase feita fora do treino depois da cri
 
 Commit: feat: implementa a task 63.
 
-[ ] Task 64 — Exibir avanço das fases no catálogo e na evolução
+[x] Task 64 — Exibir avanço das fases no catálogo e na evolução
 
 Depende de: Tasks 21 e 46–63. Requisitos: RF087, RUI038.
 
