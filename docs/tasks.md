@@ -72,7 +72,7 @@ Validar: acessar os destinos, recarregar uma rota válida e usar Voltar/Avançar
 
 Commit: feat: implementa a task 03.
 
-[ ] Task 04 — Construir o Início e o catálogo dos 12 jogos
+[x] Task 04 — Construir o Início e o catálogo dos 12 jogos
 
 Depende de: Tasks 02–03. Requisitos: RF001, RF002, RF057, RF062, RUI004, RUI005, RUI015, RNF001.
 
