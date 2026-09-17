@@ -534,7 +534,7 @@ Validar: fase 1 disponível; fase 2 bloqueada antes da conclusão; muitos erros 
 
 Commit: feat: implementa a task 47.
 
-[ ] Task 48 — Criar o mapa de fases e proteger as rotas
+[x] Task 48 — Criar o mapa de fases e proteger as rotas
 
 Depende de: Tasks 03, 31, 44–47. Requisitos: RF065, RF066, RF090, RUI035, RUI038.
 

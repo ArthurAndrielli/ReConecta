@@ -1,4 +1,4 @@
-import { getProgress, saveProgress, getPreferences, savePreferences, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, resetProgress } from './storage.js';
+import { getProgress, saveProgress, getPreferences, savePreferences, createSession, abandonSession, registerCorrect, registerWrong, registerActivity, registerAttempt, registerMemoryMetrics, completePhase, resetProgress } from './storage.js';
 import { render as renderMemory } from './games/memory.js';
 import { render as renderWhatDidYouSee } from './games/whatDidYouSee.js';
 import { render as renderWordBuilder } from './games/wordBuilder.js';
@@ -17,6 +17,9 @@ import { getCurrentLevel } from './levels.js';
 import { calculateStars } from './scoring.js';
 import { getBestCategory, getPracticeCategory, getRecommendation } from './evolution.js';
 import { renderIcon } from './utils/icons.js';
+import { getPhase, getGamePhases } from './phases/catalog.js';
+import { canStartPhase } from './phases/progression.js';
+import { renderPhaseMap } from './ui/phaseMap.js';
 
 const app = document.getElementById('app');
 const navLinks = [...document.querySelectorAll('[data-nav]')];
@@ -43,7 +46,7 @@ function renderHome(trainingMessage = '') {
   const progress = getProgress();
   const featured = games.filter((game) => ['memory', 'word', 'sentence'].includes(game.id));
   app.innerHTML = `<section class="page-card home-page"><h2>Bom te ver por aqui.</h2><p class="lead">Escolha uma atividade. Cada pequeno passo conta.</p>${trainingMessage ? `<p class="feedback" role="status">${trainingMessage}</p>` : ''}<div class="daily-card"><div><span class="eyebrow">Treino de Hoje</span><h3>Um momento para reconectar.</h3><p>Faça cinco atividades variadas em sequência, no seu ritmo.</p><button id="start-training">Começar treino</button></div></div>${progress.atividades ? `<div class="progress-card" aria-label="Seu progresso"><div><strong>${progress.atividades}</strong>Atividades realizadas</div><div><strong>${progress.acertos}</strong>Acertos</div><div><strong>${progress.estrelas}</strong>Estrelas</div></div>` : `<p class="empty-note">Seu progresso começa com a primeira atividade.</p>`}<div class="section-heading"><div><span class="eyebrow">Para começar</span><h3>Escolha uma atividade</h3></div><a href="#/atividades">Ver todas</a></div><div class="game-grid featured-grid">${featured.map(gameCard).join('')}</div><div class="actions"><button class="secondary" id="reset-progress">Limpar progresso</button></div></section>`;
-  app.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
+  app.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openPhaseMap(button.dataset.game)));
   app.querySelector('#start-training').addEventListener('click', startDailyTraining);
   app.querySelector('#reset-progress').addEventListener('click', () => { if (resetProgress()) renderHome(); });
 }
@@ -60,7 +63,7 @@ function renderActivities() {
     const visible = games.filter((game) => (filter === 'all' || game.category === filter) && (!query || normalize(`${game.name} ${game.description}`).includes(query)));
     grid.innerHTML = visible.length ? visible.map(gameCard).join('') : `<div class="empty-state"><h3>Nenhuma atividade encontrada</h3><p>Tente outra busca ou limpe os filtros para ver todas as atividades.</p><button class="secondary" id="clear-filters">Limpar filtros</button></div>`;
     count.textContent = `${visible.length} ${visible.length === 1 ? 'atividade encontrada' : 'atividades encontradas'}`;
-    grid.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openGame(button.dataset.game)));
+    grid.querySelectorAll('[data-game]').forEach((button) => button.addEventListener('click', () => openPhaseMap(button.dataset.game)));
     grid.querySelector('#clear-filters')?.addEventListener('click', () => { search.value = ''; filter = 'all'; app.querySelectorAll('[data-filter]').forEach((item) => item.classList.toggle('is-selected', item.dataset.filter === 'all')); update(); search.focus(); });
   };
   app.querySelectorAll('[data-filter]').forEach((button) => button.addEventListener('click', () => { filter = button.dataset.filter; app.querySelectorAll('[data-filter]').forEach((item) => item.classList.toggle('is-selected', item === button)); update(); }));
@@ -114,6 +117,10 @@ function startDailyTraining() {
   else openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true });
 }
 
+function openPhaseMap(gameId) { const game = games.find((item) => item.id === gameId); if (!game) return renderHome('Esta atividade não está disponível.'); renderPhaseMap(app, game, getProgress(), { back: () => { location.hash = '#/atividades'; }, free: () => openGame(gameId), start: (phase) => { location.hash = `#/jogo/${gameId}/fase/${phase.id}`; } }); setActiveNav('atividades'); focusApp(); }
+
+function openPhase(gameId, phaseId) { const game = games.find((item) => item.id === gameId); const phase = getPhase(phaseId); const progress = getProgress(); if (!game || !phase || phase.gameId !== gameId) return renderHome('Esta fase não está disponível. Volte ao mapa para continuar.'); if (!canStartPhase(progress, gameId, phase.ordinal)) { openPhaseMap(gameId); app.insertAdjacentHTML('afterbegin', '<p class="feedback" role="status">Conclua a fase anterior para continuar.</p>'); return; } document.body.classList.add('is-focus-mode'); app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">Fase ${phase.ordinal} de 20</span><h2>${phase.title}</h2><p>${phase.instruction}</p><p>${phase.hint}</p><div class="actions"><button id="start-activity">Começar fase</button><button class="secondary" id="cancel-activity">Voltar ao mapa</button></div></section>`; app.querySelector('#cancel-activity').addEventListener('click', () => openPhaseMap(gameId)); app.querySelector('#start-activity').addEventListener('click', () => mountGame(gameId, { phase, game })); }
+
 function openGame(gameId, { trainingMode = false } = {}) {
   document.body.classList.add('is-focus-mode');
   const game = games.find((item) => item.id === gameId);
@@ -127,11 +134,12 @@ function mountGame(gameId, { trainingMode, game }) {
   const mountToken = ++activeMountToken;
   const level = getCurrentLevel(getProgress());
   const category = categoryByGame[gameId];
-  activeSession = createSession({ gameId, category, level, trainingRef: trainingMode ? { dateKey: new Date().toLocaleDateString('en-CA') } : null });
+  const phase = arguments[1]?.phase || null;
+  activeSession = createSession({ gameId, category, level: phase?.level || level, mode: phase ? 'phase' : (trainingMode ? 'daily' : 'free'), phaseId: phase?.id || null, phaseOrdinal: phase?.ordinal || null, phaseTotal: phase ? 20 : null, contentVersion: phase?.contentVersion || null, trainingRef: trainingMode ? { dateKey: new Date().toLocaleDateString('en-CA') } : null });
   let completed = false;
-  const onComplete = (result) => { if (mountToken !== activeMountToken || completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); renderResult(game, stars, trainingMode); };
+  const onComplete = (result) => { if (mountToken !== activeMountToken || completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); if (phase) { completePhase({ gameId, ordinal: phase.ordinal, stars, attempts: result.attempts, contentVersion: phase.contentVersion }); renderPhaseResult(game, phase, stars); } else renderResult(game, stars, trainingMode); };
   const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { if (activeSession) abandonSession(activeSession.id); activeSession = null; dailyTraining = null; document.body.classList.remove('is-focus-mode'); renderHome(); } };
-  if (gameId === 'memory') renderMemory(app, callbacks, { level });
+  if (gameId === 'memory') renderMemory(app, callbacks, { level, phase });
   else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, callbacks, { level });
   else if (gameId === 'word') renderWordBuilder(app, callbacks, { level });
   else if (gameId === 'image') renderImageWord(app, callbacks, { level });
@@ -145,6 +153,8 @@ function mountGame(gameId, { trainingMode, game }) {
   else if (gameId === 'sentence') renderCompleteSentence(app, callbacks, { level });
   else renderDevelopment(game);
 }
+
+function renderPhaseResult(game, phase, stars) { app.innerHTML = `<section class="activity-card result-card"><span class="eyebrow">Fase ${phase.ordinal} de 20 concluída</span><h2>Muito bem!</h2><p>Você concluiu ${phase.title}.</p><p class="result-stars" aria-label="${stars} estrelas recebidas">${'★'.repeat(stars)}</p><div class="actions"><button id="next-phase">Próxima fase</button><button class="secondary" id="repeat-phase">Repetir fase</button><button class="secondary" id="view-phases">Ver fases</button></div></section>`; app.querySelector('#next-phase').addEventListener('click', () => { const next = getGamePhases(game.id).find((item) => item.ordinal === phase.ordinal + 1); next ? openPhase(game.id, next.id) : openPhaseMap(game.id); }); app.querySelector('#repeat-phase').addEventListener('click', () => openPhase(game.id, phase.id)); app.querySelector('#view-phases').addEventListener('click', () => openPhaseMap(game.id)); }
 
 function renderResult(game, stars, trainingMode) {
   const starText = '★'.repeat(stars);
@@ -167,7 +177,9 @@ function routeFromHash() {
   else if (route === 'evolucao') renderEvolution();
   else if (route === 'atividades') renderActivities();
   else if (route === 'ajustes') renderSettings();
-  else if (route.startsWith('jogo/') && games.some((game) => game.id === route.slice(5))) openGame(route.slice(5));
+  else if (route.match(/^jogo\/[^/]+\/fases$/)) openPhaseMap(route.split('/')[1]);
+  else if (route.match(/^jogo\/[^/]+\/fase\/[^/]+$/)) openPhase(route.split('/')[1], route.split('/')[3]);
+  else if (route.startsWith('jogo/') && games.some((game) => game.id === route.slice(5))) openPhaseMap(route.slice(5));
   else renderHome('Não encontramos esta página. Volte ao início para continuar.');
   if (document.activeElement === document.body) focusApp();
 }
