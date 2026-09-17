@@ -704,7 +704,7 @@ Validar: zero histórico, histórico legado sem fases, um jogo parcial e todos o
 
 Commit: feat: implementa a task 64.
 
-[ ] Task 65 — Validar integralmente o banco das 240 fases
+[x] Task 65 — Validar integralmente o banco das 240 fases
 
 Depende de: Tasks 45 e 50–61. Requisitos: RF064, RF069, RF089, RNF020.
 

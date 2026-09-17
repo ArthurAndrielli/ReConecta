@@ -1,4 +1,5 @@
 import { GAME_IDS, phaseCatalog } from './catalog.js';
+import { validateContentReferences, phaseBoards, phaseRounds } from './content.js';
 
 export function validatePhaseCatalog(phases = phaseCatalog) {
   const errors = [];
@@ -19,5 +20,9 @@ export function validatePhaseCatalog(phases = phaseCatalog) {
     if (gamePhases.length !== 20) errors.push(`${gameId}: esperado 20 fases, encontrado ${gamePhases.length}`);
     if (new Set(gamePhases.map((phase) => phase.ordinal)).size !== gamePhases.length) errors.push(`${gameId}: ordinais duplicados`);
   }
+  errors.push(...validateContentReferences(phases));
+  const boardSignatures = new Set(Object.values(phaseBoards).map((board) => JSON.stringify(board.pairs)));
+  if (Object.keys(phaseBoards).length !== 40 || boardSignatures.size !== 40) errors.push('bancos de tabuleiro incompletos ou duplicados');
+  if (Object.keys(phaseRounds).length !== 600) errors.push(`rodadas esperadas: 600, encontradas ${Object.keys(phaseRounds).length}`);
   return { valid: errors.length === 0, errors, total: phases.length };
 }
