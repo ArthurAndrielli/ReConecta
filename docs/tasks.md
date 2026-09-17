@@ -865,3 +865,9 @@ Segunda passagem registrada em 47e4be5 (fluxos e recuperação) e a14fd6e (estil
 Cards com Jogar/Continuar, percurso secundário, cabeçalho e progresso compartilhados, resultado com hierarquia única e avanço direto foram aplicados aos 12 jogos. O Treino de Hoje agora inicia a atividade seguinte sem retornar à sua lista. A lógica existente de fases, dificuldade e persistência foi preservada.
 
 Verificações: 24 testes integrados aprovados; 240 fases, 600 rodadas e 40 tabuleiros validados; verificação estática de 50 scripts, 105 imports e CSS aprovada. A inspeção em navegador gráfico ficou indisponível no runtime e não foi registrada como concluída.
+
+### [x] Task 70 — Dar identidade visual e interatividade aos cards dos jogos
+
+Os 12 cards receberam temas cromáticos fixos nos modos claro e escuro, descrição curta, ícone destacado, status, barra de progresso e estados iniciado/concluído. Hover, foco, pressão, entrada e redução de movimento foram tratados sem alterar a navegação ou a lógica dos jogos. O grid mantém quatro colunas quando há espaço, duas em tablet e uma em telas estreitas.
+
+Verificações: os testes integrados confirmam os 12 temas, conteúdo semântico, progresso acessível e links nomeados; 24 testes, validação das 240 fases e verificação estática do projeto aprovados. A inspeção gráfica permanece pendente porque o runtime não disponibilizou navegador.

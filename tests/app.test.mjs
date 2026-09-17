@@ -56,6 +56,16 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.equal(document.querySelectorAll('h1').length, 1);
   await route('#/atividades');
   assert.equal(app.querySelectorAll('[data-game]').length, 12);
+  const cards = [...app.querySelectorAll('.game-card')];
+  assert.equal(cards.length, 12);
+  assert.equal(new Set(cards.map(card => card.dataset.gameTheme)).size, 12);
+  cards.forEach(card => {
+    assert.ok(card.querySelector('.game-icon'));
+    assert.ok(card.querySelector('h3').textContent.trim());
+    assert.ok(card.querySelector('.game-card-content > p').textContent.trim());
+    assert.ok(card.querySelector('progress[aria-label]'));
+    assert.ok(card.querySelector('.card-action[aria-label]'));
+  });
   const search = app.querySelector('#game-search');
   search.value = 'MEMORIA'; search.dispatchEvent(new Event('input'));
   assert.equal(app.querySelectorAll('[data-game]').length, 1);
