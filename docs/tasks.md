@@ -644,7 +644,7 @@ Validar: quantidade de itens/alvos em todas as fases; nenhum alvo fica fora do c
 
 Commit: feat: implementa a task 58.
 
-[ ] Task 59 — Entregar 20 fases de Associação de Objetos
+[x] Task 59 — Entregar 20 fases de Associação de Objetos
 
 Depende de: Tasks 17 e 49. Requisitos: RF069, RF082, RNF020.
 
