@@ -2,17 +2,30 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { phaseCatalog } from '../src/js/phases/catalog.js';
-import { phaseBoards, phaseRounds } from '../src/js/phases/content.js';
+import { getPhaseContent, phaseBoards, phaseRounds } from '../src/js/phases/content.js';
 import { objects } from '../src/js/phases/objects.js';
 import { validatePhaseCatalog } from '../src/js/phases/validate.js';
 import { fallbackPicture, picture } from '../src/js/utils/contentView.js';
 
-test('240 phases contain 600 distinct challenges and 40 distinct boards', () => {
+test('36 phases contain 90 distinct challenges and 6 distinct boards', () => {
   const report = validatePhaseCatalog();
   assert.deepEqual(report.errors, []);
-  assert.equal(report.total, 240);
-  assert.equal(report.rounds, 600);
-  assert.equal(report.boards, 40);
+  assert.equal(report.total, 36);
+  assert.equal(report.rounds, 90);
+  assert.equal(report.boards, 6);
+});
+test('visual content does not repeat images between difficulty phases', () => {
+  const visualGames = new Set(['memory', 'whatDidYouSee', 'word', 'image', 'odd', 'sequence', 'findObject', 'tapOnly']);
+  const imageIds = item => [item.assetId, ...(item.items || []), ...(item.options || [])]
+    .filter(value => typeof value === 'string' && value.startsWith('object-'));
+  for (const gameId of visualGames) {
+    const seen = new Set();
+    for (const phase of phaseCatalog.filter(item => item.gameId === gameId)) {
+      const current = new Set(getPhaseContent(phase).flatMap(imageIds));
+      for (const id of current) assert.equal(seen.has(id), false, `${gameId}: ${id} repetido entre fases`);
+      current.forEach(id => seen.add(id));
+    }
+  }
 });
 test('all local illustration references exist', async () => {
   const svg = await readFile(new URL('../src/assets/game-objects-v2.svg', import.meta.url), 'utf8');

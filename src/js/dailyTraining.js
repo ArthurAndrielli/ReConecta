@@ -30,7 +30,7 @@ export function getDailyPlan(dateKey = localDateKey()) {
   if (!Array.isArray(plan.slots) || plan.slots.length !== 5 || plan.slots.some(s => !games.some(g => g.id === s.gameId))) return null;
   for (const slot of plan.slots) {
     if (slot.completedSessionId) continue;
-    if (!slot.phaseId) {
+    if (!slot.phaseId || !getPhase(slot.phaseId)) {
       const phase = chooseDailyPhase(progress, slot.gameId);
       slot.phaseId = phase.id; slot.contentVersion = phase.contentVersion;
     } else if (!slot.contentVersion && getPhase(slot.phaseId)) slot.contentVersion = getPhase(slot.phaseId).contentVersion;

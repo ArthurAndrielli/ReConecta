@@ -47,7 +47,7 @@ function solveSession() {
     assert.equal(next.hidden, false, id);
     next.click();
   }
-  assert.match(app.textContent, /Muito bem!|Treino concluído!/);
+  assert.match(app.textContent, /Muito bem!|Percurso concluído!|Treino concluído!/);
   assert.equal(getProgress().sessions.at(-1).status, 'completed');
   checkSemantics();
 }
@@ -72,13 +72,13 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   app.querySelector('[data-game]').click(); await tick();
   assert.match(app.textContent, /Começar atividade/);
   await route('#/jogo/memory/fases');
-  assert.equal(app.querySelectorAll('[data-phase]').length, 20);
+  assert.equal(app.querySelectorAll('[data-phase]').length, 3);
   assert.equal(app.querySelector('.phase-map').dataset.gameTheme, 'memory');
   assert.equal(app.querySelectorAll('.phase-available').length, 1);
-  assert.equal(app.querySelectorAll('.phase-locked').length, 19);
+  assert.equal(app.querySelectorAll('.phase-locked').length, 2);
   assert.equal(app.querySelector('[data-phase][aria-current="step"]').dataset.phase, 'memory-p01');
   assert.equal(app.querySelector('.phase-available .phase-status').textContent.trim(), '● Atual');
-  assert.match(app.querySelector('.phase-available').textContent, /Atividade 1.*Pronta para continuar/s);
+  assert.match(app.querySelector('.phase-available').textContent, /Fase 1 de 3.*Pronta para continuar/s);
   assert.match(app.querySelector('.phase-locked').textContent, /Bloqueada/);
   assert.equal(app.querySelector('.phase-locked [data-phase]').disabled, true);
   assert.ok(app.querySelector('.phase-summary progress[aria-label]'));
@@ -100,7 +100,7 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.ok(app.querySelector('#game-board')); assert.equal(location.hash, '#/jogo/memory/fase/memory-p01');
   solveSession();
   const firstTotal = getProgress().atividades;
-  button(app, 'Tentar novamente').click(); await tick(); solveSession();
+  button(app, 'Jogar novamente').click(); await tick(); solveSession();
   assert.equal(getProgress().atividades, firstTotal + 1);
   assert.equal(getProgress().phaseProgress.memory[1].completions, 2);
   button(app, 'Próxima atividade').click(); await tick();
@@ -110,6 +110,12 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.equal(app.querySelectorAll('.phase-completed').length, 2);
   assert.match(app.querySelector('.phase-completed').textContent, /Concluída.*Melhor resultado/s);
   assert.equal(app.querySelector('[data-phase][aria-current="step"]').dataset.phase, 'memory-p03');
+  app.querySelector('[data-phase][aria-current="step"]').click(); await tick();
+  assert.match(app.textContent, /Fase 3 de 3/);
+  button(app, 'Começar atividade').click(); await tick(); solveSession();
+  assert.match(app.textContent, /Percurso concluído!/);
+  assert.match(app.textContent, /Pontuação:.*acertos/s);
+  assert.ok(button(app, 'Jogar novamente'));
   for (const game of games) {
     await route(`#/jogo/${game.id}`);
     button(app, 'Começar atividade').click(); await tick();
@@ -150,7 +156,7 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.equal(getProgress().atividades, 0);
   assert.equal(getPreferences().appearance, 'dark');
   assert.equal(localStorage.getItem('other-app'), 'preserve');
-  await route('#/jogo/what-did-you-see/fases'); assert.equal(app.querySelectorAll('[data-phase]').length, 20);
+  await route('#/jogo/what-did-you-see/fases'); assert.equal(app.querySelectorAll('[data-phase]').length, 3);
   await route('#/not-found'); assert.match(app.textContent, /Não encontramos/);
   assert.deepEqual(errors, []);
 });

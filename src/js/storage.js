@@ -38,7 +38,7 @@ export function migrateProgress(saved) {
     if (!number(value)) throw new Error('invalid');
     result[key] = value;
   }
-  result.nivelAtual = [1, 2, 3, 4].includes(saved.nivelAtual) ? saved.nivelAtual : 1;
+  result.nivelAtual = [1, 2, 3].includes(saved.nivelAtual) ? saved.nivelAtual : saved.nivelAtual === 4 ? 3 : 1;
   const sessionIds = new Set();
   result.sessions = (saved.sessions || []).map(item => {
     if (!object(item) || typeof item.id !== 'string' || sessionIds.has(item.id) || !games.some(g => g.id === item.gameId)
@@ -81,7 +81,13 @@ export function migrateProgress(saved) {
     if (!object(records)) throw new Error('invalid phases');
     for (const [key, record] of Object.entries(records)) {
       const phase = getGamePhases(gameId).find(p => String(p.ordinal) === key || p.id === key);
-      if (!phase || !validRecord({ ...record, completed: record.completed ?? (record.completions > 0) })) throw new Error('invalid phase');
+      const normalizedRecord = { ...record, completed: record.completed ?? (record.completions > 0) };
+      const removedOrdinal = Number(String(key).match(/(?:p)?(\d+)$/)?.[1]);
+      if (!phase && games.some(game => game.id === gameId) && removedOrdinal >= 4 && removedOrdinal <= 20 && validRecord(normalizedRecord)) {
+        delete records[key];
+        continue;
+      }
+      if (!phase || !validRecord(normalizedRecord)) throw new Error('invalid phase');
       records[phase.ordinal] = { ...record, completed: true, completions: record.completions || 1,
         firstCompletedAt: record.firstCompletedAt || record.completedAt, lastCompletedAt: record.lastCompletedAt || record.completedAt };
       if (key === phase.id) delete records[key];
@@ -89,7 +95,7 @@ export function migrateProgress(saved) {
   }
   for (const game of games) {
     const current = result.levelState[game.id];
-    const level = [1, 2, 3, 4].includes(current?.level) ? current.level : result.nivelAtual;
+    const level = [1, 2, 3].includes(current?.level) ? current.level : current?.level === 4 ? 3 : result.nivelAtual;
     const refs = Array.isArray(current?.completedSinceEvaluation) ? current.completedSinceEvaluation : [];
     result.levelState[game.id] = { level, completedSinceEvaluation: [...new Set(refs)].filter(id => result.sessions.some(s => s.id === id && s.gameId === game.id && s.status === 'completed' && s.mode === 'free')).slice(-2) };
   }

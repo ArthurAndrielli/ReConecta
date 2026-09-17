@@ -1,7 +1,7 @@
 import { picture } from '../utils/contentView.js';
 import { renderChoices } from './choice.js';
 export function render(container, callbacks, { content, level, preferences }) {
-  let timer = null, remaining = [12000, 10000, 8000, 6000][level - 1], began = 0, observing = true, destroyed = false, choice = null;
+  let timer = null, remaining = [12000, 9000, 6000][level - 1], began = 0, observing = true, destroyed = false, choice = null;
   container.innerHTML = `<div class="observation-area"><div class="choice-grid">${content.items.map(id => `<div class="choice-item">${picture(id)}</div>`).join('')}</div><button id="observe-done">Já observei</button></div>`;
   const stop = () => { if (timer !== null) { clearTimeout(timer); timer = null; remaining = Math.max(0, remaining - (performance.now() - began)); } };
   const show = () => {

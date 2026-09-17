@@ -1,5 +1,7 @@
 ReConecta — Requisitos do aplicativo
 
+> Nota de vigência (17/09/2026): o percurso atual possui 3 fases por jogo — Fácil, Médio e Difícil. As referências a 20 fases abaixo registram a especificação histórica anterior e foram substituídas pela implementação atual.
+
 Versão: 3.0 · Mais fases para os 12 minijogos
 Data: 16/09/2026
 Documentos relacionados: design.md e tasks.md.

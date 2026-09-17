@@ -30,8 +30,8 @@ export function validatePhaseCatalog(phases = phaseCatalog, sources = { boards: 
     if (!phase || typeof phase !== 'object') { fail(id, 'definição inválida'); continue; }
     if (seen.has(id)) fail(id, 'ID duplicado'); seen.add(id);
     if (!GAME_IDS.includes(phase.gameId)) fail(id, 'jogo inválido');
-    if (!Number.isInteger(phase.ordinal) || phase.ordinal < 1 || phase.ordinal > 20) fail(id, 'ordinal inválido');
-    if (phase.block !== Math.ceil(phase.ordinal / 5) || phase.level !== phase.block) fail(id, 'bloco/nível incompatível');
+    if (!Number.isInteger(phase.ordinal) || phase.ordinal < 1 || phase.ordinal > 3) fail(id, 'ordinal inválido');
+    if (phase.block !== phase.ordinal || phase.level !== phase.ordinal) fail(id, 'bloco/nível incompatível');
     if (!Number.isInteger(phase.contentVersion) || phase.contentVersion < 1 || ![phase.title, phase.instruction, phase.hint].every(v => typeof v === 'string' && v.trim())) fail(id, 'contrato incompleto');
     const board = ['memory', 'association'].includes(phase.gameId);
     if (phase.unit !== (board ? 'board' : 'rounds')) fail(id, 'unidade incompatível');
@@ -51,25 +51,25 @@ export function validatePhaseCatalog(phases = phaseCatalog, sources = { boards: 
         if (item.answer !== undefined && item.options.filter(o => o === item.answer).length !== 1) fail(ref, 'resposta ausente/duplicada');
         switch (phase.gameId) {
           case 'memory':
-            if (!unique(item.items) || item.items.length !== [2, 3, 4, 6][level]) fail(ref, 'pares incorretos');
+            if (!unique(item.items) || item.items.length !== [2, 4, 6][level]) fail(ref, 'pares incorretos');
             images(item.items); break;
           case 'association':
-            if (item.pairs.length !== [2, 3, 4, 5][level] || !unique(item.pairs.map(p => p[0])) || !unique(item.pairs.map(p => p[1])) || item.pairs.some(p => p.length !== 2 || p.some(v => !v.trim()))) fail(ref, 'associação não unívoca');
+            if (item.pairs.length !== [2, 3, 5][level] || !unique(item.pairs.map(p => p[0])) || !unique(item.pairs.map(p => p[1])) || item.pairs.some(p => p.length !== 2 || p.some(v => !v.trim()))) fail(ref, 'associação não unívoca');
             break;
           case 'word':
             images([item.assetId]);
             if (item.syllables.join('') !== item.word || item.word !== objectById[item.assetId]?.label.toLocaleUpperCase('pt-BR')) fail(ref, 'sílabas/resposta incompatíveis');
-            if ((level < 3 && item.syllables.length !== [2, 3, 4][level]) || (level === 3 && ![4, 5].includes(item.syllables.length))) fail(ref, 'quantidade de sílabas incorreta');
-            if (level < 3 ? item.distractors.length !== 0 : item.distractors.length < 1 || item.distractors.length > 2) fail(ref, 'distratores incorretos');
+            if ((level < 2 && item.syllables.length !== [2, 3][level]) || (level === 2 && ![4, 5].includes(item.syllables.length))) fail(ref, 'quantidade de sílabas incorreta');
+            if (level < 2 ? item.distractors.length !== 0 : item.distractors.length < 1 || item.distractors.length > 2) fail(ref, 'distratores incorretos');
             break;
           case 'whatDidYouSee':
             images([...item.items, ...item.options]);
-            if (!unique(item.items) || item.items.length !== [2, 3, 4, 5][level] || item.options.length !== [2, 3, 4, 4][level]
+            if (!unique(item.items) || item.items.length !== [2, 4, 5][level] || item.options.length !== [2, 3, 4][level]
               || item.options.filter(o => item.items.includes(o)).length !== 1 || !item.items.includes(item.answer)) fail(ref, 'observação ambígua/quantidade incorreta');
             break;
           case 'image':
             images([item.assetId, ...item.options]);
-            if (!['wordToImage', 'imageToWord'].includes(item.direction) || item.answer !== item.assetId || item.options.length !== [2, 3, 4, 4][level]) fail(ref, 'imagem/palavra incompatível');
+            if (!['wordToImage', 'imageToWord'].includes(item.direction) || item.answer !== item.assetId || item.options.length !== [2, 3, 4][level]) fail(ref, 'imagem/palavra incompatível');
             break;
           case 'odd':
             images(item.options);
@@ -77,16 +77,16 @@ export function validatePhaseCatalog(phases = phaseCatalog, sources = { boards: 
             break;
           case 'tapOnly':
             images(item.options);
-            if (item.options.length !== [4, 6, 8, 9][level] || !unique(item.targets) || item.targets.length !== [2, 3, 3, 4][level]
+            if (item.options.length !== [4, 6, 9][level] || !unique(item.targets) || item.targets.length !== [2, 3, 4][level]
               || !item.targets.every(o => item.options.includes(o)) || item.options.some(o => (objectById[o]?.category === item.category) !== item.targets.includes(o))) fail(ref, 'categoria/alvos incompatíveis');
             break;
           case 'findObject':
-            images(item.options); if (item.options.length !== [4, 6, 8, 9][level]) fail(ref, 'quantidade incorreta'); break;
+            images(item.options); if (item.options.length !== [4, 6, 9][level]) fail(ref, 'quantidade incorreta'); break;
           case 'routine':
-            if (item.steps.length !== [3, 4, 5, 6][level] || !unique(item.steps) || !item.acceptedOrders.length || item.acceptedOrders.some(order => JSON.stringify(canonical(order)) !== JSON.stringify(canonical(item.steps)))) fail(ref, 'ordem inválida');
+            if (item.steps.length !== [3, 4, 6][level] || !unique(item.steps) || !item.acceptedOrders.length || item.acceptedOrders.some(order => JSON.stringify(canonical(order)) !== JSON.stringify(canonical(item.steps)))) fail(ref, 'ordem inválida');
             break;
           case 'sequence':
-            if (item.options.length !== [2, 3, 3, 4][level]) fail(ref, 'quantidade incorreta');
+            if (item.options.length !== [2, 3, 4][level]) fail(ref, 'quantidade incorreta');
             if (item.rule.type === 'cycle') {
               images([...item.sequence, ...item.options]);
               const pattern = item.rule.pattern;
@@ -99,15 +99,15 @@ export function validatePhaseCatalog(phases = phaseCatalog, sources = { boards: 
             if (item.sentence.split('___').length !== 2) fail(ref, 'lacuna inválida');
             // falls through
           case 'situations':
-            if (item.options.length !== [2, 3, 3, 4][level]) fail(ref, 'alternativas incorretas'); break;
+            if (item.options.length !== [2, 3, 4][level]) fail(ref, 'alternativas incorretas'); break;
         }
       } catch { fail(ref, 'estrutura de conteúdo inválida'); }
     }
   }
   for (const gameId of GAME_IDS) {
     const definitions = phases.filter(p => p?.gameId === gameId);
-    if (definitions.length !== 20 || new Set(definitions.map(p => p.ordinal)).size !== 20) fail(gameId, 'esperadas 20 fases sem lacunas');
+    if (definitions.length !== 3 || new Set(definitions.map(p => p.ordinal)).size !== 3) fail(gameId, 'esperadas 3 fases sem lacunas');
   }
-  if (boardCount !== 40 || roundCount !== 600) fail('banco', `esperados 40 tabuleiros e 600 rodadas; encontrados ${boardCount}/${roundCount}`);
+  if (boardCount !== 6 || roundCount !== 90) fail('banco', `esperados 6 tabuleiros e 90 rodadas; encontrados ${boardCount}/${roundCount}`);
   return { valid: errors.length === 0, errors, total: phases.length, boards: boardCount, rounds: roundCount };
 }

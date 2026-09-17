@@ -13,7 +13,7 @@ const engines = Object.fromEntries(await Promise.all(Object.entries(modules).map
 const dom = new JSDOM('<main></main>', { url: 'http://localhost:4173/' });
 globalThis.window = dom.window; globalThis.document = dom.window.document;
 
-test('play all 240 phases (640 boards/rounds), with manual retries and duplicate clicks', () => {
+test('play all 36 phases (96 boards/rounds), with manual retries and duplicate clicks', () => {
   const gamesWithArtwork = new Set();
   for (const phase of phaseCatalog) for (const content of getPhaseContent(phase)) {
     const root = document.querySelector('main');
@@ -100,17 +100,17 @@ test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only 
     assert.equal(cleared, 42, 'destroy must clear a pending mismatch timer');
   } finally { globalThis.setTimeout = originalSet; globalThis.clearTimeout = originalClear; }
 });
-test('observation timer uses 12/10/8/6 seconds, pauses and is removed on destroy', () => {
+test('observation timer uses 12/9/6 seconds, pauses and is removed on destroy', () => {
   const originalSet = globalThis.setTimeout, originalClear = globalThis.clearTimeout;
   const pending = new Map(); let id = 0;
   globalThis.setTimeout = (callback, delay) => { pending.set(++id, { callback, delay }); return id; };
   globalThis.clearTimeout = id => pending.delete(id);
   try {
-    for (let level = 1; level <= 4; level++) {
+    for (let level = 1; level <= 3; level++) {
       const content = getPhaseContent(phaseCatalog.find(p => p.gameId === 'whatDidYouSee' && p.level === level))[0];
       const instance = engines.whatDidYouSee(document.querySelector('main'), { isActive: () => true, message() {} },
         { content, level, preferences: { observationMode: 'suggested-time' } });
-      assert.equal([...pending.values()][0].delay, [12000, 10000, 8000, 6000][level - 1]);
+      assert.equal([...pending.values()][0].delay, [12000, 9000, 6000][level - 1]);
       instance.pause(); assert.equal(pending.size, 0);
       instance.resume(); instance.resume(); assert.equal(pending.size, 1);
       instance.destroy(); assert.equal(pending.size, 0);
