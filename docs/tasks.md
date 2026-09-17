@@ -188,7 +188,7 @@ Validar: primeira/última posição, deslocamentos por teclado, ordem incorreta,
 
 Commit: feat: implementa a task 14.
 
-[ ] Task 15 — Finalizar Encontre o Objeto
+[x] Task 15 — Finalizar Encontre o Objeto
 
 Depende de: Tasks 06–07. Requisitos: RF040–RF041.
 
