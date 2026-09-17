@@ -624,7 +624,7 @@ Validar: todos os passos aparecem uma vez, respostas aceitas são permutações 
 
 Commit: feat: implementa a task 56.
 
-[ ] Task 57 — Entregar 20 fases de Encontre o Objeto
+[x] Task 57 — Entregar 20 fases de Encontre o Objeto
 
 Depende de: Tasks 15 e 49. Requisitos: RF069, RF080, RNF020.
 
