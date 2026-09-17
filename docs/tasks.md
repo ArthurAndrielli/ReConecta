@@ -714,7 +714,7 @@ Validar: executar sobre todo o banco real e obter relatório sem erros. Demonstr
 
 Commit: feat: implementa a task 65.
 
-[ ] Task 66 — Refinar aparência e acessibilidade das novas telas
+[x] Task 66 — Refinar aparência e acessibilidade das novas telas
 
 Depende de: Tasks 43–44 e 48–65. Requisitos: RUI035–RUI038, RNF017.
 

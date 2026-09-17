@@ -176,6 +176,8 @@ input:focus-visible, select:focus-visible { outline: 3px solid var(--color-focus
 .phase-card h4 { margin: 0; font-size: 1.05rem; }
 .phase-card p { flex: 1; margin: 0; color: var(--color-text-muted); font-size: .95rem; }
 .phase-card button { width: 100%; padding-inline: var(--space-2); font-size: .95rem; }
+.phase-card button:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+.phase-card strong { color: var(--color-primary); }
 .phase-available { border: 2px solid var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
 .phase-completed { background: var(--color-success-soft); }
 .phase-locked { background: var(--color-surface-soft); }
