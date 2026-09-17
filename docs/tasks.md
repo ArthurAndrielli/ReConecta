@@ -684,7 +684,7 @@ Validar: concluir pela primeira vez, repetir com resultado inferior/superior, vo
 
 Commit: feat: implementa a task 62.
 
-[ ] Task 63 — Integrar fases e migração ao Treino de Hoje
+[x] Task 63 — Integrar fases e migração ao Treino de Hoje
 
 Depende de: Tasks 20 e 46–62. Requisitos: RF071, RF072, RF086, RNF019.
 

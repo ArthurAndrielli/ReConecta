@@ -20,6 +20,7 @@ import { renderIcon } from './utils/icons.js';
 import { getPhase, getGamePhases } from './phases/catalog.js';
 import { canStartPhase } from './phases/progression.js';
 import { renderPhaseMap } from './ui/phaseMap.js';
+import { getNextPhase } from './phases/progression.js';
 
 const app = document.getElementById('app');
 const navLinks = [...document.querySelectorAll('[data-nav]')];
@@ -104,22 +105,23 @@ function advanceTraining() {
   const dateKey = new Date().toLocaleDateString('en-CA');
   if (progress.dailyPlans[dateKey]) { progress.dailyPlans[dateKey].currentIndex = dailyTraining.currentIndex; progress.dailyPlans[dateKey].completed = dailyTraining.currentIndex >= dailyTraining.activities.length; saveProgress(progress); }
   if (dailyTraining.currentIndex >= dailyTraining.activities.length) { dailyTraining = null; renderHome('Parabéns! Você concluiu o treino de hoje.'); return; }
-  openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true });
+  const nextGame = dailyTraining.activities[dailyTraining.currentIndex]; const nextPhase = getPhase(dailyTraining.phaseIds?.[dailyTraining.currentIndex]); nextPhase ? openPhase(nextGame, nextPhase.id, true) : openGame(nextGame, { trainingMode: true });
 }
 
 function startDailyTraining() {
   const progress = getProgress();
   const dateKey = new Date().toLocaleDateString('en-CA');
-  const saved = progress.dailyPlans[dateKey] || { dateKey, activities: [...dailyTrainingActivities], currentIndex: 0, completed: false, createdAt: new Date().toISOString() };
+  const saved = progress.dailyPlans[dateKey] || { dateKey, activities: [...dailyTrainingActivities], phaseIds: dailyTrainingActivities.map((gameId) => getNextPhase(progress, gameId)?.id || null), currentIndex: 0, completed: false, createdAt: new Date().toISOString() };
+  if (!saved.phaseIds) saved.phaseIds = saved.activities.map((gameId) => getNextPhase(progress, gameId)?.id || null);
   progress.dailyPlans[dateKey] = saved; saveProgress(progress);
-  dailyTraining = { activities: [...saved.activities], currentIndex: Math.min(saved.currentIndex || 0, dailyTrainingActivities.length - 1), completed: saved.completed };
+  dailyTraining = { activities: [...saved.activities], phaseIds: [...saved.phaseIds], currentIndex: Math.min(saved.currentIndex || 0, dailyTrainingActivities.length - 1), completed: saved.completed };
   if (dailyTraining.completed) renderHome('Parabéns! Você concluiu o treino de hoje.');
-  else openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true });
+  else { const phase = getPhase(dailyTraining.phaseIds?.[dailyTraining.currentIndex]); phase ? openPhase(dailyTraining.activities[dailyTraining.currentIndex], phase.id, true) : openGame(dailyTraining.activities[dailyTraining.currentIndex], { trainingMode: true }); }
 }
 
 function openPhaseMap(gameId) { const game = games.find((item) => item.id === gameId); if (!game) return renderHome('Esta atividade não está disponível.'); renderPhaseMap(app, game, getProgress(), { back: () => { location.hash = '#/atividades'; }, free: () => openGame(gameId), start: (phase) => { location.hash = `#/jogo/${gameId}/fase/${phase.id}`; } }); setActiveNav('atividades'); focusApp(); }
 
-function openPhase(gameId, phaseId) { const game = games.find((item) => item.id === gameId); const phase = getPhase(phaseId); const progress = getProgress(); if (!game || !phase || phase.gameId !== gameId) return renderHome('Esta fase não está disponível. Volte ao mapa para continuar.'); if (!canStartPhase(progress, gameId, phase.ordinal)) { openPhaseMap(gameId); app.insertAdjacentHTML('afterbegin', '<p class="feedback" role="status">Conclua a fase anterior para continuar.</p>'); return; } document.body.classList.add('is-focus-mode'); app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">Fase ${phase.ordinal} de 20</span><h2>${phase.title}</h2><p>${phase.instruction}</p><p>${phase.hint}</p><div class="actions"><button id="start-activity">Começar fase</button><button class="secondary" id="cancel-activity">Voltar ao mapa</button></div></section>`; app.querySelector('#cancel-activity').addEventListener('click', () => openPhaseMap(gameId)); app.querySelector('#start-activity').addEventListener('click', () => mountGame(gameId, { phase, game })); }
+function openPhase(gameId, phaseId, trainingMode = false) { const game = games.find((item) => item.id === gameId); const phase = getPhase(phaseId); const progress = getProgress(); if (!game || !phase || phase.gameId !== gameId) return renderHome('Esta fase não está disponível. Volte ao mapa para continuar.'); if (!canStartPhase(progress, gameId, phase.ordinal)) { openPhaseMap(gameId); app.insertAdjacentHTML('afterbegin', '<p class="feedback" role="status">Conclua a fase anterior para continuar.</p>'); return; } document.body.classList.add('is-focus-mode'); app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">Fase ${phase.ordinal} de 20</span><h2>${phase.title}</h2><p>${phase.instruction}</p><p>${phase.hint}</p><div class="actions"><button id="start-activity">Começar fase</button><button class="secondary" id="cancel-activity">Voltar ao mapa</button></div></section>`; app.querySelector('#cancel-activity').addEventListener('click', () => openPhaseMap(gameId)); app.querySelector('#start-activity').addEventListener('click', () => mountGame(gameId, { phase, game, trainingMode })); }
 
 function openGame(gameId, { trainingMode = false } = {}) {
   document.body.classList.add('is-focus-mode');
@@ -135,9 +137,10 @@ function mountGame(gameId, { trainingMode, game }) {
   const level = getCurrentLevel(getProgress());
   const category = categoryByGame[gameId];
   const phase = arguments[1]?.phase || null;
+  const phaseTraining = arguments[1]?.trainingMode || false;
   activeSession = createSession({ gameId, category, level: phase?.level || level, mode: phase ? 'phase' : (trainingMode ? 'daily' : 'free'), phaseId: phase?.id || null, phaseOrdinal: phase?.ordinal || null, phaseTotal: phase ? 20 : null, contentVersion: phase?.contentVersion || null, trainingRef: trainingMode ? { dateKey: new Date().toLocaleDateString('en-CA') } : null });
   let completed = false;
-  const onComplete = (result) => { if (mountToken !== activeMountToken || completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); if (phase) { completePhase({ gameId, ordinal: phase.ordinal, stars, attempts: result.attempts, contentVersion: phase.contentVersion }); renderPhaseResult(game, phase, stars); } else renderResult(game, stars, trainingMode); };
+  const onComplete = (result) => { if (mountToken !== activeMountToken || completed) return; completed = true; if (gameId === 'memory') registerMemoryMetrics({ pairs: result.pairs, ...result }); const stars = calculateStars({ ...result, completed: true }); registerActivity({ ...result, category, stars, session: activeSession }); if (phase) { completePhase({ gameId, ordinal: phase.ordinal, stars, attempts: result.attempts, contentVersion: phase.contentVersion }); renderPhaseResult(game, phase, stars, phaseTraining); } else renderResult(game, stars, trainingMode); };
   const callbacks = { onCorrect: () => registerCorrect(category), onWrong: () => registerWrong(category), onAttempt: () => registerAttempt(category), onComplete, onMessage: (type) => { const element = app.querySelector('#feedback'); if (element) element.textContent = getFeedbackMessage(type); }, onBack: () => { if (activeSession) abandonSession(activeSession.id); activeSession = null; dailyTraining = null; document.body.classList.remove('is-focus-mode'); renderHome(); } };
   if (gameId === 'memory') renderMemory(app, callbacks, { level, phase });
   else if (gameId === 'whatDidYouSee') renderWhatDidYouSee(app, callbacks, { level });
@@ -155,7 +158,7 @@ function mountGame(gameId, { trainingMode, game }) {
   if (phase) app.querySelector('section')?.insertAdjacentHTML('afterbegin', `<p class="eyebrow phase-context">Fase ${phase.ordinal} de 20 · ${phase.title}</p>`);
 }
 
-function renderPhaseResult(game, phase, stars) { const record = getProgress().phaseProgress?.[game.id]?.[phase.ordinal]; const next = getGamePhases(game.id).find((item) => item.ordinal === phase.ordinal + 1); const nextLabel = next ? `Próxima fase: ${next.ordinal}` : 'Percurso concluído'; app.innerHTML = `<section class="activity-card result-card"><span class="eyebrow">Fase ${phase.ordinal} de 20 concluída</span><h2>Muito bem!</h2><p>Você concluiu ${phase.title}.</p><p>Estrelas nesta tentativa: <strong>${stars} de 3</strong>. Melhor resultado: <strong>${record?.bestStars || stars} de 3</strong>.</p><p class="result-stars" aria-label="${stars} estrelas recebidas">${'★'.repeat(stars)}</p><div class="actions"><button id="next-phase">${nextLabel}</button><button class="secondary" id="repeat-phase">Repetir fase</button><button class="secondary" id="view-phases">Ver fases</button></div></section>`; app.querySelector('#next-phase').addEventListener('click', () => next ? openPhase(game.id, next.id) : openPhaseMap(game.id)); app.querySelector('#repeat-phase').addEventListener('click', () => openPhase(game.id, phase.id)); app.querySelector('#view-phases').addEventListener('click', () => openPhaseMap(game.id)); }
+function renderPhaseResult(game, phase, stars, trainingMode = false) { const record = getProgress().phaseProgress?.[game.id]?.[phase.ordinal]; const next = getGamePhases(game.id).find((item) => item.ordinal === phase.ordinal + 1); const nextLabel = next ? `Próxima fase: ${next.ordinal}` : 'Percurso concluído'; app.innerHTML = `<section class="activity-card result-card"><span class="eyebrow">Fase ${phase.ordinal} de 20 concluída</span><h2>Muito bem!</h2><p>Você concluiu ${phase.title}.</p><p>Estrelas nesta tentativa: <strong>${stars} de 3</strong>. Melhor resultado: <strong>${record?.bestStars || stars} de 3</strong>.</p><p class="result-stars" aria-label="${stars} estrelas recebidas">${'★'.repeat(stars)}</p><div class="actions"><button id="next-phase">${trainingMode ? 'Próxima atividade' : nextLabel}</button><button class="secondary" id="repeat-phase">Repetir fase</button><button class="secondary" id="view-phases">Ver fases</button></div></section>`; app.querySelector('#next-phase').addEventListener('click', () => trainingMode ? advanceTraining() : (next ? openPhase(game.id, next.id) : openPhaseMap(game.id))); app.querySelector('#repeat-phase').addEventListener('click', () => openPhase(game.id, phase.id, trainingMode)); app.querySelector('#view-phases').addEventListener('click', () => openPhaseMap(game.id)); }
 
 function renderResult(game, stars, trainingMode) {
   const starText = '★'.repeat(stars);
