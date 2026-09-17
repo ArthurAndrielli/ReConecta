@@ -478,7 +478,7 @@ Validar: mudança imediata, F5, preferência do sistema, seleção explícita, d
 
 Commit: feat: implementa a task 42.
 
-[ ] Task 43 — Ajustar a nova composição para celular e tablet
+[x] Task 43 — Ajustar a nova composição para celular e tablet
 
 Depende de: Tasks 29–42. Requisitos: RUI033, RUI014, RNF005.
 
