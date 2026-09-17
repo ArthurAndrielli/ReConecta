@@ -94,7 +94,7 @@ Validar: salvar e recarregar progresso; migrar amostra da estrutura anterior sem
 
 Commit: feat: implementa a task 05.
 
-[ ] Task 06 — Integrar tela de exercício, sessão, feedback e resultado
+[x] Task 06 — Integrar tela de exercício, sessão, feedback e resultado
 
 Depende de: Tasks 02–03 e 05. Requisitos: RF005–RF010, RF019–RF022, RF060, RF062, RUI006, RUI009, RUI010, RNF011, RNF013.
 
