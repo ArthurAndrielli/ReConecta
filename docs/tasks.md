@@ -418,7 +418,7 @@ Validar: padrões visuais e numéricos, leitura sem depender só de cor, seleç�
 
 Commit: feat: implementa a task 36.
 
-[ ] Task 37 — Refinar rotinas, associações e situações do cotidiano
+[x] Task 37 — Refinar rotinas, associações e situações do cotidiano
 
 Depende de: Tasks 28 e 33. Requisitos: RUI027, RF038–RF039, RF044–RF047.
 
