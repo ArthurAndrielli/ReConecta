@@ -138,7 +138,7 @@ Validar: ordem das fases, resposta única válida, níveis, modo sem limite, pau
 
 Commit: feat: implementa a task 09.
 
-[ ] Task 10 — Finalizar Monte a Palavra
+[x] Task 10 — Finalizar Monte a Palavra
 
 Depende de: Tasks 06–07. Requisitos: RF028–RF030.
 
