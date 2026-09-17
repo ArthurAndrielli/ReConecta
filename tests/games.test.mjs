@@ -38,6 +38,52 @@ test('play all 240 phases (640 boards/rounds), with manual retries and duplicate
     assert.equal(attempts.length, before, `destroyed callback: ${content.id}`);
   }
 });
+test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only that pair', () => {
+  const originalSet = globalThis.setTimeout, originalClear = globalThis.clearTimeout;
+  let pending = null, cleared = null;
+  globalThis.setTimeout = (callback, delay) => { pending = { callback, delay }; return 42; };
+  globalThis.clearTimeout = id => { cleared = id; pending = null; };
+  try {
+    const content = getPhaseContent(phaseCatalog.find(phase => phase.gameId === 'memory'))[0];
+    const root = document.querySelector('main');
+    const attempts = [];
+    const instance = engines.memory(root, {
+      isActive: () => true,
+      onAttempt: correct => { attempts.push(correct); return true; },
+      onComplete() {},
+      message() {}
+    }, { content });
+    const cards = [...root.querySelectorAll('[data-index]')];
+    const byPair = new Map();
+    cards.forEach((card, index) => {
+      const href = card.querySelector('use').getAttribute('href');
+      if (!byPair.has(href)) byPair.set(href, []);
+      byPair.get(href).push(index);
+    });
+    const [firstPair, secondPair] = [...byPair.values()];
+    cards[firstPair[0]].click(); cards[secondPair[0]].click();
+    assert.equal(pending.delay, 900);
+    assert.ok(cards[firstPair[0]].classList.contains('is-open'));
+    assert.ok(cards[secondPair[0]].classList.contains('is-open'));
+    cards[firstPair[1]].click();
+    assert.equal(attempts.length, 1, 'a third card must stay blocked');
+    cards[firstPair[0]].click();
+    assert.equal(attempts.length, 1, 'the same open card cannot be selected twice');
+    pending.callback();
+    assert.equal(root.querySelectorAll('.memory-card.is-open').length, 0);
+    cards[firstPair[0]].click(); cards[firstPair[1]].click();
+    assert.ok(cards[firstPair[0]].classList.contains('is-matched'));
+    assert.ok(cards[firstPair[1]].classList.contains('is-matched'));
+    instance.destroy();
+
+    const secondInstance = engines.memory(root, { isActive: () => true, onAttempt: () => true, onComplete() {}, message() {} }, { content });
+    const nextCards = [...root.querySelectorAll('[data-index]')];
+    const firstHref = nextCards[0].querySelector('use').getAttribute('href');
+    const different = nextCards.findIndex(card => card.querySelector('use').getAttribute('href') !== firstHref);
+    nextCards[0].click(); nextCards[different].click(); secondInstance.destroy();
+    assert.equal(cleared, 42, 'destroy must clear a pending mismatch timer');
+  } finally { globalThis.setTimeout = originalSet; globalThis.clearTimeout = originalClear; }
+});
 test('observation timer uses 12/10/8/6 seconds, pauses and is removed on destroy', () => {
   const originalSet = globalThis.setTimeout, originalClear = globalThis.clearTimeout;
   const pending = new Map(); let id = 0;
