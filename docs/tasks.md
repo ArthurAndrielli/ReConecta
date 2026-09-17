@@ -428,7 +428,7 @@ Validar: mover etapas por teclado, manter foco no item, associar e cancelar orig
 
 Commit: feat: implementa a task 37.
 
-[ ] Task 38 — Dar acabamento aos botões, campos e filtros
+[x] Task 38 — Dar acabamento aos botões, campos e filtros
 
 Depende de: Tasks 29–37. Requisitos: RUI028, RUI007, RUI008.
 
