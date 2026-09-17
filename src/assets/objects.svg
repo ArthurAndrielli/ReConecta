@@ -1,4 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <style>
+    symbol g { stroke: #24463e; stroke-width: 3; }
+    #object-1 g, #object-10 g, #object-26 g, #object-51 g, #object-52 g, #object-53 g, #object-54 g, #object-56 g, #object-57 g { fill: #d9a36f; }
+    #object-2 g, #object-25 g, #object-33 g, #object-43 g, #object-47 g { fill: #79b7df; }
+    #object-3 g, #object-6 g, #object-7 g, #object-8 g, #object-18 g, #object-44 g, #object-45 g, #object-48 g { fill: #f7f3e8; }
+    #object-4 g, #object-23 g, #object-27 g, #object-36 g, #object-40 g { fill: #72a9c9; }
+    #object-5 g, #object-24 g, #object-28 g { fill: #efbd4e; }
+    #object-9 g, #object-19 g, #object-35 g, #object-39 g, #object-42 g { fill: #98c9df; }
+    #object-11 g, #object-31 g, #object-32 g, #object-38 g, #object-46 g, #object-58 g, #object-59 g { fill: #ee9a4c; }
+    #object-12 g { fill: #f4d16e; }
+    #object-13 g { fill: #d7a2df; }
+    #object-14 g { fill: #e7c3a1; }
+    #object-15 g { fill: #74bd78; }
+    #object-16 g, #object-21 g, #object-22 g, #object-37 g, #object-55 g, #object-60 g { fill: #f0c94f; }
+    #object-17 g, #object-20 g, #object-29 g, #object-30 g, #object-34 g, #object-49 g { fill: #d5ad78; }
+    #object-41 g { fill: #e8b978; }
+    #object-50 g { fill: #e97868; }
+  </style>
+</defs>
 <symbol id="object-1" viewBox="0 0 96 96"><g fill="#f2dfaf" stroke="#264c40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M16 48 48 18 80 48v32H16Z"/><path d="M39 80V57h18v23M25 47h12v12H25Z"/></g></symbol>
 <symbol id="object-2" viewBox="0 0 96 96"><g fill="#f2dfaf" stroke="#264c40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="48" cy="48" r="31"/><path d="m48 30 17 12-7 20H38l-7-20ZM48 30V17M65 42l14-5M58 62l8 13M38 62 27 76M31 42l-14-5"/></g></symbol>
 <symbol id="object-3" viewBox="0 0 96 96"><g fill="#f2dfaf" stroke="#264c40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m27 22 6 56h30l6-56ZM29 34h38"/><path d="M41 44h15"/></g></symbol>
