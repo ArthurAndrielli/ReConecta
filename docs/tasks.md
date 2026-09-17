@@ -1,15 +1,18 @@
 ReConecta — Plano de implementação
 
-Versão: 2.1 · Reformulação visual e aplicação acadêmica completa
+Versão: 3.0 · Vinte fases por jogo
 Data: 16/09/2026
 Base: requirements.md e design.md.
-Atualização: foram acrescentadas 18 tarefas de reformulação visual, da Task 27 à Task 44. As Tasks 01–26 e seus checkboxes foram preservados. As novas tarefas seguem requirements.md, seção 11, e design.md, seção 15. A prioridade é melhorar a aparência do sistema existente.
-Ao incorporar esta atualização ao VS Code, preserve os [x] e os registros que já existirem na cópia do projeto. Se ela estiver mais avançada que este documento, acrescente somente a seção de reformulação visual com as Tasks 27–44, sem substituir os status anteriores. Esta revisão não acessou o repositório do VS Code para conferir seu andamento.
+
+Atualização: acrescentadas 24 tarefas, da Task 45 à Task 68, para entregar 20 fases em cada um dos 12 jogos: 240 fases. As novas tarefas seguem requirements.md, seção 12, e design.md, seção 16. O conteúdo e os status das Tasks 01–44 foram preservados; os títulos agora usam [ ] literal, conforme solicitado.
+
+Ao incorporar esta atualização ao VS Code, preserve os [x] e os registros que já existirem na cópia do projeto. Se ela estiver mais avançada que este documento, acrescente somente a seção de ampliação com as Tasks 45–68 e as orientações atualizadas, sem substituir status anteriores. Esta revisão não acessou o repositório do VS Code para conferir seu andamento. Use títulos no formato ### [ ] Task 45 — ..., com colchetes visíveis; ao concluir, troque por ### [x] Task 45 — ....
 
 Como executar este plano
 
-O objetivo é aplicar o design profissional e completar as funcionalidades previstas para os 12 minijogos. As tarefas começam com mudanças reais na aplicação. Não há tarefas para criar documentação, index.html ou README.md****. Esses arquivos já existem.
-Antes da primeira alteração, ler os três documentos, as instruções do repositório e o código atual. Localizar o CSS, o ponto de entrada JavaScript, os jogos e a persistência existentes. Essa leitura faz parte da execução da Task 01; não é uma tarefa de preparação isolada.
+O objetivo atual é ampliar os 12 minijogos com fases reais, mantendo o design profissional e as funcionalidades já entregues. As tarefas começam com mudanças reais na aplicação. Não há tarefas para criar documentação, index.html ou README.md. Esses arquivos já existem.
+
+Antes da primeira alteração, ler os três documentos, as instruções do repositório e o código atual. Localizar o CSS, o ponto de entrada JavaScript, os jogos e a persistência existentes. Essa leitura faz parte da primeira task pendente, que pode ser a Task 45 se a base já estiver concluída; não é uma tarefa de preparação isolada.
 
 Trabalhar na primeira task pendente, na ordem numérica, respeitando dependências.
 
@@ -19,13 +22,13 @@ Preservar código, dados e alterações anteriores do usuário. Não substituir 
 
 Os caminhos de design.md são referências. Usar os caminhos reais do projeto quando já estiverem corretos. Fazer ajustes pontuais no HTML existente somente para integração necessária.
 
-Implementar, verificar o comportamento descrito, corrigir problemas encontrados e só então mudar o checkbox da task de [ ] para [x].
+Implementar, verificar o comportamento descrito, corrigir problemas encontrados e só então mudar a marcação da task de [ ] para [x].
 
-Incluir a implementação e a atualização deste checkbox no mesmo commit. Criar um commit por task, exatamente no padrão feat: implementa a task 01, trocando apenas o número.
+Incluir a implementação e a atualização desta marcação no mesmo commit. Criar um commit por task, exatamente no padrão feat: implementa a task 01, trocando apenas o número.
 
 Confirmar que o commit foi criado. Se falhar, não afirmar que a task foi entregue; manter a indicação de pendência até resolver o commit. Não fazer commits vazios nem alterar código que já atende ao requisito só para produzir diferença.
 
-Continuar automaticamente para a próxima task. Comunicar de forma breve a conclusão e os testes relevantes, sem substituir a implementação por explicações longas.
+Continuar automaticamente para a próxima task até concluir as pendentes, incluindo a Task 68. Não encerrar após duas ou três tarefas nem pedir confirmação a cada commit. Comunicar de forma breve a conclusão e os testes relevantes, sem substituir a implementação por explicações longas. Fazer commits locais; publicação ou push não fazem parte deste plano.
 
 Se houver bloqueio real de acesso, dado essencial ausente ou dependência externa indisponível, registrar o ponto exato e não marcar a task como concluída. Resolver problemas locais reversíveis antes de interromper.
 
@@ -34,6 +37,7 @@ As marcações começam pendentes porque o repositório atual não foi verificad
 Critério comum de conclusão
 
 Uma task precisa entregar suas alterações aplicáveis, passar pelas verificações indicadas, manter o fluxo já existente funcional e ser registrada em commit próprio. Não marcar como pronta uma tela com botões sem ação, números fictícios, jogos simulados ou erros conhecidos que impeçam o uso.
+
 Usar o ambiente de execução e testes já disponível. Alterações de aparência exigem inspeção visual; regras de persistência, pontuação e navegação exigem verificações de comportamento. Não criar testes que apenas repitam a implementação ou valores de CSS. Não declarar comandos ou testes que não foram executados.
 
 Base visual e navegação
@@ -311,6 +315,7 @@ Commit: feat: implementa a task 26.
 Reformulação visual — nova etapa
 
 Executar esta etapa após verificar a base das Tasks 01–26. Se elas já estiverem concluídas no repositório, preservar suas marcações e commits e começar pela Task 27. Se ainda houver tarefa anterior pendente, manter a regra de executar a primeira pendente. Não recriar módulos prontos para aplicar os novos estilos.
+
 Os critérios visuais da revisão 2.1 substituem os detalhes correspondentes da versão anterior. Em especial, o Início passa a mostrar três atividades em destaque e acesso aos 12 jogos em Atividades. O escopo funcional e os dados existentes permanecem válidos.
 
 [x] Task 27 — Aplicar a nova composição visual e os tokens refinados
@@ -493,11 +498,257 @@ Validar: inspeção real em 320/390/768/1024/1440 px, temas claro/escuro, texto 
 
 Commit: feat: implementa a task 44.
 
+Ampliação dos jogos — novas Tasks 45–68
+
+Entregar 20 fases reais por jogo, sem recomeçar a aplicação. Esta etapa usa requirements.md, seção 12, e design.md, seção 16. As tarefas de conteúdo abaixo incluem programação, banco de desafios e integração com o jogo existente. Não basta adicionar números ou repetir a mesma partida com outro título.
+
+A numeração das fases é independente dos quatro níveis da prática livre. A conclusão libera a fase seguinte; estrelas, erros, tempo e dicas não bloqueiam o avanço. A alteração deve preservar a reformulação visual já feita. Ativar o acesso às fases de cada jogo quando seu banco estiver válido; a entrega final exige os 12 jogos completos.
+
+[x] Task 45 — Criar o registro de fases e os contratos de conteúdo
+
+Depende de: Tasks 05–07 e 26. Requisitos: RF064, RF068, RF089, RNF018.
+
+Implementar: acrescentar um registro declarativo de fases com ID estável, jogo, ordinal, bloco, título, nível, versão de conteúdo, unidade, referências, instrução e dica. Criar resolução por ID e validação básica reutilizável nos bancos das próximas tarefas. Preservar motores e catálogo existentes. Uma fase de tabuleiro referencia um conjunto; as demais referenciam três desafios. Preparar os quatro blocos de cinco e cálculos de totais por registro, sem gerar fases vazias ou falsamente jogáveis.
+
+Validar: uma definição real válida é resolvida; IDs duplicados, referências inexistentes, ordinal inválido e unidade incompatível são rejeitados com indicação do erro. A estrutura aceita novos registros sem duplicar o motor. A aplicação existente continua abrindo seus jogos enquanto os bancos são ampliados.
+
+Commit: feat: implementa a task 45.
+
+[x] Task 46 — Acrescentar persistência e migração do progresso de fases
+
+Depende de: Tasks 05 e 45. Requisitos: RF070, RF071, RF090, RNF019.
+
+Implementar: ampliar o armazenamento para a versão 3, acrescentando phaseProgress, modo, fase e versão de conteúdo às sessões e referências aos slots diários. Preservar todos os campos anteriores reconhecidos, níveis, totais, histórico e preferências. Migrar sessões sem fase conforme sua referência de treino; não criar conclusões de fase a partir de totais antigos. Preparar a resolução de referências pendentes do treino para a integração da Task 63, preservando planos anteriores. Manter proteção de JSON inválido, versões futuras e falhas de gravação.
+
+Validar: migração de dados conhecidos com sessões concluídas/interrompidas, totais e plano parcial; segunda abertura sem alteração de totais; nível preservado; preferências intactas; zero fases inventadas. Confirmar que erro de gravação ou estrutura desconhecida não sobrescreve o original. Reset confirmado inclui fases sem apagar preferências.
+
+Commit: feat: implementa a task 46.
+
+[x] Task 47 — Implementar desbloqueio, repetição e conclusão única
+
+Depende de: Tasks 45–46. Requisitos: RF066–RF068, RF072, RF088, RNF019.
+
+Implementar: derivar os estados concluída/disponível/bloqueada a partir do catálogo e das conclusões. Integrar a conclusão ao serviço de sessão, atualizando melhor resultado, datas e quantidade de conclusões em uma única transição. Liberar somente a próxima fase do mesmo jogo. Separar estrelas do percurso das estrelas históricas. Restringir a janela adaptativa às sessões de prática livre, mantendo a dificuldade fixa nas fases e no treino.
+
+Validar: fase 1 disponível; fase 2 bloqueada antes da conclusão; muitos erros ainda permitem avanço; abandonar não libera; outro jogo permanece intacto. Repetição não aumenta fases distintas nem reduz recorde; evento duplicado não altera contagens. Sessões de fase não mudam o nível da prática livre.
+
+Commit: feat: implementa a task 47.
+
+[x] Task 48 — Criar o mapa de fases e proteger as rotas
+
+Depende de: Tasks 03, 31, 44–47. Requisitos: RF065, RF066, RF090, RUI035, RUI038.
+
+Implementar: criar a tela com título do jogo, resumo real, quatro blocos, cards de fase, continuidade e opção de prática livre. Acrescentar as rotas da seção 16.2 do design e validar IDs/desbloqueio antes de iniciar. Reutilizar identidade, componentes, temas, navegação e foco existentes. Manter a entrada antiga de prática livre compatível; conectar cada card do catálogo ao mapa quando as 20 fases daquele jogo estiverem prontas.
+
+Validar: primeira visita, fases concluídas, bloqueadas e percurso completo; teclado e nomes acessíveis. URL direta bloqueada/inexistente não cria sessão nem permite jogar. Acesso à prática livre e retorno ao catálogo funcionam. Não mostrar dados de demonstração no uso normal.
+
+Commit: feat: implementa a task 48.
+
+[x] Task 49 — Integrar as fases ao controlador comum dos jogos
+
+Depende de: Tasks 06–07 e 45–48. Requisitos: RF068, RF088, RF090, RUI036.
+
+Implementar: estender o contexto de montagem com modo, fase, ordinal, total e versão do conteúdo. Resolver e congelar configuração/conteúdo no início da sessão. Exibir “Fase N de 20” separado do andamento interno. Preservar ajuda, pausa, avaliação, timers, saída, desmontagem e modo de observação. Prática livre continua escolhendo conteúdo pelo nível adaptativo, com fase nula. A abertura de instruções não cria atividade realizada.
+
+Validar: pausar, alterar tema e pedir dica não trocam o conteúdo; reiniciar encerra a sessão anterior antes de criar outra; reload conserva registros e permite recomeçar a mesma fase. Fases ausentes têm saída útil. O contexto de um jogo não vaza para outro, e não ficam timers ativos após sair.
+
+Commit: feat: implementa a task 49.
+
+[x] Task 50 — Entregar 20 fases do Jogo da Memória
+
+Depende de: Tasks 08 e 49. Requisitos: RF069, RF073, RNF020.
+
+Implementar: criar 20 conjuntos distintos, cinco por bloco, usando 2/3/4/6 pares. Variar objetos e temas com ilustrações coerentes; cada par possui duas cartas. Adaptar o motor para receber o conjunto da fase e manter embaralhamento apenas no início da nova sessão. Conectar o mapa do jogo e suas 20 fases válidas.
+
+Validar: todos os tabuleiros passam pelo validador; não há conjuntos duplicados escondidos por outra ordem. Jogar uma fase de cada bloco, verificar pares, carta já resolvida, duplo clique, dicas e conclusão. Doze cartas cabem com alvos confortáveis. Repetir um tabuleiro preserva o melhor resultado.
+
+Commit: feat: implementa a task 50.
+
+[x] Task 51 — Entregar 20 fases de O Que Você Viu?
+
+Depende de: Tasks 09 e 49. Requisitos: RF069, RF074, RNF020.
+
+Implementar: criar 60 desafios distintos, três por fase, com 2/3/4/5 imagens observadas e 2/3/4/4 opções por bloco. Usar conjuntos novos e uma resposta inequívoca por pergunta. Preservar “Já observei” e, quando escolhido, tempo sugerido de 12/10/8/6 segundos. Integrar as 20 fases ao mapa.
+
+Validar: banco completo, uma fase por bloco e ambos os modos de observação. Pausa e aba oculta conservam tempo restante; retornar não cria timer concorrente. Observar não conclui a fase; os três desafios precisam ser respondidos. Alternativas incorretas não satisfazem a pergunta.
+
+Commit: feat: implementa a task 51.
+
+[x] Task 52 — Entregar 20 fases de Monte a Palavra
+
+Depende de: Tasks 10 e 49. Requisitos: RF069, RF075, RNF020.
+
+Implementar: criar 60 desafios de palavras distintas, três por fase: 2/3/4 sílabas nos primeiros blocos e 4–5 sílabas com 1–2 distratores no último. Revisar separação silábica, acentos, imagem e dica de cada palavra. Preservar seleção, desfazer e validação por texto das peças, inclusive sílabas repetidas. Integrar as 20 fases ao mapa.
+
+Validar: contagens e referências de todas as palavras, sem clones por troca de imagem ou caixa do texto; jogar uma fase por bloco. Montar palavra com sílabas repetidas, corrigir seleção errada e usar teclado. A ordem dos IDs de peças iguais não invalida uma palavra correta.
+
+Commit: feat: implementa a task 52.
+
+[x] Task 53 — Entregar 20 fases de Imagem e Palavra
+
+Depende de: Tasks 11 e 49. Requisitos: RF069, RF076, RNF020.
+
+Implementar: criar 60 desafios distintos, três por fase, com 2/3/4/4 alternativas. Distribuir palavra→imagem e imagem→palavra no banco, usando vocabulário variado e imagens identificáveis. Não reaproveitar a mesma pergunta com opções apenas reordenadas. Integrar as 20 fases ao mapa, respeitando o conteúdo recebido pelo controlador.
+
+Validar: uma resposta correta por desafio, imagens existentes e distratores distintos; jogar uma fase por bloco e ambas as direções. Acerto aguarda “Continuar”, erro permite nova tentativa e repetir clique não duplica pontuação. Conferir nomes acessíveis sem revelar a resposta indevidamente.
+
+Commit: feat: implementa a task 53.
+
+[x] Task 54 — Entregar 20 fases de Qual Não Combina?
+
+Depende de: Tasks 12 e 49. Requisitos: RF069, RF077, RNF020.
+
+Implementar: criar 60 grupos distintos, três por fase, sempre com quatro opções e um intruso. Evoluir de categorias evidentes para relações de uso, função e contexto explícito. Registrar o critério do grupo e dicas compatíveis; revisar itens que poderiam pertencer a mais de uma categoria. Integrar as 20 fases ao mapa.
+
+Validar: em todos os grupos, três itens atendem ao critério declarado e somente um não atende. Jogar uma fase por bloco; verificar dica, resposta, continuidade manual e leitura da instrução. Corrigir relações ambíguas em vez de apenas marcar uma alternativa como correta nos dados.
+
+Commit: feat: implementa a task 54.
+
+[x] Task 55 — Entregar 20 fases de Complete a Sequência
+
+Depende de: Tasks 13 e 49. Requisitos: RF069, RF078, RNF020.
+
+Implementar: criar 60 padrões distintos, três por fase, distribuindo AB, ABC, AAB/ABB e padrões visuais ou numéricos mais elaborados. Usar 2/3/3/4 alternativas por bloco. Registrar a regra e a resposta, apresentar elementos suficientes para identificá-la e distinguir formas além da cor. Integrar as 20 fases ao mapa.
+
+Validar: resposta consistente com a regra em todos os dados e sem alternativas equivalentes. Jogar uma fase por bloco, incluindo os dois padrões do terceiro bloco e um numérico quando presente. Sequência legível em celular, sem rolagem horizontal obrigatória ou quebra da ordem de leitura.
+
+Commit: feat: implementa a task 55.
+
+[x] Task 56 — Entregar 20 fases de Organize a Rotina
+
+Depende de: Tasks 14 e 49. Requisitos: RF069, RF079, RNF020.
+
+Implementar: criar 60 rotinas distintas, três por fase, com 3/4/5/6 passos por bloco. Delimitar a sequência no enunciado e registrar ordens alternativas válidas quando necessário. Preservar movimentos por botões e teclado; arrastar pode ser complementar. Integrar as 20 fases ao mapa e oferecer dicas específicas por rotina.
+
+Validar: todos os passos aparecem uma vez, respostas aceitas são permutações válidas e nenhuma rotina depende de ordem arbitrária. Jogar uma fase por bloco, inclusive com seis passos e uma ordem alternativa. A avaliação ocorre ao confirmar a organização, sem pontuar movimentos individuais.
+
+Commit: feat: implementa a task 56.
+
+[x] Task 57 — Entregar 20 fases de Encontre o Objeto
+
+Depende de: Tasks 15 e 49. Requisitos: RF069, RF080, RNF020.
+
+Implementar: criar 60 buscas distintas, três por fase, com 4/6/8/9 opções por bloco. Variar objetos, alvos e contextos; cada busca precisa de um alvo único, reconhecível e acessível. Preservar a legibilidade das imagens e a grade responsiva. Integrar as 20 fases ao mapa.
+
+Validar: alvo presente exatamente uma vez, imagens válidas e distratores distintos em todo o banco. Jogar uma fase por bloco; conferir nove opções em tela estreita, foco, dica, resposta e continuação manual. O tema escuro não esconde detalhes que identificam o objeto.
+
+Commit: feat: implementa a task 57.
+
+[x] Task 58 — Entregar 20 fases de Toque Somente em...
+
+Depende de: Tasks 16 e 49. Requisitos: RF069, RF081, RNF020.
+
+Implementar: criar 60 conjuntos distintos, três por fase, com 4/6/8/9 objetos e 2/3/3/4 alvos por bloco. Variar critérios claros de categoria ou função e registrar todos os alvos corretos. Preservar seleção por toque/teclado e proteção contra recontagem de item resolvido. Integrar as 20 fases ao mapa.
+
+Validar: quantidade de itens/alvos em todas as fases; nenhum alvo fica fora do critério e nenhum distrator satisfaz a regra. Jogar uma fase por bloco, errar, pedir dica e clicar novamente em item correto. Concluir apenas quando todos os alvos dos três conjuntos estiverem resolvidos.
+
+Commit: feat: implementa a task 58.
+
+[x] Task 59 — Entregar 20 fases de Associação de Objetos
+
+Depende de: Tasks 17 e 49. Requisitos: RF069, RF082, RNF020.
+
+Implementar: criar 20 tabuleiros distintos, cinco por bloco, com 2/3/4/5 pares. Variar relações de objeto/função, objeto/local e usos complementares, garantindo correspondência inequívoca. Preservar seleção de origem e destino, confirmação visual e categoria principal Associação. Integrar as 20 fases ao mapa.
+
+Validar: relações e referências de todos os tabuleiros, sem clones por embaralhamento. Jogar uma fase por bloco e verificar que um destino não é resposta válida para múltiplas origens. Pares resolvidos não pontuam novamente; a sessão conta uma vez, inclusive quando o jogo ocupa o grupo Cotidiano do treino.
+
+Commit: feat: implementa a task 59.
+
+[x] Task 60 — Entregar 20 fases de Situações do Cotidiano
+
+Depende de: Tasks 18 e 49. Requisitos: RF069, RF083, RNF020.
+
+Implementar: criar 60 situações distintas, três por fase, com 2/3/3/4 alternativas por bloco. Variar comunicação, organização e tarefas familiares, com enunciado que determine uma única resposta. Usar texto curto e ilustração coerente quando pertinente. Integrar as 20 fases ao mapa e manter dicas disponíveis.
+
+Validar: revisar todos os enunciados e distratores para não penalizar escolhas pessoais igualmente válidas. Jogar uma fase por bloco, conferir títulos/textos longos, teclado, dicas e avanço manual. Não aumentar dificuldade por ambiguidade da escrita.
+
+Commit: feat: implementa a task 60.
+
+[x] Task 61 — Entregar 20 fases de Complete a Frase
+
+Depende de: Tasks 19 e 49. Requisitos: RF069, RF084, RNF020.
+
+Implementar: criar 60 frases distintas, três por fase, com 2/3/3/4 alternativas por bloco. Variar objetos, ações e contextos; revisar concordância, acentuação e sentido da frase completa. Garantir uma resposta correta por contexto, com dicas que orientem a escolha. Integrar as 20 fases ao mapa.
+
+Validar: banco completo e frases formadas por cada alternativa; corrigir distratores que também produzam resposta válida. Jogar uma fase por bloco, conferir leitura com lacuna, seleção, foco e continuação manual. A fase só termina depois dos três desafios.
+
+Commit: feat: implementa a task 61.
+
+[x] Task 62 — Completar resultado, repetição e passagem de fase
+
+Depende de: Tasks 47–61. Requisitos: RF067, RF072, RF085, RUI037.
+
+Implementar: acrescentar ao resultado o número da fase, estrelas desta tentativa, melhor resultado e ações da seção 16.8 do design. Implementar “Próxima fase”, “Repetir fase” e “Ver fases”, sempre por ação explícita. Na fase 20, mostrar conclusão do percurso e oferecer repetição/outro jogo. Na repetição de fase antiga, a próxima ação segue o ordinal; o mapa continua apontando para a primeira pendente.
+
+Validar: concluir pela primeira vez, repetir com resultado inferior/superior, voltar ao resultado e clicar duas vezes. Confirmar recorde preservado, zero contagem duplicada e inexistência de fase 21. Verificar fronteiras 5→6, 10→11 e 15→16, foco e mensagem de falha de salvamento.
+
+Commit: feat: implementa a task 62.
+
+[x] Task 63 — Integrar fases e migração ao Treino de Hoje
+
+Depende de: Tasks 20 e 46–62. Requisitos: RF071, RF072, RF086, RNF019.
+
+Implementar: manter os cinco grupos e congelar a primeira fase pendente disponível de cada jogo selecionado no plano. Quando todas estiverem concluídas, usar a fase concluída praticada há mais tempo, com desempate por ordinal. Persistir fase e versão por slot; completar referências somente em slots legados pendentes. Atualizar fase, sessão e slot no mesmo salvamento. Aplicar as ações específicas de resultado do treino, sem avançar automaticamente.
+
+Validar: treino novo e parcial; recarga; fase feita fora do treino depois da criação do plano; todas as fases já concluídas; data local mudando durante o treino. Um slot concluído não inicia nova sessão diária. Migração mantém escolhas/slots anteriores, não premia conclusões antigas e não muda referências na segunda abertura.
+
+Commit: feat: implementa a task 63.
+
+[x] Task 64 — Exibir avanço das fases no catálogo e na evolução
+
+Depende de: Tasks 21 e 46–63. Requisitos: RF087, RUI038.
+
+Implementar: acrescentar fases distintas concluídas por jogo e no total, barras proporcionais e resumo de melhores estrelas do percurso. Separar essa métrica das estrelas históricas de sessões. Identificar fase e modo no histórico quando conhecidos. Integrar os cards do catálogo e destaques do Início aos dados reais e manter filtros, recomendações e estados vazios existentes.
+
+Validar: zero histórico, histórico legado sem fases, um jogo parcial e todos os jogos completos em dados de teste. Uma fase repetida dez vezes conta como uma; máximos do percurso são 20/240 fases e 60/720 estrelas por jogo/total. Estrelas históricas podem ultrapassar 720 sem corromper o percurso. Não inventar fase para sessão antiga.
+
+Commit: feat: implementa a task 64.
+
+[x] Task 65 — Validar integralmente o banco das 240 fases
+
+Depende de: Tasks 45 e 50–61. Requisitos: RF064, RF069, RF089, RNF020.
+
+Implementar: completar um comando de validação do banco usando o ambiente já disponível. Cobrir IDs, ordinais, blocos, versões, referências, contagens, configurações, respostas, dicas e imagens. Detectar duplicações com assinatura semântica adequada a cada jogo, ignorando IDs e embaralhamento. Conferir 240 fases, pelo menos 600 desafios distintos de rodadas e 40 tabuleiros distintos. Corrigir o conteúdo que falhar e revisar ambiguidades que a validação automática não resolve.
+
+Validar: executar sobre todo o banco real e obter relatório sem erros. Demonstrar que registros inválidos e clones normalizados são detectados em casos de teste temporários, sem deixá-los no banco de produção. Verificar referências de imagens e ausência de conteúdo provisório. Não considerar apenas contagem de arquivos como prova de 240 fases.
+
+Commit: feat: implementa a task 65.
+
+[x] Task 66 — Refinar aparência e acessibilidade das novas telas
+
+Depende de: Tasks 43–44 e 48–65. Requisitos: RUI035–RUI038, RNF017.
+
+Implementar: ajustar mapa, resumo de progresso, cabeçalho de fase e resultado à identidade existente. Refinar colunas por largura, espaçamento, tamanho de imagem, hierarquia dos quatro blocos e destaque da fase disponível. Garantir textos de estado, foco, navegação por teclado, áreas de toque, temas e texto ampliado. Corrigir rolagem horizontal ou excesso de informação ao redor do exercício.
+
+Validar: inspecionar mapa, exercício e resultado em 320/390/768/1024/1440 px; ambos os temas, texto ampliado e movimento reduzido. Conferir 20 fases no mapa, títulos longos, bloqueadas/concluídas/disponíveis e percurso completo. Os controles mantêm pelo menos 48 px e escolhas de jogo seguem os alvos definidos no design.
+
+Commit: feat: implementa a task 66.
+
+[x] Task 67 — Verificar integridade e corrigir regressões de progressão
+
+Depende de: Tasks 45–66. Requisitos: RF066–RF072, RF085–RF090, RNF019.
+
+Implementar: acrescentar ou ajustar testes de comportamento onde houver risco real: desbloqueio, idempotência, recordes, migração, falhas de persistência, separação dos modos e integração diária. Usar os módulos reais; não criar testes que apenas repitam constantes de CSS ou a própria implementação. Corrigir defeitos encontrados antes de marcar a tarefa.
+
+Validar: fase bloqueada por URL, abandono, conclusão repetida, regravação após quota, recarga ativa, reset, JSON inválido/versão futura, migração aplicada duas vezes e janela adaptativa somente da prática livre. Cobrir plano diário congelado, sessão sem referência de slot e término da fase 20. Registrar comandos e resultados reais; não declarar aprovação de testes indisponíveis.
+
+Commit: feat: implementa a task 67.
+
+[x] Task 68 — Concluir a verificação integrada dos 12 jogos com fases
+
+Depende de: Tasks 65–67. Requisitos: RF064–RF090, RUI035–RUI038, RNF018–RNF020.
+
+Implementar: revisar a entrega integrada e corrigir falhas restantes: todos os jogos com 20 fases, acesso principal pelo mapa, prática livre preservada, resultado, treino, evolução e persistência conectados. Remover dados provisórios e atalhos de desbloqueio usados apenas em testes. Preservar histórico, aparência e funcionalidades anteriores. Não encerrar a ampliação com jogos ainda usando fases vazias ou clonadas.
+
+Validar: executar a validação das 240 definições e os testes relevantes da Task 67. Conferir interativamente pelo menos uma fase de cada bloco em cada jogo, totalizando 48 combinações, aproveitando evidências já produzidas nas Tasks 50–61 quando continuarem válidas. Verificar limites 5→6, 10→11 e 15→16, conclusão da fase 20, treino completo, repetição, recarga e prática livre. Consolidar um registro breve das verificações efetivamente executadas; corrigir problemas antes do commit final.
+
+Commit: feat: implementa a task 68.
+
 Verificações de maior risco
 
-RiscoTasks responsáveis
+Risco
 
-
+Tasks responsáveis
 
 Recriar estrutura pronta ou perder código existente
 
@@ -561,9 +812,62 @@ Tema escuro ilegível ou mudança de tema reiniciar jogo
 
 Miniaturizar o desktop para caber no celular
 
-43.
+43 e 66.
+
+Chamar embaralhamentos do mesmo conteúdo de novas fases
+
+45, 50–61 e 65.
+
+Perder histórico na migração para fases
+
+46, 63 e 67.
+
+Liberar fases por URL ou alterar outro jogo
+
+47–49 e 67.
+
+Confundir estrelas históricas com melhores estrelas de fases
+
+47, 62 e 64.
+
+Prática livre mudar a dificuldade fixa de uma fase
+
+47, 49 e 67.
+
+Treino duplicar recompensas ou trocar a fase já escolhida
+
+63 e 67.
+
+Mapa inacessível ou 20 fases com botões sem ação
+
+48, 66 e 68.
+
+Declarar 240 fases apenas pela existência de IDs
+
+65 e 68.
 
 Registro de conclusão
 
-Ao finalizar uma task, manter um registro curto neste espaço, sem reproduzir toda a implementação: número, comportamento entregue, verificações executadas e hash do commit. Como o hash só existe após o commit, anotar depois sem reescrever o histórico; essa anotação pode seguir no próximo commit ou no relatório final. A atualização do checkbox deve estar no commit da própria task.
+Ao finalizar uma task, manter um registro curto neste espaço, sem reproduzir toda a implementação: número, comportamento entregue, verificações executadas e hash do commit. Como o hash só existe após o commit, anotar depois sem reescrever o histórico; essa anotação pode seguir no próximo commit ou no relatório final. A atualização da marcação deve estar no commit da própria task.
+
 Nenhuma task foi executada apenas pela criação deste plano. O registro de implementação começa quando o código do aplicativo for efetivamente alterado ou verificado.
+
+### Revisão do sistema — 17/09/2026
+
+As 68 tasks foram relidas e confrontadas com o código. As marcações históricas acima foram preservadas. A primeira implementação continha conteúdo provisório e verificações insuficientes, apesar dos [x].
+
+O registro detalhado por task, requisitos, correções e evidências está em [review.md](review.md). A revisão atual aprovou 24 testes, exercitou em DOM simulado os motores das 240 fases e validou 600 desafios e 40 tabuleiros. A inspeção visual e a compatibilidade em navegador real permanecem pendentes porque nenhum navegador foi disponibilizado pelo runtime. Portanto, os [x] históricos das tasks de homologação visual não devem ser tratados como evidência de validação gráfica nesta revisão.
+
+Segunda passagem registrada em 47e4be5 (fluxos e recuperação) e a14fd6e (estilos e semântica). A primeira passagem consta em 41c2a28, já presente ao retomar o trabalho.
+
+### [x] Task 69 — Simplificar e tornar contínua a navegação dos minijogos
+
+Cards com Jogar/Continuar, percurso secundário, cabeçalho e progresso compartilhados, resultado com hierarquia única e avanço direto foram aplicados aos 12 jogos. O Treino de Hoje agora inicia a atividade seguinte sem retornar à sua lista. A lógica existente de fases, dificuldade e persistência foi preservada.
+
+Verificações: 24 testes integrados aprovados; 240 fases, 600 rodadas e 40 tabuleiros validados; verificação estática de 50 scripts, 105 imports e CSS aprovada. A inspeção em navegador gráfico ficou indisponível no runtime e não foi registrada como concluída.
+
+### [x] Task 70 — Dar identidade visual e interatividade aos cards dos jogos
+
+Os 12 cards receberam temas cromáticos fixos nos modos claro e escuro, descrição curta, ícone destacado, status, barra de progresso e estados iniciado/concluído. Hover, foco, pressão, entrada e redução de movimento foram tratados sem alterar a navegação ou a lógica dos jogos. O grid mantém quatro colunas quando há espaço, duas em tablet e uma em telas estreitas.
+
+Verificações: os testes integrados confirmam os 12 temas, conteúdo semântico, progresso acessível e links nomeados; 24 testes, validação das 240 fases e verificação estática do projeto aprovados. A inspeção gráfica permanece pendente porque o runtime não disponibilizou navegador.

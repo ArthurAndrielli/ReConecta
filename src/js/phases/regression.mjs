@@ -1,0 +1,11 @@
+import { phaseCatalog } from './catalog.js';
+import { validatePhaseCatalog } from './validate.js';
+import { canStartPhase, recordPhaseResult, getPhaseSummary } from './progression.js';
+const empty = { phaseProgress: {} };
+if (!validatePhaseCatalog(phaseCatalog).valid) throw new Error('catálogo inválido');
+if (canStartPhase(empty, 'memory', 2)) throw new Error('fase bloqueada liberada');
+let result = recordPhaseResult(empty, 'memory', 1, 2, 1);
+if (!result.accepted || !canStartPhase(result.progress, 'memory', 2)) throw new Error('desbloqueio inválido');
+result = recordPhaseResult(result.progress, 'memory', 1, 3, 1);
+if (getPhaseSummary(result.progress, 'memory').completed !== 1 || getPhaseSummary(result.progress, 'memory').stars !== 3) throw new Error('repetição alterou fases distintas');
+console.log('regressões de fases: OK');

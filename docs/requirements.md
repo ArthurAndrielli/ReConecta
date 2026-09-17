@@ -1,10 +1,10 @@
 ReConecta — Requisitos do aplicativo
 
-Versão: 2.1 · Reformulação visual e aplicação acadêmica completa
+Versão: 3.0 · Mais fases para os 12 minijogos
 Data: 16/09/2026
 Documentos relacionados: design.md e tasks.md.
 
-Prioridade desta revisão: melhorar a aparência do sistema, conforme o pedido mais recente. A seção 11 acrescenta critérios visuais para as Tasks 27–44. As tarefas anteriores mantêm seu histórico; as novas tarefas são uma etapa de reformulação, sem exigir que funcionalidades prontas sejam refeitas.
+Prioridade desta revisão: ampliar cada um dos 12 jogos para 20 fases, totalizando 240 fases. A seção 12 orienta as novas Tasks 45–68 e complementa a reformulação visual da seção 11. Preservar funcionalidades, aparência, progresso e tarefas concluídas no projeto existente. Esta documentação especifica a ampliação; não afirma que ela já foi implementada.
 
 1. Objetivo e base desta revisão
 
@@ -202,7 +202,7 @@ RF003
 
 Abrir a atividade escolhida.
 
-O card abre o jogo correspondente dentro de #app, sem novo arquivo HTML.
+O card abre o mapa de fases do jogo correspondente dentro de #app, sem novo arquivo HTML; a prática livre continua acessível.
 
 RF004
 
@@ -300,7 +300,7 @@ RF018
 
 Manter níveis discretos.
 
-O nível pode mudar entre sessões; a tela principal não exibe número, ranking ou mensagem de rebaixamento.
+Na prática livre, o nível pode mudar entre sessões, sem anunciar rebaixamento. A dificuldade interna 1–4 não é exibida como classificação da pessoa; o número da fase 1–20 é visível como localização no percurso.
 
 RF019
 
@@ -782,9 +782,9 @@ Abrir instruções, pedir dica, desfazer seleção, pausar e apertar um botão d
 
 Sessões interrompidas preservam as tentativas já avaliadas, mas não recebem estrelas nem aumentam atividades concluídas. A evolução identifica essas sessões como “Interrompida”. Recomendações e progressão usam apenas sessões concluídas. O estado de um tabuleiro em andamento não precisa sobreviver ao recarregamento.
 
-8.2 Progressão
+8.2 Dificuldade adaptativa da prática livre
 
-Cada jogo mantém nível próprio de 1 a 4. Após três sessões concluídas desde a última avaliação daquele jogo, calcular a razão entre a soma de acertos e a soma de tentativas dessas três sessões: pelo menos 85% aumenta um nível; abaixo de 50% reduz um nível; os demais resultados mantêm o nível. Respeitar os limites 1–4 e iniciar uma nova janela após a avaliação.
+Cada jogo mantém nível próprio de 1 a 4 para a prática livre. Após três sessões de prática livre concluídas desde a última avaliação daquele jogo, calcular a razão entre a soma de acertos e a soma de tentativas dessas três sessões: pelo menos 85% aumenta um nível; abaixo de 50% reduz um nível; os demais resultados mantêm o nível. Respeitar os limites 1–4 e iniciar uma nova janela após a avaliação. Sessões de fases e do treino diário não entram nessa janela; usam a dificuldade fixa da fase selecionada, conforme a seção 12.
 
 O nível de uma sessão iniciada fica congelado até ela terminar. Dicas e duração não entram na decisão. A interface não anuncia redução de nível. Dados legados só inicializam dificuldade quando houver um valor válido; na ausência dele, usar 1.
 
@@ -808,7 +808,7 @@ Totais anteriores podem ser preservados como totais legados; não criar datas, s
 
 9. Critério de entrega
 
-A implementação estará concluída quando os 12 jogos puderem ser abertos e finalizados, o treino funcionar de ponta a ponta, o progresso sobreviver ao recarregamento, os dados antigos válidos forem preservados e os estados de falha tiverem saída útil.
+A implementação estará concluída quando os 12 jogos tiverem suas 20 fases válidas e jogáveis, a prática livre continuar funcionando, o treino funcionar de ponta a ponta, o progresso sobreviver ao recarregamento, os dados antigos válidos forem preservados e os estados de falha tiverem saída útil. Não basta trocar o número da fase ou embaralhar o mesmo conteúdo.
 
 O design deve estar aplicado às telas Início, Atividades, Exercício, Resultado, Treino, Minha evolução e Ajustes. Validar uso por teclado, telas pequenas, texto ampliado, redução de movimento e ausência de dupla contagem. A aparência isolada não permite marcar uma funcionalidade como concluída.
 
@@ -957,3 +957,274 @@ RNF017 — Verificação visual da reformulação: conferir Início, catálogo, 
 As Tasks 01–26 descrevem a implementação base. As Tasks 27–44 refinam essa implementação; um critério visual antigo substituído por esta seção não deve ser reaplicado depois da reformulação. Em particular, a antiga exigência de 12 cards no Início passa a ser três destaques com acesso ao catálogo completo. A lógica e a disponibilidade dos 12 jogos permanecem obrigatórias.
 
 Os exemplos de telas são referências de composição. Ao implementar, conectar totais, treino, seleção de atividades e histórico às fontes reais existentes. Um protótipo visual não substitui as regras dos jogos nem comprova que as alterações foram aplicadas ao código do usuário.
+
+12. Ampliação dos jogos — Tasks 45–68
+
+12.1 Escopo e resultado esperado
+
+Entregar 20 fases por jogo × 12 jogos = 240 fases. Uma fase é uma atividade completa: um tabuleiro na Memória e na Associação de Objetos; três desafios distintos nos outros dez jogos. O número da fase indica o avanço no percurso, enquanto “Etapa 1 de 3” indica o andamento dentro daquela fase.
+
+Cada jogo possui quatro blocos de cinco fases: Primeiros passos (1–5), Novas conexões (6–10), Descobertas (11–15) e Mais caminhos (16–20). Esses blocos usam, respectivamente, as configurações internas 1, 2, 3 e 4. A dificuldade cresce entre blocos; dentro de cada bloco variam os conteúdos e contextos. Não aumentar dificuldade por cronômetro, imagens menores, instruções confusas ou penalidades.
+
+O modo Fases passa a ser o acesso principal do catálogo. A opção “Prática livre” preserva o funcionamento adaptativo anterior. Não há limite de tentativas, vidas, compras, ranking, desbloqueio por dias ou exigência de três estrelas para continuar.
+
+12.2 Requisitos funcionais adicionais
+
+ID
+
+Requisito
+
+Critério de aceitação
+
+RF064
+
+Oferecer 240 fases reais.
+
+Os 12 IDs oficiais possuem exatamente 20 definições nesta entrega, numeradas de 1 a 20, com identificadores estáveis e conteúdo válido.
+
+RF065
+
+Exibir o mapa de fases.
+
+Mostrar os quatro blocos, fases concluídas, fase disponível, bloqueadas, melhor resultado e botão para continuar; permitir prática livre.
+
+RF066
+
+Desbloquear por conclusão.
+
+Fase 1 começa disponível. Concluir uma fase libera a seguinte do mesmo jogo, com qualquer quantidade de erros, dicas ou tempo. Abandono não libera; alterar a URL não permite iniciar uma fase bloqueada.
+
+RF067
+
+Repetir fases concluídas.
+
+Toda fase concluída pode ser repetida. A melhor quantidade de estrelas é preservada; uma repetição não aumenta a quantidade de fases distintas concluídas.
+
+RF068
+
+Fixar a dificuldade da fase.
+
+O conteúdo e a configuração são determinados pela fase, inclusive no treino diário. Resultados da prática livre não alteram nem bloqueiam esse percurso.
+
+RF069
+
+Ampliar conteúdo de verdade.
+
+Cada fase tem material próprio. Nos jogos de três desafios, oferecer pelo menos 60 desafios semanticamente distintos por jogo; nos dois jogos de tabuleiro, 20 conjuntos distintos por jogo. Mudar apenas ordem, ID ou título não cria conteúdo novo.
+
+RF070
+
+Salvar avanço por jogo.
+
+Persistir fases concluídas, primeiro/último término, quantidade de conclusões e melhor resultado. Recarregar preserva tudo que foi salvo; a próxima fase é derivada do percurso válido.
+
+RF071
+
+Migrar sem perder histórico.
+
+Migrar progresso conhecido para a versão 3, preservando sessões, totais, níveis, treino e preferências. Não transformar atividades antigas sem identificação de fase em fases concluídas. Reabrir não repete a migração.
+
+RF072
+
+Concluir com efeito único.
+
+Uma sessão atualiza histórico, estrelas, progresso da fase e eventual etapa diária no mesmo estado salvo. Cliques duplicados, remontagem do resultado ou nova tentativa de salvar não duplicam nada.
+
+RF073
+
+Ampliar Jogo da Memória.
+
+Entregar 20 tabuleiros com pares inequívocos, usando 2/3/4/6 pares por bloco; variar conjuntos, preservando alvos confortáveis e regras de comparação.
+
+RF074
+
+Ampliar O Que Você Viu?
+
+Entregar 20 fases com três desafios cada, conjuntos observados de 2/3/4/5 imagens e 2/3/4/4 opções por bloco. Preservar “Já observei” e o tempo sugerido opcional.
+
+RF075
+
+Ampliar Monte a Palavra.
+
+Entregar 20 fases com três palavras distintas cada, de 2/3/4/4–5 sílabas por bloco; somente no último bloco acrescentar 1–2 distratores. Validar acentos e sílabas repetidas.
+
+RF076
+
+Ampliar Imagem e Palavra.
+
+Entregar 20 fases com três desafios cada, 2/3/4/4 alternativas por bloco e correspondência inequívoca; distribuir as duas direções de associação no banco.
+
+RF077
+
+Ampliar Qual Não Combina?
+
+Entregar 20 fases com três grupos cada, quatro opções e exatamente um intruso. Evoluir a relação de categoria/função sem introduzir respostas ambíguas.
+
+RF078
+
+Ampliar Complete a Sequência.
+
+Entregar 20 fases com três padrões cada: AB, ABC, AAB/ABB e padrões mais elaborados, com 2/3/3/4 alternativas por bloco e regra verificável.
+
+RF079
+
+Ampliar Organize a Rotina.
+
+Entregar 20 fases com três rotinas cada, de 3/4/5/6 passos por bloco, ordens aceitas explícitas e operação por toque e teclado.
+
+RF080
+
+Ampliar Encontre o Objeto.
+
+Entregar 20 fases com três buscas cada, de 4/6/8/9 opções por bloco. Cada busca possui um alvo único e distratores visualmente claros.
+
+RF081
+
+Ampliar Toque Somente em...
+
+Entregar 20 fases com três conjuntos cada, de 4/6/8/9 objetos e 2/3/3/4 alvos por bloco; garantir critério inequívoco e contagem única por seleção avaliada.
+
+RF082
+
+Ampliar Associação de Objetos.
+
+Entregar 20 tabuleiros de 2/3/4/5 pares por bloco, com relações claras. Não pontuar novamente pares resolvidos nem contar a sessão em duas categorias.
+
+RF083
+
+Ampliar Situações do Cotidiano.
+
+Entregar 20 fases com três situações cada e 2/3/3/4 alternativas por bloco. A pergunta delimita uma resposta correta sem tratar preferências pessoais como erro.
+
+RF084
+
+Ampliar Complete a Frase.
+
+Entregar 20 fases com três frases cada e 2/3/3/4 alternativas por bloco; gramática, contexto e distratores permitem uma resposta inequívoca.
+
+RF085
+
+Mostrar resultado e próxima ação.
+
+Exibir fase concluída, estrelas desta tentativa e melhor resultado. Oferecer “Próxima fase” quando houver, “Repetir fase” e “Ver fases”; após a fase 20, celebrar a conclusão sem criar fase 21.
+
+RF086
+
+Integrar fases ao Treino de Hoje.
+
+Cada uma das cinco etapas congela uma fase disponível do jogo escolhido. Concluí-la também registra o avanço daquele jogo, com uma única recompensa de sessão. O plano não muda por recarga ou prática fora do treino.
+
+RF087
+
+Exibir evolução das fases.
+
+Mostrar fases distintas concluídas por jogo (0–20) e no total (0–240). Separar estrelas do percurso, soma dos melhores resultados (0–720), de estrelas históricas de sessões e totais legados.
+
+RF088
+
+Preservar prática livre.
+
+Manter acesso aos 12 jogos com adaptação por desempenho; seus resultados entram no histórico, mas não concluem fases nem alimentam progresso fictício.
+
+RF089
+
+Permitir expansão posterior por dados.
+
+Acrescentar conteúdo por registro de fase, sem copiar o motor do jogo. Não renumerar IDs publicados; calcular totais a partir do catálogo validado. A entrega atual continua exigindo 20 por jogo.
+
+RF090
+
+Tratar interrupções e conteúdo indisponível.
+
+Ao sair/recarregar uma sessão ativa, preservar tentativas e reiniciar a mesma fase quando solicitado; não restaurar tabuleiro parcial nem concluir automaticamente. Referência inválida oferece retorno ao mapa, sem gravar uma conclusão falsa.
+
+12.3 Interface e qualidade adicionais
+
+ID
+
+Requisito
+
+Critério de aceitação
+
+RUI035
+
+Mapa legível e acessível.
+
+Estados têm texto, forma/ícone e contraste; navegação por teclado; explicar o bloqueio. A fase disponível se destaca com a identidade visual da seção 11, sem um mapa decorativo difícil de percorrer.
+
+RUI036
+
+Orientação durante a fase.
+
+Exibir nome do jogo, “Fase N de 20” e progresso interno separado. A área de jogo permanece central e não fica cercada por 20 miniaturas.
+
+RUI037
+
+Resultado acolhedor.
+
+Manter o padrão visual existente e deixar clara a próxima ação. Nunca anunciar perda de progresso por obter menos estrelas numa repetição.
+
+RUI038
+
+Resumo consistente.
+
+Catálogo e evolução usam os mesmos dados reais; no primeiro uso, mostrar zero fases concluídas e Fase 1 disponível. Evitar percentuais ou estrelas de exemplo.
+
+RNF018
+
+Conteúdo declarativo e extensível.
+
+Registro, validação, progressão e apresentação possuem responsabilidades separadas, aproveitando os módulos existentes. Não adicionar dependências de produção apenas para representar fases.
+
+RNF019
+
+Integridade do avanço.
+
+Verificações cobrem desbloqueio, repetição, migração, interrupção, duplicidade e falha de gravação. Não apagar dados desconhecidos nem declarar salvamento quando falhou.
+
+RNF020
+
+Banco de fases verificável.
+
+Validar automaticamente IDs, ordinais, referências, quantidade, respostas e limites de cada jogo. Revisar também linguagem e imagens, pois um validador estrutural não comprova clareza semântica.
+
+12.4 Regras de progressão e conteúdo
+
+Identidade: usar IDs estáveis, como memory-p001, até memory-p020; títulos podem mudar sem apagar progresso. A versão do conteúdo é distinta da versão do armazenamento.
+
+Desbloqueio: disponível se for a primeira fase, já estiver concluída ou tiver a anterior concluída. Acesso pelo mapa e por URL passa pela mesma regra. Um jogo nunca desbloqueia fases de outro.
+
+Conclusão: somente cumprir todos os objetivos fecha a sessão. Ajuda, erros e duração não impedem avanço. Estrelas seguem RF019 e não são condição para liberar fases.
+
+Repetição: uma nova sessão legítima conta no histórico e pode somar estrelas históricas; o percurso guarda apenas o melhor resultado de cada fase. Repetir dez vezes a primeira fase continua representando uma fase distinta concluída.
+
+Continuidade: nenhuma fase começa automaticamente após o resultado. “Continuar” no mapa abre a primeira fase ainda não concluída e disponível; com todas concluídas, mostra o estado final e permite escolher uma para repetir.
+
+Conteúdo próprio: é permitido reutilizar ilustrações e tipos de exercício. O desafio completo ou o conjunto completo de pares não pode ser idêntico em duas fases do mesmo jogo. Apenas embaralhar opções não atende ao requisito.
+
+Interrupção: atualizar a página encerra a sessão ativa como interrompida e conserva seus registros; repetir essa fase cria nova sessão desde o início. Fases concluídas e etapas diárias já creditadas continuam concluídas.
+
+Dados anteriores: histórico antigo pode coexistir com zero fases concluídas. Não inferir fase a partir do antigo nível, número de atividades ou estrelas. Reset de progresso inclui as fases e mantém as preferências.
+
+12.5 Integração diária e aceitação da entrega
+
+Ao gerar o plano diário, preservar os cinco grupos existentes. Para cada jogo escolhido, selecionar a primeira fase pendente disponível; se todas estiverem concluídas, selecionar a fase concluída praticada há mais tempo, com desempate pelo menor ordinal. Persistir a escolha. Se a pessoa terminar essa fase fora do treino, o plano conserva a mesma fase até a etapa ser realizada dentro daquele treino. Não creditar a etapa diária por uma sessão sem a referência dessa etapa.
+
+Planos antigos mantêm etapas e conclusões. A migração acrescenta uma fase apenas às etapas pendentes sem referência válida; etapas antigas concluídas não recebem retroativamente estrelas ou avanço de fase. Se a data mudar durante o treino, continuar com o plano original, conforme a seção 8.3.
+
+A entrega exige os 240 registros válidos, pelo menos 600 desafios distintos nos dez jogos de três desafios e 40 tabuleiros distintos nos outros dois. Cada conjunto de tabuleiro pode conter vários pares. O banco deve respeitar as configurações e as respostas de cada jogo, sem textos provisórios, imagens ausentes ou clones com outro número.
+
+Validar os 12 jogos, limites entre blocos (5→6, 10→11 e 15→16), término da fase 20, repetição, prática livre, treino, migração e recarregamento. A validação de dados cobre todas as 240 definições; a inspeção interativa cobre pelo menos uma fase de cada bloco de cada jogo, além dos fluxos compartilhados de maior risco. As verificações são detalhadas em design.md, seção 16, e nas Tasks 65–68.
+
+As Tasks 01–44 permanecem como histórico e base. A ampliação pertence às Tasks 45–68. Regras desta seção sobre fases, acesso pelo catálogo e adaptação exclusiva da prática livre prevalecem sobre instruções anteriores desses mesmos pontos; todas as demais regras continuam valendo.
+
+## Adendo — fluxo contínuo dos minijogos (17/09/2026)
+
+Este adendo substitui, para o caminho principal, a exigência anterior de abrir o mapa de fases a partir de todo card. As 20 fases e suas regras de desbloqueio continuam preservadas, mas funcionam como progressão interna e como percurso opcional.
+
+- Cada card apresenta **Jogar**, **Continuar** ou **Jogar novamente** e abre diretamente a atividade adequada. **Ver percurso** é uma ação secundária.
+- Durante uma atividade, o cabeçalho informa jogo, contexto e progresso sem classificar a pessoa por nível ou fase.
+- Ao concluir, a ação dominante é **Próxima atividade**; a próxima sessão abre diretamente, sem retorno ao catálogo, mapa, introdução ou tela do treino.
+- O resultado oferece somente uma ação principal, **Tentar novamente** como ação secundária e **Sair do jogo** como ação discreta.
+- No Treino de Hoje, as cinco atividades formam um fluxo contínuo. A tela do treino é usada para iniciar ou retomar, não como parada obrigatória entre etapas.
+- Fases, dificuldade, tentativas, estrelas, tempo e progresso permanecem na arquitetura de persistência existente.

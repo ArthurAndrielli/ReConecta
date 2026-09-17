@@ -1,21 +1,35 @@
-import { memoryCardsByLevel } from '../data.js';
 import { shuffle } from '../utils/array.js';
-
-function render(container, callbacks, context = {}) {
-  let deck = shuffle(memoryCardsByLevel[context.level] || memoryCardsByLevel[1]);
-  let openCards = [];
-  let matched = [];
-  let locked = false;
-  let completed = false;
-  let attempts = 0;
-  let errors = 0;
-  const startTime = Date.now();
-  container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Jogo da Memória</h2><p>Encontre os dois pares.</p><div class="memory-grid" id="memory-grid"></div><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
-  const grid = container.querySelector('#memory-grid');
-  const draw = () => { grid.innerHTML = deck.map((value, index) => { const revealed = openCards.includes(index) || matched.includes(index); return `<button class="memory-card ${openCards.includes(index) ? 'is-open' : ''} ${matched.includes(index) ? 'is-matched' : ''}" data-index="${index}" aria-label="${revealed ? `Carta ${index + 1}: ${value}` : `Carta ${index + 1} fechada`}" ${matched.includes(index) ? 'aria-pressed="true"' : ''}>${revealed ? value : '❓'}</button>`; }).join(''); grid.querySelectorAll('button').forEach((button) => button.addEventListener('click', () => select(Number(button.dataset.index)))); };
-  const select = (index) => { if (locked || matched.includes(index) || openCards.includes(index)) return; openCards.push(index); draw(); if (openCards.length < 2) return; attempts += 1; callbacks.onAttempt(); const [first, second] = openCards; if (deck[first] === deck[second]) { matched.push(first, second); openCards = []; callbacks.onCorrect(); callbacks.onMessage('correct'); draw(); if (matched.length === deck.length && !completed) { completed = true; callbacks.onComplete({ pairs: matched.length / 2, elapsedTime: Date.now() - startTime, attempts, errors }); container.querySelector('#feedback').textContent = 'Parabéns! Você concluiu o Jogo da Memória.'; } } else { errors += 1; locked = true; callbacks.onWrong(); callbacks.onMessage('wrong'); if (errors >= 2) container.querySelector('#feedback').textContent = 'Dica: observe as cartas com calma.'; setTimeout(() => { openCards = []; locked = false; draw(); }, 700); } };
-  container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
-  container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
-  draw();
+import { picture } from '../utils/contentView.js';
+export function render(container, callbacks, { content }) {
+  const deck = shuffle(content.items.flatMap(id => [id, id]));
+  const matched = new Set();
+  let open = [], locked = false, destroyed = false;
+  container.innerHTML = `<p id="pair-progress">0 de ${content.items.length} pares encontrados</p><div class="memory-grid">${deck.map((_, i) => `<button class="memory-card" data-index="${i}" aria-label="Carta ${i + 1} fechada"><span aria-hidden="true">◌</span></button>`).join('')}</div>`;
+  const buttons = [...container.querySelectorAll('[data-index]')];
+  const update = () => buttons.forEach((button, index) => {
+    const revealed = open.includes(index) || matched.has(index);
+    button.innerHTML = revealed ? picture(deck[index], { label: false }) : '<span aria-hidden="true">◌</span>';
+    button.classList.toggle('is-open', revealed);
+    button.classList.toggle('is-matched', matched.has(index));
+    button.disabled = matched.has(index);
+    if (!revealed) button.setAttribute('aria-label', `Carta ${index + 1} fechada`);
+    else button.removeAttribute('aria-label');
+  });
+  buttons.forEach((button, index) => button.addEventListener('click', () => {
+    if (destroyed || locked || !callbacks.isActive() || matched.has(index) || open.includes(index)) return;
+    open.push(index); update();
+    if (open.length !== 2) return;
+    const [a, b] = open, correct = deck[a] === deck[b];
+    callbacks.onAttempt(correct, correct ? `${content.id}:${deck[a]}` : `${content.id}:comparison`);
+    if (correct) {
+      matched.add(a); matched.add(b); open = []; update();
+      container.querySelector('#pair-progress').textContent = `${matched.size / 2} de ${content.items.length} pares encontrados`;
+      if (matched.size === deck.length) { locked = true; callbacks.onComplete(); }
+      else { callbacks.message('Muito bem! Par encontrado.', 'success'); buttons.find(item => !item.disabled)?.focus(); }
+    } else {
+      locked = true;
+      callbacks.onRetry(() => { if (destroyed) return; open = []; locked = false; update(); button.focus(); }, 'Tentar outro par');
+    }
+  }));
+  return { destroy() { destroyed = true; } };
 }
-export { render };

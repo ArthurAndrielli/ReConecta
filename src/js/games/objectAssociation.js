@@ -1,24 +1,30 @@
-import { associationRounds } from '../data.js';
 import { shuffle } from '../utils/array.js';
-
-function render(container, callbacks, context = {}) {
-  const round = associationRounds.find((item) => item.level === context.level) || associationRounds[0];
-  const remaining = new Set(round.pairs.map((pair) => pair[0]));
-  let left = null;
-  let right = null;
-  let completed = false;
-  let attempts = 0;
-  let errors = 0;
-  const startTime = Date.now();
-  container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Associação de Objetos</h2><p>Escolha um item de cada coluna para formar um par.</p><div class="association-grid"><div><h3>Objeto</h3><div id="association-left"></div></div><div><h3>Relação</h3><div id="association-right"></div></div></div><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="cancel-association">Cancelar seleção</button><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
-  const leftElement = container.querySelector('#association-left');
-  const rightElement = container.querySelector('#association-right');
-  const draw = () => { const pairs = round.pairs.filter((pair) => remaining.has(pair[0])); leftElement.innerHTML = pairs.map((pair) => `<button class="association-option ${left === pair[0] ? 'is-selected' : ''}" data-left="${pair[0]}">${pair[0]}</button>`).join(''); rightElement.innerHTML = shuffle(pairs.map((pair) => pair[1])).map((value) => `<button class="association-option ${right === value ? 'is-selected' : ''}" data-right="${value}">${value}</button>`).join(''); leftElement.querySelectorAll('[data-left]').forEach((button) => button.addEventListener('click', () => { left = button.dataset.left; validate(); draw(); })); rightElement.querySelectorAll('[data-right]').forEach((button) => button.addEventListener('click', () => { right = button.dataset.right; validate(); draw(); })); };
-  const validate = () => { if (!left || !right || completed) return; attempts += 1; callbacks.onAttempt(); const pair = round.pairs.find((item) => item[0] === left); if (pair && pair[1] === right) { remaining.delete(left); callbacks.onCorrect(); callbacks.onMessage('correct'); left = null; right = null; if (!remaining.size) { completed = true; callbacks.onComplete({ attempts, errors, elapsedTime: Date.now() - startTime }); container.querySelector('#feedback').textContent = 'Muito bem! Todos os pares foram associados.'; } } else { errors += 1; callbacks.onWrong(); callbacks.onMessage('wrong'); right = null; } };
-  container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
-  container.querySelector('#cancel-association').addEventListener('click', () => { left = null; right = null; draw(); });
-  container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
-  draw();
+import { escapeHTML } from '../utils/dom.js';
+export function render(container, callbacks, { content: round }) {
+  const destinations = shuffle(round.pairs.map(pair => pair[1]));
+  const resolved = new Set();
+  let selected = null, done = false, waiting = false;
+  container.innerHTML = `<p id="association-progress">0 de ${round.pairs.length} pares encontrados</p><div class="association-grid"><section><h3>Origem</h3>${round.pairs.map((pair, i) => `<button class="association-option" data-left="${i}" aria-pressed="false">${escapeHTML(pair[0])}</button>`).join('')}</section><section><h3>Combinação</h3>${destinations.map((value, i) => `<button class="association-option" data-right="${i}" disabled>${escapeHTML(value)}</button>`).join('')}</section></div><button class="secondary" id="cancel-association" disabled>Cancelar seleção</button>`;
+  const left = [...container.querySelectorAll('[data-left]')], right = [...container.querySelectorAll('[data-right]')];
+  const update = () => {
+    left.forEach((b, i) => { b.disabled = resolved.has(i) || done || waiting; b.setAttribute('aria-pressed', String(selected === i)); b.classList.toggle('is-selected', selected === i); b.classList.toggle('is-resolved', resolved.has(i)); });
+    right.forEach((b, i) => { b.disabled = selected === null || done || waiting || [...resolved].some(j => round.pairs[j][1] === destinations[i]); b.classList.toggle('is-resolved', [...resolved].some(j => round.pairs[j][1] === destinations[i])); });
+    container.querySelector('#cancel-association').disabled = selected === null || done || waiting;
+  };
+  left.forEach((b, i) => b.addEventListener('click', () => {
+    if (!callbacks.isActive() || done || waiting || resolved.has(i)) return;
+    selected = i; update(); callbacks.message(`${round.pairs[i][0]} selecionado. Escolha uma combinação.`); right.find(item => !item.disabled)?.focus();
+  }));
+  right.forEach((b, i) => b.addEventListener('click', () => {
+    if (!callbacks.isActive() || done || waiting || selected === null || b.disabled) return;
+    const correct = round.pairs[selected][1] === destinations[i];
+    callbacks.onAttempt(correct, `${round.id}:${selected}`);
+    if (correct) {
+      resolved.add(selected); selected = null; done = resolved.size === round.pairs.length; update();
+      container.querySelector('#association-progress').textContent = `${resolved.size} de ${round.pairs.length} pares encontrados`;
+      if (done) callbacks.onComplete(); else { callbacks.message('Muito bem! Par encontrado.', 'success'); left.find(item => !item.disabled)?.focus(); }
+    } else { waiting = true; update(); callbacks.onRetry(() => { waiting = false; update(); right.find(item => !item.disabled)?.focus(); }); }
+  }));
+  container.querySelector('#cancel-association').addEventListener('click', () => { if (!callbacks.isActive() || done || waiting) return; const index = selected; selected = null; update(); left[index]?.focus(); });
+  return { destroy() { done = true; } };
 }
-
-export { render };

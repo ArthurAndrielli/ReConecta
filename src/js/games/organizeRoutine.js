@@ -1,24 +1,27 @@
-import { routineRounds } from '../data.js';
 import { shuffle } from '../utils/array.js';
-
-function render(container, callbacks, context = {}) {
-  const round = routineRounds.find((item) => item.level === context.level) || routineRounds[0];
-  let steps = shuffle(round.steps);
-  let selectedIndex = 0;
-  let completed = false;
-  let attempts = 0;
-  let errors = 0;
-  const startTime = Date.now();
-  container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Organize a Rotina</h2><p>Selecione uma etapa e use subir ou descer para colocar tudo em ordem.</p><h3>${round.title}</h3><ol id="routine-list" class="routine-list"></ol><div class="actions"><button class="secondary" id="move-up">Subir</button><button class="secondary" id="move-down">Descer</button><button id="check-routine">Conferir ordem</button></div><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
-  const list = container.querySelector('#routine-list');
-  const draw = () => { list.setAttribute('aria-label', `Etapas da rotina. Item ${selectedIndex + 1} selecionado.`); list.innerHTML = steps.map((step, index) => `<li><button class="routine-step ${index === selectedIndex ? 'is-selected' : ''}" data-index="${index}" aria-label="Etapa ${index + 1}: ${step}">${step}</button></li>`).join(''); list.querySelectorAll('[data-index]').forEach((button) => button.addEventListener('click', () => { selectedIndex = Number(button.dataset.index); draw(); })); };
-  const move = (direction) => { const target = selectedIndex + direction; if (target < 0 || target >= steps.length) return; [steps[selectedIndex], steps[target]] = [steps[target], steps[selectedIndex]]; selectedIndex = target; draw(); };
-  container.querySelector('#move-up').addEventListener('click', () => move(-1));
-  container.querySelector('#move-down').addEventListener('click', () => move(1));
-  container.querySelector('#check-routine').addEventListener('click', () => { if (completed) return; attempts += 1; callbacks.onAttempt(); if (steps.every((step, index) => step === round.steps[index])) { completed = true; callbacks.onCorrect(); callbacks.onMessage('correct'); callbacks.onComplete({ attempts, errors, elapsedTime: Date.now() - startTime }); container.querySelector('#feedback').textContent = 'Muito bem! A rotina está organizada.'; } else { errors += 1; callbacks.onWrong(); callbacks.onMessage('wrong'); } });
-  container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
-  container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
-  draw();
+import { escapeHTML } from '../utils/dom.js';
+export function render(container, callbacks, { content: round }) {
+  let steps = shuffle(round.steps), done = false, waiting = false;
+  container.innerHTML = '<ol class="routine-list"></ol><button id="check-routine">Verificar ordem</button>';
+  const list = container.querySelector('ol');
+  const draw = () => {
+    list.innerHTML = steps.map((step, i) => `<li><span>${escapeHTML(step)}</span><div class="move-controls"><button class="secondary" data-move="-1" data-index="${i}" aria-label="Mover ${escapeHTML(step)} para cima" ${i === 0 || done || waiting ? 'disabled' : ''}>↑</button><button class="secondary" data-move="1" data-index="${i}" aria-label="Mover ${escapeHTML(step)} para baixo" ${i === steps.length - 1 || done || waiting ? 'disabled' : ''}>↓</button></div></li>`).join('');
+    list.querySelectorAll('[data-move]').forEach(button => button.addEventListener('click', () => {
+      if (!callbacks.isActive() || done || waiting) return;
+      const i = Number(button.dataset.index), direction = Number(button.dataset.move), to = i + direction;
+      if (to < 0 || to >= steps.length) return;
+      [steps[i], steps[to]] = [steps[to], steps[i]]; draw();
+      const selector = `[data-index="${to}"][data-move="${to === 0 ? 1 : to === steps.length - 1 ? -1 : direction}"]`;
+      list.querySelector(selector).focus();
+      callbacks.message(`${steps[to]}: posição ${to + 1} de ${steps.length}.`);
+    }));
+  };
+  container.querySelector('#check-routine').addEventListener('click', () => {
+    if (!callbacks.isActive() || done || waiting) return;
+    const correct = round.acceptedOrders.some(order => order.every((step, i) => step === steps[i]));
+    callbacks.onAttempt(correct, round.id);
+    if (correct) { done = true; draw(); container.querySelector('#check-routine').disabled = true; callbacks.onComplete(); }
+    else { waiting = true; draw(); callbacks.onRetry(() => { waiting = false; draw(); list.querySelector('button:not(:disabled)')?.focus(); }); }
+  });
+  draw(); return { destroy() { done = true; } };
 }
-
-export { render };

@@ -1,29 +1,19 @@
-export const LEVELS = {
-  1: { name: 'Inicial', help: 'high' },
-  2: { name: 'Fácil', help: 'medium' },
-  3: { name: 'Intermediário', help: 'low' },
-  4: { name: 'Avançado', help: 'low' }
-};
+export const LEVELS = { 1: { name: 'Inicial' }, 2: { name: 'Fácil' }, 3: { name: 'Intermediário' }, 4: { name: 'Avançado' } };
+export const getCurrentLevel = (progress) => LEVELS[progress?.nivelAtual] ? progress.nivelAtual : 1;
+export const getGameLevel = (progress, gameId) => LEVELS[progress?.levelState?.[gameId]?.level] ? progress.levelState[gameId].level : getCurrentLevel(progress);
 
-export function getCurrentLevel(progress) {
-  const level = Number(progress?.nivelAtual) || 1;
-  return LEVELS[level] ? level : 1;
-}
-
-export function getGameLevel(progress, gameId) {
-  const stored = progress?.levelState?.[gameId]?.level;
-  return LEVELS[stored] ? stored : getCurrentLevel(progress);
-}
-
-export function evaluateLevel(progress, gameId, accuracy) {
-  const current = getGameLevel(progress, gameId);
-  const state = progress.levelState?.[gameId] || { level: current, evaluations: [] };
-  state.evaluations = [...(state.evaluations || []), Number(accuracy)].slice(-3);
-  if (state.evaluations.length === 3) {
-    const average = state.evaluations.reduce((sum, value) => sum + value, 0) / 3;
-    state.level = average >= 0.85 ? Math.min(4, current + 1) : average < 0.5 ? Math.max(1, current - 1) : current;
-    state.evaluations = [];
+// Only completed free sessions enter a game's three-session window.
+export function evaluateLevel(progress, gameId, session) {
+  if (session.mode !== 'free' || session.status !== 'completed') return progress;
+  const state = progress.levelState[gameId] ||= { level: getGameLevel(progress, gameId), completedSinceEvaluation: [] };
+  const ids = state.completedSinceEvaluation ||= [];
+  if (ids.includes(session.id)) return progress;
+  ids.push(session.id);
+  if (ids.length >= 3) {
+    const attempts = ids.flatMap(id => progress.sessions.find(item => item.id === id)?.attempts || []);
+    const rate = attempts.length ? attempts.filter(item => item.correct).length / attempts.length : null;
+    if (rate !== null) state.level = rate >= .85 ? Math.min(4, state.level + 1) : rate < .5 ? Math.max(1, state.level - 1) : state.level;
+    state.completedSinceEvaluation = [];
   }
-  progress.levelState = { ...(progress.levelState || {}), [gameId]: state };
   return progress;
 }
