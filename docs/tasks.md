@@ -734,7 +734,7 @@ Validar: fase bloqueada por URL, abandono, conclusão repetida, regravação ap�
 
 Commit: feat: implementa a task 67.
 
-[ ] Task 68 — Concluir a verificação integrada dos 12 jogos com fases
+[x] Task 68 — Concluir a verificação integrada dos 12 jogos com fases
 
 Depende de: Tasks 65–67. Requisitos: RF064–RF090, RUI035–RUI038, RNF018–RNF020.
 
