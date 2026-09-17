@@ -584,7 +584,7 @@ Validar: contagens e referências de todas as palavras, sem clones por troca de 
 
 Commit: feat: implementa a task 52.
 
-[ ] Task 53 — Entregar 20 fases de Imagem e Palavra
+[x] Task 53 — Entregar 20 fases de Imagem e Palavra
 
 Depende de: Tasks 11 e 49. Requisitos: RF069, RF076, RNF020.
 
