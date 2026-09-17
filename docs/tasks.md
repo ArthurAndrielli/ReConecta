@@ -554,7 +554,7 @@ Validar: pausar, alterar tema e pedir dica não trocam o conteúdo; reiniciar en
 
 Commit: feat: implementa a task 49.
 
-[ ] Task 50 — Entregar 20 fases do Jogo da Memória
+[x] Task 50 — Entregar 20 fases do Jogo da Memória
 
 Depende de: Tasks 08 e 49. Requisitos: RF069, RF073, RNF020.
 
