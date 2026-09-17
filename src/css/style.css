@@ -167,6 +167,7 @@ input:focus-visible, select:focus-visible { outline: 3px solid var(--color-focus
 .setting-check { display: flex !important; grid-template-columns: auto 1fr; align-items: center; }
 .danger-zone { margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--color-border); }
 .phase-summary { padding: var(--space-3) var(--space-4); color: var(--color-primary); background: var(--color-primary-soft); border-radius: var(--radius-control); font-weight: 700; }
+.phase-context { margin-bottom: var(--space-2); }
 .phase-blocks { display: grid; gap: var(--space-6); margin-top: var(--space-8); }
 .phase-blocks h3 { margin-bottom: var(--space-3); }
 .phase-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-3); }

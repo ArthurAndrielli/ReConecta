@@ -152,6 +152,7 @@ function mountGame(gameId, { trainingMode, game }) {
   else if (gameId === 'situations') renderDailySituations(app, callbacks, { level });
   else if (gameId === 'sentence') renderCompleteSentence(app, callbacks, { level });
   else renderDevelopment(game);
+  if (phase) app.querySelector('section')?.insertAdjacentHTML('afterbegin', `<p class="eyebrow phase-context">Fase ${phase.ordinal} de 20 · ${phase.title}</p>`);
 }
 
 function renderPhaseResult(game, phase, stars) { app.innerHTML = `<section class="activity-card result-card"><span class="eyebrow">Fase ${phase.ordinal} de 20 concluída</span><h2>Muito bem!</h2><p>Você concluiu ${phase.title}.</p><p class="result-stars" aria-label="${stars} estrelas recebidas">${'★'.repeat(stars)}</p><div class="actions"><button id="next-phase">Próxima fase</button><button class="secondary" id="repeat-phase">Repetir fase</button><button class="secondary" id="view-phases">Ver fases</button></div></section>`; app.querySelector('#next-phase').addEventListener('click', () => { const next = getGamePhases(game.id).find((item) => item.ordinal === phase.ordinal + 1); next ? openPhase(game.id, next.id) : openPhaseMap(game.id); }); app.querySelector('#repeat-phase').addEventListener('click', () => openPhase(game.id, phase.id)); app.querySelector('#view-phases').addEventListener('click', () => openPhaseMap(game.id)); }

@@ -544,7 +544,7 @@ Validar: primeira visita, fases concluídas, bloqueadas e percurso completo; tec
 
 Commit: feat: implementa a task 48.
 
-[ ] Task 49 — Integrar as fases ao controlador comum dos jogos
+[x] Task 49 — Integrar as fases ao controlador comum dos jogos
 
 Depende de: Tasks 06–07 e 45–48. Requisitos: RF068, RF088, RF090, RUI036.
 
