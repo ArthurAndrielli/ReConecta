@@ -5,6 +5,7 @@ import { phaseCatalog } from '../src/js/phases/catalog.js';
 import { phaseBoards, phaseRounds } from '../src/js/phases/content.js';
 import { objects } from '../src/js/phases/objects.js';
 import { validatePhaseCatalog } from '../src/js/phases/validate.js';
+import { picture } from '../src/js/utils/contentView.js';
 
 test('240 phases contain 600 distinct challenges and 40 distinct boards', () => {
   const report = validatePhaseCatalog();
@@ -17,6 +18,17 @@ test('all local illustration references exist', async () => {
   const svg = await readFile(new URL('../src/assets/objects.svg', import.meta.url), 'utf8');
   for (const object of objects) assert.ok(svg.includes(`id="${object.symbol}"`), object.label);
   assert.equal(new Set([...svg.matchAll(/id="([^"]+)"/g)].map(m => m[1])).size, objects.length);
+});
+test('shared game pictures preserve proportion and expose one useful alternative', () => {
+  const standalone = picture('object-2', { label: false });
+  assert.match(standalone, /preserveAspectRatio="xMidYMid meet"/);
+  assert.match(standalone, /role="img" aria-label="bola"/);
+  assert.match(standalone, /<title>bola<\/title>/);
+
+  const captioned = picture('object-2');
+  assert.match(captioned, /aria-hidden="true"/);
+  assert.doesNotMatch(captioned, /role="img"/);
+  assert.match(captioned, /<span>bola<\/span>/);
 });
 test('validator rejects malformed records, wrong counts, ambiguous answers and normalized clones', () => {
   for (const mutate of [

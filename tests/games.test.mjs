@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { phaseCatalog } from '../src/js/phases/catalog.js';
 import { getPhaseContent } from '../src/js/phases/content.js';
+import { objectById } from '../src/js/phases/objects.js';
 import { solve } from './game-helpers.mjs';
 
 const modules = { memory: 'memory', whatDidYouSee: 'whatDidYouSee', word: 'wordBuilder', image: 'imageWord',
@@ -54,6 +55,8 @@ test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only 
       message() {}
     }, { content });
     const cards = [...root.querySelectorAll('[data-index]')];
+    assert.ok(cards.every(card => card.querySelector('.memory-card-front').getAttribute('aria-hidden') === 'true'));
+    assert.ok(cards.every(card => card.querySelector('svg').getAttribute('aria-hidden') === 'true'));
     const byPair = new Map();
     cards.forEach((card, index) => {
       const href = card.querySelector('use').getAttribute('href');
@@ -61,7 +64,12 @@ test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only 
       byPair.get(href).push(index);
     });
     const [firstPair, secondPair] = [...byPair.values()];
-    cards[firstPair[0]].click(); cards[secondPair[0]].click();
+    const firstCard = cards[firstPair[0]];
+    const firstId = firstCard.querySelector('use').getAttribute('href').split('#').at(-1);
+    assert.doesNotMatch(firstCard.getAttribute('aria-label'), new RegExp(objectById[firstId].label, 'i'));
+    firstCard.click();
+    assert.match(firstCard.getAttribute('aria-label'), new RegExp(objectById[firstId].label, 'i'));
+    cards[secondPair[0]].click();
     assert.equal(pending.delay, 900);
     assert.ok(cards[firstPair[0]].classList.contains('is-open'));
     assert.ok(cards[secondPair[0]].classList.contains('is-open'));
