@@ -504,7 +504,7 @@ Entregar 20 fases reais por jogo, sem recomeçar a aplicação. Esta etapa usa r
 
 A numeração das fases é independente dos quatro níveis da prática livre. A conclusão libera a fase seguinte; estrelas, erros, tempo e dicas não bloqueiam o avanço. A alteração deve preservar a reformulação visual já feita. Ativar o acesso às fases de cada jogo quando seu banco estiver válido; a entrega final exige os 12 jogos completos.
 
-[ ] Task 45 — Criar o registro de fases e os contratos de conteúdo
+[x] Task 45 — Criar o registro de fases e os contratos de conteúdo
 
 Depende de: Tasks 05–07 e 26. Requisitos: RF064, RF068, RF089, RNF018.
 
