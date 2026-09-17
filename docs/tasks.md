@@ -118,7 +118,7 @@ Adaptação e conclusão dos minijogos
 
 Para as Tasks 08–19, adaptar o módulo existente; implementar somente o que faltar. Cada task deve terminar com o jogo integrado à navegação, à sessão, ao resultado e à persistência. Não entregar apenas a função isolada ou o card de acesso.
 
-[ ] Task 08 — Finalizar o Jogo da Memória
+[x] Task 08 — Finalizar o Jogo da Memória
 
 Depende de: Tasks 06–07. Requisitos: RF023–RF025.
 
