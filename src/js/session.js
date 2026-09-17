@@ -101,5 +101,6 @@ export function startGameSession(container, game, context, render, onResult, onE
   window.addEventListener('pagehide', pagehide);
   window.addEventListener('beforeunload', beforeunload);
   mountRound();
+  if (document.hidden) pauseDialog();
   return { requestExit, destroy, session, isActive: () => !destroyed && !finished };
 }

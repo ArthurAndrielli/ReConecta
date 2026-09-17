@@ -13,7 +13,8 @@ const dom = new JSDOM(html, { url: 'http://localhost:4173/', pretendToBeVisual: 
 const { window } = dom;
 for (const name of ['window', 'document', 'localStorage', 'location', 'history', 'Event']) globalThis[name] = name === 'window' ? window : window[name];
 window.scrollTo = () => {};
-globalThis.fetch = async () => ({ ok: true, text: async () => '<svg><symbol id="object-60"/></svg>' });
+const artwork = await readFile(new URL('../src/assets/objects.svg', import.meta.url), 'utf8');
+globalThis.fetch = async () => ({ ok: true, text: async () => artwork });
 window.matchMedia = () => ({ matches: false, addEventListener() {} });
 window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
 window.HTMLDialogElement.prototype.close = function () { this.open = false; };
@@ -22,10 +23,18 @@ window.addEventListener('error', event => { errors.push(event.error); });
 await import('../src/js/app.js');
 const tick = () => new Promise(resolve => setTimeout(resolve, 10));
 const app = document.getElementById('app');
+function checkSemantics() {
+  const ids = [...document.querySelectorAll('[id]')].map(el => el.id);
+  assert.equal(new Set(ids).size, ids.length, 'duplicate DOM IDs');
+  assert.equal(document.querySelectorAll('main').length, 1);
+  assert.equal(document.querySelectorAll('h1').length, 1);
+  assert.equal(app.querySelectorAll('a button, button a').length, 0);
+}
 async function route(hash) {
   if (location.hash === hash) { window.dispatchEvent(new window.HashChangeEvent('hashchange')); }
   else location.hash = hash;
   await tick();
+  checkSemantics();
 }
 function solveSession() {
   const session = getProgress().sessions.at(-1);
@@ -40,6 +49,7 @@ function solveSession() {
   }
   assert.match(app.textContent, /Atividade concluída!/);
   assert.equal(getProgress().sessions.at(-1).status, 'completed');
+  checkSemantics();
 }
 test('integrated navigation, all games, daily plan, pause, retry, preferences and reset', async () => {
   assert.equal(app.querySelectorAll('[data-game]').length, 3);
@@ -116,5 +126,53 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.equal(localStorage.getItem('other-app'), 'preserve');
   await route('#/jogo/what-did-you-see/fases'); assert.equal(app.querySelectorAll('[data-phase]').length, 20);
   await route('#/not-found'); assert.match(app.textContent, /Não encontramos/);
+  assert.deepEqual(errors, []);
+});
+
+test('browser back cancellation keeps history, paused exit cancellation and restart keep correct state', async () => {
+  resetProgress();
+  await route('#/atividades');
+  await route('#/jogo/word/fase/word-p01');
+  button(app, 'Começar fase').click(); await tick();
+  const originalSession = getProgress().sessions.at(-1).id;
+  history.back(); await tick(); await tick();
+  assert.ok(document.querySelector('dialog'));
+  button(document.querySelector('dialog'), 'Continuar atividade').click(); await tick();
+  assert.equal(location.hash, '#/jogo/word/fase/word-p01');
+  assert.equal(getProgress().sessions.at(-1).id, originalSession);
+  button(app, 'Pausar').click(); await tick();
+  button(document.querySelector('dialog'), 'Sair da atividade').click(); await tick();
+  button(document.querySelector('dialog'), 'Continuar atividade').click(); await tick();
+  assert.match(document.querySelector('dialog').textContent, /Atividade pausada/);
+  assert.equal(app.querySelector('#game-interaction').inert, true);
+  button(document.querySelector('dialog'), 'Continuar atividade').click(); await tick();
+  button(app, 'Recomeçar atividade').click(); await tick();
+  button(document.querySelector('dialog'), 'Sair da atividade').click(); await tick();
+  assert.equal(getProgress().sessions.at(-1).status, 'abandoned');
+  button(app, 'Começar fase').click(); await tick();
+  assert.notEqual(getProgress().sessions.at(-1).id, originalSession);
+  history.back(); await tick(); await tick();
+  button(document.querySelector('dialog'), 'Sair da atividade').click(); await tick(); await tick();
+  assert.equal(location.hash, '#/atividades');
+  assert.equal(getProgress().sessions.filter(s => s.status === 'active').length, 0);
+  assert.equal(getProgress().atividades, 0);
+  assert.deepEqual(errors, []);
+});
+
+test('saving failure is visible and retry does not repeat the completed activity', async () => {
+  resetProgress();
+  const original = window.Storage.prototype.setItem;
+  window.Storage.prototype.setItem = () => { throw new Error('Quota'); };
+  try {
+    await route('#/jogo/word/fase/word-p01');
+    button(app, 'Começar fase').click(); await tick(); solveSession();
+    assert.equal(document.getElementById('storage-status').hidden, false);
+    assert.match(document.getElementById('storage-status').textContent, /não foi possível salvá-lo/);
+    assert.equal(getProgress().atividades, 1);
+  } finally { window.Storage.prototype.setItem = original; }
+  button(document.getElementById('storage-status'), 'Tentar salvar novamente').click();
+  assert.equal(getProgress().atividades, 1);
+  assert.equal(document.getElementById('storage-status').hidden, true);
+  assert.equal(JSON.parse(localStorage.getItem('reconecta_progress')).atividades, 1);
   assert.deepEqual(errors, []);
 });

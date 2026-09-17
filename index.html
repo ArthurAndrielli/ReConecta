@@ -4,7 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ReConecta</title>
-  <script>try{document.documentElement.dataset.appearance=JSON.parse(localStorage.getItem('reconecta_preferences')||'{}').appearance||'system'}catch(e){document.documentElement.dataset.appearance='system'}</script>
+  <script>
+    // Apply only presentation preferences before the first paint.
+    (() => {
+      const root = document.documentElement;
+      const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      try {
+        const preferences = JSON.parse(localStorage.getItem('reconecta_preferences') || '{}') || {};
+        root.dataset.appearance = ['light', 'dark'].includes(preferences.appearance) ? preferences.appearance : system;
+        root.dataset.textSize = preferences.textSize === 'large' ? 'large' : 'standard';
+        root.classList.toggle('reduce-motion', preferences.reduceMotion === true);
+      } catch { root.dataset.appearance = system; }
+    })();
+  </script>
   <link rel="stylesheet" href="./src/css/style.css">
 </head>
 <body>
@@ -21,6 +33,7 @@
   </nav>
   <aside id="storage-status" role="status" hidden></aside>
   <main id="app" tabindex="-1"></main>
+  <noscript><p>Ative o JavaScript no navegador para usar as atividades do ReConecta.</p></noscript>
   <script type="module" src="./src/js/app.js"></script>
 </body>
 </html>

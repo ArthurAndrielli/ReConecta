@@ -1,3 +1,4 @@
+import { objects } from '../phases/objects.js';
 let ready;
 // A failed essential sprite must stop the activity, not turn into an empty answer.
 export function ensureGameAssets() {
@@ -5,7 +6,7 @@ export function ensureGameAssets() {
     .then(async response => {
       if (!response.ok) throw new Error('Imagens indisponíveis');
       const text = await response.text();
-      if (!text.includes('id="object-60"') || !text.includes('<svg')) throw new Error('Imagens inválidas');
+      if (!text.includes('<svg') || objects.some(item => !text.includes(`id="${item.symbol}"`))) throw new Error('Imagens inválidas');
     }).catch(error => { ready = null; throw error; });
   return ready;
 }

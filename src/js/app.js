@@ -34,7 +34,10 @@ const engines = { memory: renderMemory, whatDidYouSee: renderWhatDidYouSee, word
 const aliases = { 'what-did-you-see': 'whatDidYouSee', 'word-builder': 'word', 'image-word': 'image', 'odd-one-out': 'odd',
   'organize-routine': 'routine', 'find-object': 'findObject', 'tap-only': 'tapOnly', 'object-association': 'association',
   'daily-situations': 'situations', 'complete-sentence': 'sentence' };
-let active = null, currentHash = '', dailyDate = null, period = 'all', returnCard = '';
+let active = null, dailyDate = null, period = 'all', returnCard = '';
+let historyIndex = Number.isInteger(history.state?.reconectaIndex) ? history.state.reconectaIndex : 0;
+let restoringHistory = null;
+history.replaceState({ ...history.state, reconectaIndex: historyIndex }, '', location.href);
 const catalogState = { query: '', category: 'all' };
 const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const categoryLabel = id => categories.find(c => c.id === id)?.name || id;
@@ -171,7 +174,7 @@ function openIntro(game, phase = null, trainingRef = null) {
     start.textContent = 'Preparando atividade…';
     try { await ensureGameAssets(); }
     catch {
-      if (start.isConnected) { unavailable('Não foi possível carregar as imagens. Verifique o servidor local e tente novamente pelo mapa.', game); finishView(); }
+      if (start.isConnected) { unavailable('Não foi possível carregar as imagens. Volte ao mapa e tente novamente.', game); finishView(); }
       return;
     }
     if (!start.isConnected) return;
@@ -221,7 +224,6 @@ function renderStorageStatus() {
 function renderRoute() {
   active?.destroy(); active = null;
   const route = location.hash.replace(/^#\/?/, '') || 'inicio';
-  currentHash = location.hash || '#/inicio';
   if (route === 'inicio') { dailyDate = null; renderHome(); }
   else if (route === 'atividades') renderActivities();
   else if (route === 'evolucao') renderEvolution();
@@ -241,11 +243,31 @@ function renderRoute() {
   if (route === 'atividades' && returnCard) { app.querySelector(`[data-game="${returnCard}"]`)?.focus(); returnCard = ''; }
 }
 window.addEventListener('hashchange', () => {
+  if (restoringHistory) {
+    const pending = restoringHistory;
+    restoringHistory = null;
+    active?.requestExit(() => {
+      active = null;
+      // Restore the actual destination entry; cancellation never rewrites history.
+      history.go(pending.delta);
+    });
+    return;
+  }
+  let destinationIndex = history.state?.reconectaIndex;
+  if (!Number.isInteger(destinationIndex)) {
+    destinationIndex = historyIndex + 1;
+    history.replaceState({ ...history.state, reconectaIndex: destinationIndex }, '', location.href);
+  }
   if (active?.isActive()) {
-    const target = location.hash;
-    history.replaceState(null, '', currentHash);
-    active.requestExit(() => { active = null; history.replaceState(null, '', target); renderRoute(); });
-  } else renderRoute();
+    const delta = destinationIndex - historyIndex;
+    if (delta) {
+      restoringHistory = { delta };
+      history.go(-delta);
+    }
+  } else {
+    historyIndex = destinationIndex;
+    renderRoute();
+  }
 });
 window.addEventListener('storage-status', renderStorageStatus);
 navLinks.forEach((link, index) => link.insertAdjacentHTML('afterbegin', renderIcon(['situations', 'memory', 'sequence', 'routine'][index])));

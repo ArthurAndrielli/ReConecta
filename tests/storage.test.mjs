@@ -124,3 +124,32 @@ test('adaptive level uses weighted attempts, three free sessions and game isolat
   assert.equal(s.getProgress().levelState.word.level, 2);
   assert.equal(s.getProgress().levelState.memory, undefined);
 });
+
+test('partial completion cannot be authorized by a caller-supplied objective list', async () => {
+  const s = await fresh();
+  const session = s.createSession({ gameId: 'word' });
+  const objective = session.objectives[0];
+  assert.equal(s.recordSessionAttempt(session.id, { id: 'fake', correct: true, objectiveId: 'invented' }), false);
+  s.recordSessionAttempt(session.id, { id: 'one', correct: true, objectiveId: objective });
+  assert.equal(s.finishSession(session.id, { objectives: [objective] }), null);
+  s.abandonSession(session.id, 400);
+  assert.equal(s.getProgress().atividades, 0);
+  assert.equal(s.getProgress().sessions[0].elapsedMs, 400);
+});
+
+test('version 2 session-only records derive totals and preserve legacy totals', async () => {
+  const raw = {
+    schemaVersion: 2, legacyTotals: { atividadesRealizadas: 4, estrelas: 9, acertos: 8, erros: 2 },
+    sessions: [{ id: 'old', gameId: 'word', status: 'completed', startedAt: '2026-09-01T12:00:00Z',
+      endedAt: '2026-09-01T12:01:00Z', level: 2, stars: 3, elapsedMs: 60000, attempts: [{ id: 'one', correct: true }] }]
+  };
+  const s = await fresh(raw);
+  const progress = s.getProgress();
+  assert.equal(progress.atividades, 5);
+  assert.equal(progress.estrelas, 12);
+  assert.equal(progress.acertos, 9);
+  assert.equal(progress.erros, 2);
+  assert.equal(progress.tentativas, 11);
+  assert.equal(progress.sessions[0].phaseId, null);
+  assert.deepEqual(s.migrateProgress(progress), progress);
+});
