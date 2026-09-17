@@ -724,7 +724,7 @@ Validar: inspecionar mapa, exercício e resultado em 320/390/768/1024/1440 px; a
 
 Commit: feat: implementa a task 66.
 
-[ ] Task 67 — Verificar integridade e corrigir regressões de progressão
+[x] Task 67 — Verificar integridade e corrigir regressões de progressão
 
 Depende de: Tasks 45–66. Requisitos: RF066–RF072, RF085–RF090, RNF019.
 
