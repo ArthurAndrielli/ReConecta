@@ -514,7 +514,7 @@ Validar: uma definição real válida é resolvida; IDs duplicados, referências
 
 Commit: feat: implementa a task 45.
 
-[ ] Task 46 — Acrescentar persistência e migração do progresso de fases
+[x] Task 46 — Acrescentar persistência e migração do progresso de fases
 
 Depende de: Tasks 05 e 45. Requisitos: RF070, RF071, RF090, RNF019.
 
