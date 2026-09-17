@@ -240,7 +240,7 @@ Commit: feat: implementa a task 19.
 
 Fluxos completos e personalização
 
-[ ] Task 20 — Implementar o Treino de Hoje e a retomada
+[x] Task 20 — Implementar o Treino de Hoje e a retomada
 
 Depende de: Tasks 05–19. Requisitos: RF050–RF052, RF059, RUI004.
 
