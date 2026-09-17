@@ -614,7 +614,7 @@ Validar: resposta consistente com a regra em todos os dados e sem alternativas e
 
 Commit: feat: implementa a task 55.
 
-[ ] Task 56 — Entregar 20 fases de Organize a Rotina
+[x] Task 56 — Entregar 20 fases de Organize a Rotina
 
 Depende de: Tasks 14 e 49. Requisitos: RF069, RF079, RNF020.
 
