@@ -664,7 +664,7 @@ Validar: revisar todos os enunciados e distratores para não penalizar escolhas 
 
 Commit: feat: implementa a task 60.
 
-[ ] Task 61 — Entregar 20 fases de Complete a Frase
+[x] Task 61 — Entregar 20 fases de Complete a Frase
 
 Depende de: Tasks 19 e 49. Requisitos: RF069, RF084, RNF020.
 
