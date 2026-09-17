@@ -250,7 +250,7 @@ Validar: cinco grupos e cinco etapas, avanço manual, retomada após duas etapas
 
 Commit: feat: implementa a task 20.
 
-[ ] Task 21 — Implementar Minha evolução e recomendações
+[x] Task 21 — Implementar Minha evolução e recomendações
 
 Depende de: Tasks 05–07 e 20. Requisitos: RF053–RF056, RF062, RUI011, RUI015.
 
