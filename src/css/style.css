@@ -237,7 +237,7 @@ button { min-width: 48px; border-width: 2px; }
 .game-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; }
 .game-card .game-icon { width: 92px; height: 92px; position: relative; color: var(--game-accent); background: var(--game-soft); border: 1px solid color-mix(in srgb, var(--game-border) 75%, transparent); border-radius: 28px 20px 28px 20px; transition: transform var(--transition-ui); }
 .game-card .game-icon::after { content: ""; position: absolute; right: -7px; bottom: -7px; width: 24px; height: 24px; border: 5px solid var(--game-bg); border-radius: 50%; background: var(--game-accent); }
-.game-card .game-icon .icon { width: 50px; height: 50px; stroke-width: 1.9; }
+.game-card .game-icon .icon { width: 68px; height: 68px; overflow: visible; }
 .game-card-content { gap: .4rem; }
 .game-card-content h3 { color: var(--game-ink); font-size: 1.3rem; letter-spacing: -.015em; }
 .game-card-content > p { min-height: 2.8em; margin: 0; line-height: 1.4; }
