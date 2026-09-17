@@ -14,14 +14,10 @@ export function solve(root, gameId, content, retry = () => {}, wrong = false) {
   };
   if (gameId === 'memory') {
     const cards = [...root.querySelectorAll('[data-index]')], known = new Map();
-    for (let i = 0; i < cards.length; i += 2) {
-      cards[i].click(); cards[i + 1].click();
-      for (const j of [i, i + 1]) {
-        const href = cards[j].querySelector('use').getAttribute('href');
-        const list = known.get(href) || []; list.push(j); known.set(href, list);
-      }
-      retry();
-    }
+    cards.forEach((card, index) => {
+      const href = card.querySelector('use').getAttribute('href');
+      const list = known.get(href) || []; list.push(index); known.set(href, list);
+    });
     for (const indices of known.values()) if (!cards[indices[0]].disabled) { cards[indices[0]].click(); cards[indices[1]].click(); }
     cards[0].click();
   } else if (gameId === 'word') {
