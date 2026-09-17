@@ -594,7 +594,7 @@ Validar: uma resposta correta por desafio, imagens existentes e distratores dist
 
 Commit: feat: implementa a task 53.
 
-[ ] Task 54 — Entregar 20 fases de Qual Não Combina?
+[x] Task 54 — Entregar 20 fases de Qual Não Combina?
 
 Depende de: Tasks 12 e 49. Requisitos: RF069, RF077, RNF020.
 
