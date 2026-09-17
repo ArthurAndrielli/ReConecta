@@ -654,7 +654,7 @@ Validar: relações e referências de todos os tabuleiros, sem clones por embara
 
 Commit: feat: implementa a task 59.
 
-[ ] Task 60 — Entregar 20 fases de Situações do Cotidiano
+[x] Task 60 — Entregar 20 fases de Situações do Cotidiano
 
 Depende de: Tasks 18 e 49. Requisitos: RF069, RF083, RNF020.
 
