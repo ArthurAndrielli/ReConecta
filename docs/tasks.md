@@ -574,7 +574,7 @@ Validar: banco completo, uma fase por bloco e ambos os modos de observação. Pa
 
 Commit: feat: implementa a task 51.
 
-[ ] Task 52 — Entregar 20 fases de Monte a Palavra
+[x] Task 52 — Entregar 20 fases de Monte a Palavra
 
 Depende de: Tasks 10 e 49. Requisitos: RF069, RF075, RNF020.
 
