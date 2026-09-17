@@ -1,11 +1,11 @@
 ReConecta — Design visual, interação e arquitetura
 
-Versão: 2.1 · Reformulação visual do ReConecta
+Versão: 3.0 · Fases, conteúdo e progressão do ReConecta
 Data: 16/09/2026
 Base funcional: requirements.md
 Execução: tasks.md.
 
-Revisão visual solicitada: aplicar a seção 15 nas Tasks 27–44. Esta etapa melhora composição, proporções, imagens e acabamento do aplicativo existente. As regras dos jogos e a persistência continuam sendo as da implementação base.
+Ampliação solicitada: aplicar a seção 16 nas Tasks 45–68 para oferecer 20 fases por jogo, com novos conteúdos e progresso salvo. Preservar a identidade visual da seção 15 e a implementação existente. A seção 16 estende o contrato das sessões e migra o progresso para a versão 3; as preferências visuais continuam no modelo já definido.
 
 1. Direção visual
 
@@ -1003,7 +1003,7 @@ Sequências: manter ordem de leitura com lista semântica; usar formas/nomes dif
 
 7.2 Conteúdo e dados
 
-Jogos de três desafios precisam de pelo menos três conteúdos distintos e válidos por nível. Jogos de tabuleiro precisam de conjuntos suficientes para a maior configuração. Não repetir imediatamente um conteúdo quando houver alternativas no mesmo nível.
+O banco inicial exigia três conteúdos distintos por nível. A ampliação da seção 16 substitui esse mínimo: jogos de três desafios passam a ter 60 desafios distintos por jogo, distribuídos entre 20 fases; Memória e Associação passam a ter 20 tabuleiros distintos cada. Não repetir imediatamente um conteúdo na prática livre quando houver alternativas no mesmo nível.
 
 Para rotina, definir uma ordem canônica explícita ou uma lista de ordens aceitas quando houver mais de uma solução correta. Nunca penalizar uma sequência válida só porque a ordem dos dados foi escolhida arbitrariamente. No modo acadêmico, preferir instruções que deixem clara a sequência esperada.
 
@@ -1103,6 +1103,7 @@ Interface de referência; adaptar nomes existentes, preservando estes comportame
 
 export function mountGame(root, context) {
   // context: gameId, level, content, preferences, sessionId,
+  // mode, phaseId, phaseOrdinal, phaseTotal, contentVersion,
   // onAttempt, onComplete, onPause, onBack, signal
   // Retorna funções para pausar, retomar e desmontar a atividade.
   return { pause, resume, destroy };
@@ -1144,7 +1145,7 @@ Dentro da atividade, avaliação e feedback possuem um bloqueio curto de reentra
 
 Usar performance.now() para duração ativa em uma sessão e carimbos ISO para datas de histórico. Acumular segmentos ativos; pausar ao abrir diálogo, ao ocultar a aba e durante a saída. O tempo de leitura das instruções, do resultado e da pausa não entra na duração. Em recarregamento inesperado, uma sessão interrompida conserva a duração acumulada no último registro; não inferir tempo não observado desde a gravação.
 
-O temporizador de observação só existe no modo Tempo sugerido. Seu tempo restante pausa junto da sessão. No modo No meu ritmo, não há timer: “Já observei” muda de fase. O ajuste sem limite de tempo se inspira na referência de tempo ajustável da W3C.
+O temporizador de observação só existe no modo Tempo sugerido. Seu tempo restante pausa junto da sessão. No modo No meu ritmo, não há timer: “Já observei” passa da observação à resposta do mesmo desafio. O ajuste sem limite de tempo se inspira na referência de tempo ajustável da W3C.
 
 9. Dados, persistência e integridade
 
@@ -1152,7 +1153,7 @@ O temporizador de observação só existe no modo Tempo sugerido. Seu tempo rest
 
 Chave de progresso proposta: reconecta_progress, preservando a referência anterior. Preferências ficam em reconecta_preferences para sobreviver ao reset de progresso. Se o código já usar outras chaves, localizar e migrar explicitamente; não abandonar dados existentes por simples renomeação.
 
-Modelo de referência da versão 2:
+Modelo de referência anterior, versão 2, mantido para orientar a migração. O modelo vigente de progresso é a versão 3, na seção 16.7:
 
 {
   schemaVersion: 2,
@@ -1246,7 +1247,7 @@ Esta versão trabalha com uma sessão de uso em uma aba. Sincronização e ediç
 
 10. Dificuldade, treino e recomendação
 
-levels.js implementa exatamente a janela de três sessões e os limiares de RF014–RF018 e da seção 8.2 de requirements.md. O cálculo ocorre ao registrar a conclusão, não a cada renderização. Após a avaliação, limpar a janela daquele jogo, mesmo se o nível permanecer igual.
+levels.js implementa a janela de três sessões concluídas de prática livre e os limiares de RF014–RF018 e da seção 8.2 de requirements.md. O cálculo ocorre ao registrar a conclusão, não a cada renderização. Após a avaliação, limpar a janela daquele jogo, mesmo se o nível permanecer igual. Sessões de fases e do treino usam a configuração da fase e não alimentam essa janela, conforme a seção 16.
 
 O plano diário contém exatamente cinco grupos na ordem Memória, Linguagem, Raciocínio, Atenção e Cotidiano. Associação de Objetos pertence à categoria de métricas Associação e pode ocupar o grupo Cotidiano do treino. Não duplicar sua pontuação em Cotidiano.
 
@@ -1542,7 +1543,7 @@ Confirmação de apagar progresso mantém a regra original: excluir progresso me
 
 15.9 Aparência clara, escura e do sistema
 
-Acrescentar appearance: "system" às preferências, com valores permitidos "light", "dark" e "system". Preservar os outros campos e tratar ausência do novo campo como Sistema. A versão do objeto de preferências pode avançar de 1 para 2; a estrutura de progresso permanece inalterada.
+Acrescentar appearance: "system" às preferências, com valores permitidos "light", "dark" e "system". Preservar os outros campos e tratar ausência do novo campo como Sistema. A versão do objeto de preferências pode avançar de 1 para 2; a alteração de aparência, por si só, não modifica progresso. A migração de fases da seção 16 é uma operação independente.
 
 No modo Sistema, acompanhar a preferência de aparência do dispositivo; uma escolha explícita prevalece até a pessoa alterá-la. Resolver a aparência antes de renderizar o conteúdo para reduzir flashes. Ao alterar a aparência, manter jogo, foco, seleção, tempo e dados. Essa preferência não deve remontar o jogo nem iniciar outra sessão.
 
@@ -1645,3 +1646,620 @@ Para concluir a Task 44, verificar: alinhamentos, títulos longos, contraste, di
 Capturas são evidência auxiliar e não precisam entrar no commit se o repositório não usar referências visuais versionadas. A tarefa não exige criar README, documentação adicional ou uma suíte de testes visuais do zero. Registrar somente verificações realmente executadas.
 
 A implementação final continua sendo o aplicativo existente, com seus dados e regras. A prévia de design demonstra a direção visual; seus exemplos interativos não devem ser copiados como substitutos simplificados dos jogos completos.
+
+16. Vinte fases por jogo — implementação das Tasks 45–68
+
+16.1 Princípios e estrutura do percurso
+
+Esta seção define a ampliação vigente. Preservar o sistema visual da seção 15, os motores dos jogos e a unidade de atividade da seção 7. O catálogo continua com os mesmos 12 jogos; cada jogo ganha 20 fases. Não criar 240 páginas HTML nem copiar o código de um jogo para representar cada fase.
+
+Bloco
+
+Fases
+
+Configuração interna
+
+Objetivo de conteúdo
+
+Primeiros passos
+
+1–5
+
+1
+
+Instruções diretas, poucos elementos e relações evidentes.
+
+Novas conexões
+
+6–10
+
+2
+
+Aumentar elementos quando previsto e variar contextos familiares.
+
+Descobertas
+
+11–15
+
+3
+
+Combinar mais elementos e relações, com a mesma clareza visual.
+
+Mais caminhos
+
+16–20
+
+4
+
+Usar a configuração mais completa, mantendo ritmo livre e dicas.
+
+A passagem entre blocos aumenta a configuração. As cinco fases de um bloco têm material diferente, sem obrigação de aumentar dificuldade a cada fase. O número exibido é a fase do percurso, não uma avaliação da capacidade da pessoa.
+
+16.2 Modos, rotas e compatibilidade
+
+Modo de sessão
+
+Entrada
+
+Conteúdo e dificuldade
+
+Efeito no percurso
+
+phase
+
+Mapa de fases
+
+Definição da fase escolhida, congelada ao iniciar.
+
+Concluir registra fase e libera a próxima.
+
+daily
+
+Etapa do Treino de Hoje
+
+Fase e versão congeladas no plano diário.
+
+Registra fase e etapa diária na mesma conclusão.
+
+free
+
+Prática livre
+
+Banco do jogo e nível adaptativo existente.
+
+Somente histórico; não conclui fases.
+
+Rotas propostas, adaptáveis ao roteador existente:
+
+Rota
+
+Comportamento
+
+#/jogo/<gameId>/fases
+
+Abre o mapa e destaca a próxima fase disponível.
+
+#/jogo/<gameId>/fase/<phaseId>
+
+Valida jogo, fase e desbloqueio; abre instruções antes de criar sessão.
+
+#/jogo/<gameId>
+
+Preserva o acesso antigo como prática livre.
+
+#/treino
+
+Mantém a sequência diária e usa a referência persistida da etapa.
+
+O card do catálogo e os destaques do Início passam a abrir o mapa quando a ampliação daquele jogo estiver pronta. A liberação desse acesso pode ocorrer por jogo durante a implementação; a entrega final exige os 12 completos. Não exibir fases fictícias ou botões que apontem para conteúdo ainda ausente.
+
+A validação de desbloqueio ocorre também no controlador ao iniciar, nunca somente no CSS ou no mapa. Uma URL de fase bloqueada exibe “Conclua a fase anterior para continuar” e acesso ao mapa, sem criar sessão. IDs desconhecidos mostram “Esta fase não está disponível” e uma saída útil. Abrir instruções, um card bloqueado ou uma rota inválida não conta atividade.
+
+16.3 Mapa de fases e componentes
+
+Composição: botão de retorno às atividades, nome e ilustração do jogo, descrição curta, resumo “7 de 20 fases concluídas”, ação principal “Continuar na fase 8”, opção secundária “Prática livre” e quatro seções com cinco cards cada. O total e o próximo ordinal vêm do registro validado, sem números fictícios.
+
+Estado do card
+
+Conteúdo
+
+Interação
+
+Concluída
+
+Número, título, “Concluída” e melhor resultado em estrelas.
+
+Botão “Repetir fase N”.
+
+Disponível
+
+Número, título e indicação “Disponível”.
+
+Botão “Começar fase N”; destaque da próxima pendente.
+
+Bloqueada
+
+Número, título e “Conclua a fase N anterior”.
+
+Sem início de jogo; explicação acessível no próprio card.
+
+Usar listas e seções semânticas com títulos de bloco. O nome acessível de um botão concluído pode ser “Repetir fase 3 — Objetos da casa. Melhor resultado: 2 de 3 estrelas”. Ícones decorativos e estrelas repetidas não precisam repetir a informação ao leitor de tela. Estados não dependem apenas de cor ou do desenho de cadeado.
+
+Cards de fase são menores que cards de jogo, mas mantêm alvos de pelo menos 48 px. Usar uma coluna em 320/390 px, duas no tablet e até cinco por bloco no desktop se houver espaço legível. Permitir rolagem vertical; não exigir gesto horizontal ou arrastar um mapa. Não usar trilha sinuosa, zoom ou animação obrigatória para alcançar uma fase.
+
+Reutilizar superfície, borda, cantos, tipografia e foco existentes. A fase disponível recebe destaque em verde; concluídas usam confirmação discreta; bloqueadas mantêm texto legível. Evitar opacity aplicada ao card inteiro. Respeitar temas claro/escuro, texto ampliado e movimento reduzido.
+
+Ao voltar do resultado, destacar a fase concluída e oferecer a próxima. Levar foco ao título do mapa ou à ação de continuidade de forma previsível, sem rolar abruptamente durante a leitura. Com todas concluídas, trocar a ação principal por “Escolha uma fase para repetir”.
+
+16.4 Registro de fases e responsabilidade dos módulos
+
+Organização de referência; aproveitar caminhos equivalentes existentes:
+
+Módulo
+
+Responsabilidade
+
+src/js/phases/catalog.js
+
+Reunir fases, ordenar por ordinal e resolver IDs conhecidos.
+
+src/js/phases/data/<gameId>.js
+
+Definições e referências de conteúdo das 20 fases de um jogo.
+
+src/js/phases/progression.js
+
+Calcular estados, próxima fase, melhores resultados e agregados, sem DOM.
+
+src/js/phases/validate.js
+
+Verificar contratos e referências do banco, reutilizável pelo comando de validação.
+
+src/js/ui/phaseMap.js
+
+Apresentar o mapa e encaminhar ações ao roteador/controlador.
+
+session.js existente
+
+Concluir uma única vez e coordenar histórico, fase e treino.
+
+storage.js existente
+
+Validar, migrar e persistir a versão 3.
+
+Modelo conceitual de definição; os nomes são adaptáveis, os campos têm funções distintas:
+
+{
+  id: "memory-p001",       // identidade permanente
+  gameId: "memory",        // ID oficial do catálogo
+  ordinal: 1,               // 1–20 nesta entrega
+  block: 1,                 // 1–4, cinco fases por bloco
+  title: "Objetos da casa",
+  level: 1,                 // configuração do exercício
+  contentVersion: 1,        // versão do conteúdo desta fase
+  unit: "board",           // "board" ou "rounds"
+  contentRefs: ["memory-board-home-01"],
+  instruction: "Encontre os pares de objetos iguais.",
+  hint: "Observe uma carta de cada vez."
+}
+
+O exemplo documenta a forma: só registrar a fase quando o conteúdo referenciado existir e for válido. Para board, exigir uma referência de tabuleiro completo; para rounds, exatamente três referências distintas. Cada desafio também tem ID, enunciado, resposta, dica e referências de imagem/opções compatíveis com o jogo.
+
+Não gerar títulos “Fase 1”, “Fase 2” como única diferenciação. Usar títulos curtos que identifiquem o conteúdo. IDs de fase nunca são reaproveitados para outro jogo ou objetivo. Acrescentar uma fase futura não renumera as existentes. Totais e limites de navegação derivam do catálogo; um validador de entrega exige os 20 registros por jogo previstos nesta versão.
+
+O controlador resolve e valida a definição, congela mode, phaseId, phaseOrdinal, phaseTotal, level, contentVersion e o conteúdo ao iniciar e os passa ao contrato da seção 8.2. Os módulos de jogo executam o conteúdo recebido; não escolhem outra fase nem escrevem no armazenamento. Na prática livre, phaseId é nulo e o nível vem de levelState.
+
+Embaralhar posições e alternativas é permitido em cada nova tentativa de fase. Renderizações, mudança de tema, pausa e retomada não sorteiam novamente uma sessão ativa. Não é necessário salvar o tabuleiro parcial: após recarga, a sessão anterior fica interrompida e a fase recomeça em nova sessão.
+
+16.5 Configurações e variedade dos 12 jogos
+
+As colunas correspondem aos quatro blocos, não a quatro fases isoladas. Cada célula vale para cinco fases com conteúdo próprio.
+
+Jogo
+
+Fases 1–5
+
+Fases 6–10
+
+Fases 11–15
+
+Fases 16–20
+
+Memória
+
+2 pares / 4 cartas
+
+3 pares / 6 cartas
+
+4 pares / 8 cartas
+
+6 pares / 12 cartas
+
+O Que Você Viu?
+
+2 imagens, 2 opções
+
+3 imagens, 3 opções
+
+4 imagens, 4 opções
+
+5 imagens, 4 opções
+
+Monte a Palavra
+
+2 sílabas
+
+3 sílabas
+
+4 sílabas
+
+4–5 sílabas e 1–2 distratores
+
+Imagem e Palavra
+
+2 alternativas
+
+3 alternativas
+
+4 alternativas
+
+4 alternativas, vocabulário mais variado
+
+Qual Não Combina?
+
+4 itens, categoria evidente
+
+4 itens, uso familiar
+
+4 itens, relação de função
+
+4 itens, relação contextual explícita
+
+Complete a Sequência
+
+AB, 2 opções
+
+ABC, 3 opções
+
+AAB/ABB, 3 opções
+
+Padrão visual ou numérico, 4 opções
+
+Organize a Rotina
+
+3 passos
+
+4 passos
+
+5 passos
+
+6 passos
+
+Encontre o Objeto
+
+4 opções
+
+6 opções
+
+8 opções
+
+9 opções
+
+Toque Somente em...
+
+4 itens, 2 alvos
+
+6 itens, 3 alvos
+
+8 itens, 3 alvos
+
+9 itens, 4 alvos
+
+Associação de Objetos
+
+2 pares
+
+3 pares
+
+4 pares
+
+5 pares
+
+Situações do Cotidiano
+
+2 alternativas
+
+3 alternativas
+
+3 alternativas
+
+4 alternativas
+
+Complete a Frase
+
+2 alternativas
+
+3 alternativas
+
+3 alternativas
+
+4 alternativas
+
+No jogo de observação, o tempo sugerido opcional mantém 12/10/8/6 segundos por bloco. O modo padrão continua no próprio ritmo. A fase só termina após três desafios respondidos, nunca quando o período de observação termina.
+
+Direções editoriais para compor o banco; adaptar palavras, objetos e cenas à configuração correta:
+
+Jogo
+
+Variações de conteúdo
+
+Conferência indispensável
+
+Memória
+
+Objetos da casa, alimentos, roupas, transporte e natureza, variando conjuntos.
+
+Exatamente duas cartas por par; o mesmo conjunto com posições trocadas não é outro tabuleiro.
+
+O Que Você Viu?
+
+Conjuntos de objetos em diferentes contextos cotidianos.
+
+A pergunta possui uma única resposta entre as opções; as demais não estavam no conjunto quando a pergunta pede o item observado.
+
+Monte a Palavra
+
+Palavras familiares de objetos, alimentos, lugares e ações, respeitando sílabas.
+
+Separação silábica revisada, acentuação preservada e peças repetidas aceitas pelo texto.
+
+Imagem e Palavra
+
+Nomear uma imagem e escolher a imagem para uma palavra; vocabulário distribuído.
+
+Imagem reconhecível e sem duas alternativas semanticamente corretas.
+
+Qual Não Combina?
+
+Categoria, local de uso, função e contexto indicado no enunciado.
+
+Três itens compartilham exatamente o critério declarado; um não compartilha.
+
+Complete a Sequência
+
+Formas, objetos e números, com padrões explícitos no banco.
+
+Exibir evidência suficiente da regra, preferencialmente dois ciclos completos nos padrões periódicos.
+
+Organize a Rotina
+
+Preparar materiais, organizar objetos, realizar tarefas e planejar passeios.
+
+Enunciado delimita a ordem; aceitar ordens alternativas realmente válidas.
+
+Encontre o Objeto
+
+Grades de objetos e contextos visuais limpos.
+
+Alvo único, visível, sem depender de detalhes minúsculos ou cor isolada.
+
+Toque Somente em...
+
+Categorias como utensílios, roupas, alimentos e transportes.
+
+Todos e somente os itens que satisfazem o critério são alvos.
+
+Associação de Objetos
+
+Objeto e função, objeto e local, partes complementares e relações de uso.
+
+Relação unívoca no conjunto; evitar pares que também aceitem outros destinos.
+
+Situações do Cotidiano
+
+Organização, comunicação, deslocamento e atividades domésticas.
+
+Resposta correta decorre da situação; não impor preferências culturais como única solução.
+
+Complete a Frase
+
+Ações, objetos, lugares e pequenas situações.
+
+Frase completa correta e distratores que não produzam outra resposta válida.
+
+É permitido reutilizar uma ilustração ou um objeto em desafios diferentes. O que precisa variar é a unidade completa de conteúdo. Nos jogos de três desafios, os 60 registros não podem repetir o mesmo desafio semântico entre fases; cada tabuleiro dos dois outros jogos precisa de um conjunto distinto. Trocar ID, pontuação, caixa do texto, ordem das opções ou posição das cartas não constitui novidade.
+
+16.6 Conclusão, bloqueio e estrelas
+
+A função de estado de fase recebe o catálogo validado e as conclusões daquele jogo. Retorna completed, available ou locked. A primeira fase fica disponível; as demais ficam disponíveis quando a anterior estiver concluída. Fases já concluídas são sempre repetíveis. Não guardar uma segunda lista independente de fases desbloqueadas, pois ela poderia divergir das conclusões.
+
+Ao finalizar uma sessão ativa:
+
+Confirmar que a sessão existe, está ativa e cumpriu todos os objetivos. Eventos repetidos de conclusão retornam o resultado existente, sem efeitos.
+
+Fechar duração, calcular estrelas pelas tentativas e construir o próximo estado em memória.
+
+Em phase ou daily, atualizar o registro da fase: primeira data apenas uma vez, última data atual, completions + 1, bestStars = max(anterior, estrelas atuais).
+
+Em daily, concluir apenas o slot referenciado por trainingRef, se ainda pendente e se jogo/fase/versão corresponderem ao plano. Validar essa associação antes de aplicar qualquer alteração.
+
+Em free, atualizar somente a janela adaptativa correspondente, além do histórico comum. Fases e treino não alimentam essa janela.
+
+Validar o objeto completo e persistir histórico, fase e plano numa única gravação da chave de progresso. Atualizar a interface com o resultado real dessa gravação.
+
+Se a gravação falhar, manter o estado completo em memória, avisar que ainda não foi salvo e permitir tentar gravar novamente o mesmo estado. Repetir o salvamento não reexecuta a conclusão. Não usar a existência de uma animação ou do DOM de resultado como prova de conclusão.
+
+Duas métricas distintas: estrelas históricas somam todas as sessões concluídas e os totais legados conhecidos; estrelas do percurso somam apenas bestStars das fases concluídas. Nesta entrega, o percurso tem máximo de 60 por jogo e 720 no total. Estrelas históricas podem ultrapassar 720 legitimamente por repetição. Uma sessão do treino aparece uma vez no histórico, mesmo quando também conclui uma fase.
+
+16.7 Persistência versão 3 e migração
+
+Continuar usando a chave de progresso existente e a chave separada de preferências. O modelo abaixo descreve as extensões ao objeto da seção 9.1; todos os campos anteriores reconhecidos continuam presentes.
+
+{
+  schemaVersion: 3,
+  legacyTotals: null,
+  levelState: {},
+  sessions: [
+    // Campos anteriores preservados, acrescentando:
+    // mode: "phase" | "daily" | "free",
+    // phaseId: string | null,
+    // contentVersion: number | null
+  ],
+  phaseProgress: {
+    // [gameId]: {
+    //   [phaseId]: {
+    //     bestStars: 1 | 2 | 3,
+    //     completions: positiveInteger,
+    //     firstCompletedAt: ISODate,
+    //     lastCompletedAt: ISODate
+    //   }
+    // }
+  },
+  dailyPlans: {
+    // [dateKey]: {
+    //   Campos anteriores preservados; cada slot acrescenta:
+    //   phaseId: string | null,
+    //   contentVersion: number | null
+    // }
+  }
+}
+
+Uma fase nunca concluída não precisa de entrada em phaseProgress; o catálogo fornece sua disponibilidade. A contagem de fases distintas é a quantidade de IDs de fase válidos com conclusão, não a soma de completions. Campos inválidos não podem liberar outras fases silenciosamente.
+
+Procedimento de migração:
+
+Ler o armazenamento e reconhecer sua versão real. Para estruturas antigas conhecidas, aplicar a migração base da seção 9 antes da versão 3. Não presumir que o projeto já implementou a versão 2 exatamente como o exemplo.
+
+Preservar sessões e totais sem recalcular ou somar novamente recompensas antigas. Registros anteriores sem fase recebem phaseId: null e contentVersion: null. Classificar como daily quando possuírem trainingRef válido; os demais ficam free.
+
+Iniciar phaseProgress vazio para registros sem evidência de fase. Preservar registros já válidos da versão 3; não inferir fases por nível ou quantidade de atividades.
+
+Preservar o nível de prática livre de cada jogo. Normalizar a janela pendente para referências únicas de sessões concluídas de modo free; excluir referências diárias, inexistentes ou inválidas sem avaliar novamente as sessões históricas nem mudar retroativamente o nível.
+
+Manter os planos diários e os IDs de seus slots. Slots antigos concluídos podem manter fase nula; não premiar novamente. Resolver uma fase para cada slot pendente sem referência, usando a regra da seção 16.9, e persistir essa escolha uma vez.
+
+Validar o próximo objeto inteiro antes de gravar. Só substituir o valor anterior quando a gravação da nova versão for bem-sucedida. A migração repetida sobre a versão 3 não muda totais, fases ou seleção diária.
+
+Manter preferências, inclusive aparência, sem alterar sua versão por causa das fases. Reset confirmado apaga o progresso completo, inclusive fases e planos, e conserva preferências.
+
+JSON ilegível, versão futura ou estrutura não reconhecida seguem a seção 9.3: preservar o original e informar o uso temporário em memória. Falha de gravação não autoriza remover o valor antigo. Não exigir login, servidor ou sincronização para completar a ampliação.
+
+contentVersion permite identificar que conteúdo foi realizado. Sessões históricas mantêm sua referência. Correções de conteúdo não apagam conclusões nem reutilizam IDs. Para planos e sessões ainda pendentes, manter disponível a versão referenciada; se uma referência deixar de ser resolvível, mostrar estado indisponível e retorno ao mapa, sem sortear outra fase silenciosamente ou atribuir uma conclusão.
+
+16.8 Exercício, resultado e retomada
+
+No topo do exercício: nome do jogo, “Fase 8 de 20”, título curto da fase e os controles existentes. Abaixo da instrução, mostrar “Etapa 1 de 3”, pares encontrados ou objetos restantes conforme o jogo. Não chamar cada pergunta interna de nova fase. Prática livre mostra seu próprio rótulo e não exibe número de fase.
+
+A sessão nasce ao pressionar “Começar fase”, não ao consultar o mapa. Ajuda, pausa, avaliação, foco e bloqueio de duplo clique seguem a arquitetura comum. Reiniciar fase em andamento passa pela confirmação de saída, encerra a sessão anterior como interrompida e cria outra, sem apagar resultados anteriores.
+
+Resultado
+
+Ação principal
+
+Ações secundárias
+
+Fase 1–19 concluída fora do treino
+
+“Próxima fase” para o ordinal seguinte já liberado.
+
+“Repetir fase” e “Ver fases”.
+
+Fase 20 concluída fora do treino
+
+“Ver fases”, com mensagem de percurso concluído.
+
+“Repetir fase” e “Escolher outro jogo”.
+
+Etapa diária concluída, com outras pendentes
+
+“Continuar treino”.
+
+Retorno ao início; repetição pode ser escolhida depois no mapa.
+
+Quinta etapa diária concluída
+
+“Escolher outra atividade”.
+
+Retorno ao início e acesso ao mapa correspondente.
+
+Prática livre concluída
+
+Fluxo existente de repetir/voltar.
+
+Acesso ao mapa, sem afirmar que concluiu uma fase.
+
+Mostrar estrelas desta tentativa e melhor resultado quando forem diferentes. Repetir com uma estrela uma fase que já tinha três não diminui o melhor resultado. Ao repetir uma fase antiga, “Próxima fase” segue seu ordinal; a ação “Continuar” do mapa segue a primeira pendente. Não confundir essas duas ações.
+
+Ao recarregar, a sessão ativa persistida se torna interrompida uma única vez. A rota da fase permite “Recomeçar fase” com nova sessão; as tentativas anteriores permanecem no histórico. No treino, retomar a mesma referência da etapa pendente. Não prometer restauração de cartas viradas, seleções ou segundos não registrados.
+
+16.9 Treino diário com fases
+
+Manter seleção de cinco jogos nos cinco grupos e data local. Escolher os jogos com as regras existentes; depois resolver a fase de cada jogo. Preferir a primeira pendente e disponível. Se o percurso estiver completo, escolher a fase com lastCompletedAt mais antigo; desempatar por ordinal. Não adaptar novamente a dificuldade dessa fase.
+
+Persistir phaseId e contentVersion junto do slot e de seu jogo. Essa referência não muda quando a pessoa pratica fora do treino, recarrega ou altera preferências. Uma fase feita fora do treino pode ser repetida na etapa prevista; só uma sessão vinculada àquele slot o conclui.
+
+Iniciar uma etapa já concluída não cria outra sessão diária nem soma nova recompensa. Repetição é oferecida pelo modo Fases. Uma sessão diária concluída alimenta o histórico, o percurso e o slot na mesma operação; o plano não contém uma recompensa adicional separada.
+
+Os planos antigos mantêm as cinco escolhas e slots concluídos. Completar referências ausentes somente nos pendentes, sem reconstruir o plano inteiro. Mudança de data mantém a regra da seção 8.3 dos requisitos: o treino aberto continua com sua data original, e o Início consulta o dia atual.
+
+16.10 Evolução e catálogo
+
+Cada card de jogo pode mostrar “4 de 20 fases concluídas”; o acesso principal abre o mapa. Manter busca, filtros, categorias e os três destaques do Início. Não acrescentar 240 cards ao catálogo principal.
+
+Em Minha evolução, acrescentar resumo de percurso com total distinto e lista por jogo. A barra usa fases distintas concluídas / total de fases válidas. Exibir estrelas do percurso em área explicitamente identificada, separada do total histórico de estrelas já existente.
+
+Histórico identifica “Fase N — título”, “Treino de Hoje · Fase N” ou “Prática livre”, quando esses dados existem. Sessões legadas sem fase continuam descritas pelo jogo e contexto conhecido. Não preencher números inexistentes. Recomendações mantêm as regras de amostra e acolhimento anteriores, encaminhando ao mapa ou à prática livre adequada sem abrir fases bloqueadas.
+
+16.11 Validação do banco e verificação de comportamento
+
+O comando de validação deve funcionar no ambiente já disponível, sem exigir ferramenta de build em produção. Reutilizar o test runner existente; na ausência dele, um script JavaScript de desenvolvimento pode importar os dados e emitir erros com jogo, fase, desafio e campo. Esse script valida conteúdo, não reimplementa a lógica do jogo.
+
+Validar todas as 240 fases:
+
+IDs de jogo oficiais; IDs de fase únicos; ordinais 1–20 sem lacunas ou duplicações; cinco fases por bloco; nível correspondente ao bloco.
+
+Unidade e quantidade de referências: um tabuleiro ou três desafios; referências existentes, distintas e compatíveis com o jogo; instruções, títulos e dicas não vazios.
+
+Pelo menos 600 desafios distintos nos dez jogos de rodadas e 40 tabuleiros distintos nos dois de pares; nenhum registro provisório.
+
+Limites de cartas, pares, opções, alvos, passos e sílabas da seção 16.5. Validação estrutural das respostas e das imagens referenciadas.
+
+Pares completos na Memória; associação unívoca; uma resposta em alternativas únicas; alvos completos em múltipla seleção; ordens aceitas válidas; resposta de sequência consistente com a regra declarada.
+
+Assinatura semântica por jogo para detectar clones: normalizar texto; ignorar IDs, pontuação cosmética, ordem de opções e posições aleatórias; incluir enunciado/contexto, objetivo e conteúdo da resposta. Em tabuleiros, comparar o conjunto canônico de pares. Sinalizar reutilizações suspeitas para revisão editorial, além de rejeitar duplicações exatas normalizadas.
+
+A inspeção humana revisa clareza de imagens, divisão silábica, frases, relações e ambiguidades que um script não identifica. A assinatura não garante qualidade pedagógica nem justifica preencher o banco com frases automáticas sem revisão.
+
+Área
+
+Casos que precisam de evidência
+
+Percurso
+
+Primeira fase; fase bloqueada por URL; conclusão com muitos erros; limites 5→6, 10→11 e 15→16; fase 20; isolamento entre jogos.
+
+Contagem
+
+Repetição melhora/mantém recorde; 1 fase repetida continua contando 1; conclusão e eventos duplicados; treino não duplica estrelas.
+
+Modos
+
+Nível da prática livre muda conforme janela; fase continua com configuração fixa; uma modalidade não alimenta a progressão da outra.
+
+Armazenamento
+
+Migração conhecida com totais e treino; segunda migração; reload ativo; reset preserva preferências; falha de quota; JSON inválido/versão futura.
+
+Treino
+
+Cinco grupos; fase congelada após prática externa; slot concluído protegido; todas as fases já concluídas; mudança de data local.
+
+Conteúdo
+
+Validação de todas as definições e renderização interativa de ao menos uma fase de cada bloco em cada jogo: 48 combinações.
+
+Interface
+
+Mapa, exercício e resultado em 320/390/768/1024/1440 px; claro/escuro; texto ampliado; teclado; movimento reduzido.
+
+As 48 combinações interativas podem usar dados de teste e navegação de desenvolvimento para alcançar fases, sem acrescentar desbloqueio de testes à interface de produção. A validação de todas as definições complementa essa amostra; não é necessário jogar manualmente as 240 para comprovar a estrutura do banco. Registrar apenas verificações efetivamente executadas, corrigir falhas relevantes e preservar os fluxos existentes.
