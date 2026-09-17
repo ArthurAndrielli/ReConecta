@@ -674,7 +674,7 @@ Validar: banco completo e frases formadas por cada alternativa; corrigir distrat
 
 Commit: feat: implementa a task 61.
 
-[ ] Task 62 — Completar resultado, repetição e passagem de fase
+[x] Task 62 — Completar resultado, repetição e passagem de fase
 
 Depende de: Tasks 47–61. Requisitos: RF067, RF072, RF085, RUI037.
 
