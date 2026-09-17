@@ -398,7 +398,7 @@ Validar: conferir 4/6/8/12 cartas, revelação, erro/acerto, fase de observaçã
 
 Commit: feat: implementa a task 34.
 
-[ ] Task 35 — Refinar a apresentação dos jogos de linguagem
+[x] Task 35 — Refinar a apresentação dos jogos de linguagem
 
 Depende de: Tasks 28 e 33. Requisitos: RUI025, RF028–RF032, RF048–RF049.
 
