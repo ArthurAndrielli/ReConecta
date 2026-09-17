@@ -1,20 +1,20 @@
-import { tapOnlyRounds } from '../data.js';
-
-function render(container, callbacks, context = {}) {
-  const round = tapOnlyRounds.find((item) => item.level === context.level) || tapOnlyRounds[0];
-  const selected = new Set();
-  let completed = false;
-  let attempts = 0;
-  let errors = 0;
-  const startTime = Date.now();
-  const targetCount = round.options.filter((item) => item.correct).length;
-  container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Toque Somente em...</h2><p>${round.instruction}.</p><p id="tap-progress" role="status">0 de ${targetCount} itens selecionados</p><div class="choice-grid" id="tap-options"></div><button id="check-tap">Conferir seleção</button><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
-  const options = container.querySelector('#tap-options');
-  options.innerHTML = round.options.map((item, index) => `<button class="choice-button" data-index="${index}">${item.value}</button>`).join('');
-  options.querySelectorAll('[data-index]').forEach((button) => button.addEventListener('click', () => { if (completed) return; const index = Number(button.dataset.index); if (selected.has(index)) { selected.delete(index); button.classList.remove('is-selected'); } else { selected.add(index); button.classList.add('is-selected'); } container.querySelector('#tap-progress').textContent = `${[...selected].filter((item) => round.options[item].correct).length} de ${targetCount} itens corretos selecionados`; }));
-  container.querySelector('#check-tap').addEventListener('click', () => { if (completed) return; attempts += 1; callbacks.onAttempt(); const expected = new Set(round.options.map((item, index) => item.correct ? index : null).filter((index) => index !== null)); const correct = selected.size === expected.size && [...expected].every((index) => selected.has(index)); if (correct) { completed = true; callbacks.onCorrect(); callbacks.onMessage('correct'); callbacks.onComplete({ attempts, errors, elapsedTime: Date.now() - startTime }); container.querySelector('#feedback').textContent = 'Muito bem! Você selecionou todos os itens corretos.'; } else { errors += 1; callbacks.onWrong(); callbacks.onMessage('wrong'); } });
-  container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
-  container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
+import { shuffle } from '../utils/array.js';
+import { picture } from '../utils/contentView.js';
+export function render(container, callbacks, { content: round }) {
+  const selected = new Set(), options = shuffle(round.options);
+  let done = false, waiting = false;
+  container.innerHTML = `<p id="tap-progress">0 de ${round.targets.length} objetos encontrados</p><div class="choice-grid">${options.map((id, i) => `<button class="choice-button" data-index="${i}" aria-pressed="false">${picture(id)}</button>`).join('')}</div>`;
+  container.querySelectorAll('[data-index]').forEach(button => button.addEventListener('click', () => {
+    const id = options[Number(button.dataset.index)];
+    if (!callbacks.isActive() || done || waiting || selected.has(id)) return;
+    const correct = round.targets.includes(id);
+    callbacks.onAttempt(correct, `${round.id}:${id}`);
+    if (correct) {
+      selected.add(id); button.disabled = true; button.classList.add('is-resolved'); button.setAttribute('aria-pressed', 'true');
+      container.querySelector('#tap-progress').textContent = `${selected.size} de ${round.targets.length} objetos encontrados`;
+      if (selected.size === round.targets.length) { done = true; callbacks.onComplete(); }
+      else { callbacks.message('Muito bem! Continue procurando os outros objetos.', 'success'); container.querySelector('button:not(:disabled)')?.focus(); }
+    } else { waiting = true; callbacks.onRetry(() => { waiting = false; button.focus(); }); }
+  }));
+  return { destroy() { done = true; } };
 }
-
-export { render };

@@ -1,53 +1,32 @@
-import { wordRounds } from '../data.js';
 import { shuffle } from '../utils/array.js';
-
-function render(container, callbacks, context = {}) {
-  const round = wordRounds.find((item) => item.level === context.level) || wordRounds[0];
-  let selectedIndices = [];
-  let completed = false;
-  let attempts = 0;
-  let errors = 0;
-  let hintVisible = false;
-  const startTime = Date.now();
-  const syllables = shuffle([...round.syllables, ...(round.distractors || [])]);
-
-  container.innerHTML = `<section class="activity-card" data-level="${context.level || 1}"><h2>Monte a Palavra</h2><p>Escolha as sílabas na ordem correta para formar a palavra.</p><div class="word-image" role="img" aria-label="Imagem da palavra">${round.image}</div><p id="selected-syllables" class="selected-syllables" aria-live="polite">Escolha uma sílaba</p><div id="syllable-options" class="choice-grid"></div><p class="feedback" id="feedback" aria-live="polite"></p><div class="actions"><button class="secondary" id="undo-syllable">Desfazer</button><button class="secondary" id="hint">Preciso de uma dica</button><button class="secondary" id="back-home">← Voltar ao início</button><button id="restart">Jogar novamente</button></div></section>`;
-  const options = container.querySelector('#syllable-options');
-  const selectedElement = container.querySelector('#selected-syllables');
-  const draw = () => {
-    const selected = selectedIndices.map((index) => syllables[index]);
-    selectedElement.textContent = selected.length ? selected.join(' - ') : 'Escolha uma sílaba';
-    options.innerHTML = syllables.map((syllable, index) => `<button class="choice-button ${hintVisible && syllable === round.syllables[0] ? 'hint' : ''}" data-index="${index}" ${selectedIndices.includes(index) ? 'disabled' : ''}>${syllable}</button>`).join('');
-    options.querySelectorAll('[data-index]').forEach((button) => button.addEventListener('click', () => select(Number(button.dataset.index))));
+import { picture } from '../utils/contentView.js';
+import { escapeHTML } from '../utils/dom.js';
+export function render(container, callbacks, { content: round }) {
+  const pieces = shuffle([...round.syllables, ...round.distractors]);
+  let selected = [], done = false, waiting = false;
+  container.innerHTML = `<div class="word-image">${picture(round.assetId, { label: false })}</div><p class="selected-syllables" id="selected-syllables" role="status">Escolha uma sílaba</p><div class="choice-grid">${pieces.map((piece, i) => `<button class="choice-button" data-piece="${i}">${escapeHTML(piece)}</button>`).join('')}</div><div class="actions"><button class="secondary" id="undo-syllable" disabled>Desfazer</button><button id="check-word" disabled>Verificar palavra</button></div>`;
+  const buttons = [...container.querySelectorAll('[data-piece]')];
+  const update = () => {
+    container.querySelector('#selected-syllables').textContent = selected.length ? selected.map(i => pieces[i]).join(' · ') : 'Escolha uma sílaba';
+    buttons.forEach((b, i) => { b.disabled = done || waiting || selected.includes(i) || selected.length >= round.syllables.length; });
+    container.querySelector('#undo-syllable').disabled = done || waiting || !selected.length;
+    container.querySelector('#check-word').disabled = done || waiting || selected.length !== round.syllables.length;
   };
-  const select = (index) => {
-    if (completed || selectedIndices.includes(index)) return;
-    selectedIndices.push(index);
-    draw();
-    if (selectedIndices.length !== round.syllables.length) return;
-    attempts += 1;
-    callbacks.onAttempt();
-    const selected = selectedIndices.map((itemIndex) => syllables[itemIndex]);
-    if (selected.join('') === round.syllables.join('')) {
-      completed = true;
-      callbacks.onCorrect();
-      callbacks.onMessage('correct');
-      callbacks.onComplete({ attempts, errors, elapsedTime: Date.now() - startTime });
-      container.querySelector('#feedback').textContent = 'Parabéns! Você montou a palavra.';
-    } else {
-      errors += 1;
-      callbacks.onWrong();
-      callbacks.onMessage('wrong');
-      hintVisible = errors >= 2;
-      selectedIndices = [];
-      draw();
-    }
-  };
-  container.querySelector('#undo-syllable').addEventListener('click', () => { if (!completed) { selectedIndices.pop(); draw(); } });
-  container.querySelector('#hint').addEventListener('click', () => { hintVisible = true; container.querySelector('#feedback').textContent = 'A primeira sílaba correta está destacada.'; draw(); });
-  container.querySelector('#back-home').addEventListener('click', callbacks.onBack);
-  container.querySelector('#restart').addEventListener('click', () => render(container, callbacks, context));
-  draw();
+  buttons.forEach((button, i) => button.addEventListener('click', () => {
+    if (!callbacks.isActive() || done || waiting || selected.includes(i) || selected.length >= round.syllables.length) return;
+    selected.push(i); update();
+    (buttons.find(b => !b.disabled) || container.querySelector('#check-word')).focus();
+  }));
+  container.querySelector('#undo-syllable').addEventListener('click', () => {
+    if (!callbacks.isActive() || done || waiting) return;
+    const i = selected.pop(); update(); buttons[i]?.focus();
+  });
+  container.querySelector('#check-word').addEventListener('click', () => {
+    if (!callbacks.isActive() || done || waiting || selected.length !== round.syllables.length) return;
+    const correct = selected.map(i => pieces[i]).join('') === round.word;
+    callbacks.onAttempt(correct, round.id);
+    if (correct) { done = true; update(); callbacks.onComplete(`Muito bem! Você formou ${round.word}.`); }
+    else { waiting = true; update(); callbacks.onRetry(() => { waiting = false; update(); container.querySelector('#undo-syllable').focus(); }); }
+  });
+  return { hint() { buttons.forEach((button, i) => button.classList.toggle('hint', pieces[i] === round.syllables[0])); }, destroy() { done = true; } };
 }
-
-export { render };
