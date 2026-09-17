@@ -634,7 +634,7 @@ Validar: alvo presente exatamente uma vez, imagens válidas e distratores distin
 
 Commit: feat: implementa a task 57.
 
-[ ] Task 58 — Entregar 20 fases de Toque Somente em...
+[x] Task 58 — Entregar 20 fases de Toque Somente em...
 
 Depende de: Tasks 16 e 49. Requisitos: RF069, RF081, RNF020.
 
