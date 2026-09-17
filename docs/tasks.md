@@ -468,7 +468,7 @@ Validar: alteração e persistência das preferências existentes, reset cancela
 
 Commit: feat: implementa a task 41.
 
-[ ] Task 42 — Implementar os temas Claro, Escuro e Sistema
+[x] Task 42 — Implementar os temas Claro, Escuro e Sistema
 
 Depende de: Tasks 27–41. Requisitos: RF063, RUI032, RNF004, RNF010.
 
