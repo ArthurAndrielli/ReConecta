@@ -564,7 +564,7 @@ Validar: todos os tabuleiros passam pelo validador; não há conjuntos duplicado
 
 Commit: feat: implementa a task 50.
 
-[ ] Task 51 — Entregar 20 fases de O Que Você Viu?
+[x] Task 51 — Entregar 20 fases de O Que Você Viu?
 
 Depende de: Tasks 09 e 49. Requisitos: RF069, RF074, RNF020.
 
