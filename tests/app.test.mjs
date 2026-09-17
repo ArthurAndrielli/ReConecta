@@ -73,6 +73,15 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.match(app.textContent, /Começar atividade/);
   await route('#/jogo/memory/fases');
   assert.equal(app.querySelectorAll('[data-phase]').length, 20);
+  assert.equal(app.querySelector('.phase-map').dataset.gameTheme, 'memory');
+  assert.equal(app.querySelectorAll('.phase-available').length, 1);
+  assert.equal(app.querySelectorAll('.phase-locked').length, 19);
+  assert.equal(app.querySelector('[data-phase][aria-current="step"]').dataset.phase, 'memory-p01');
+  assert.equal(app.querySelector('.phase-available .phase-status').textContent.trim(), '● Atual');
+  assert.match(app.querySelector('.phase-available').textContent, /Atividade 1.*Pronta para continuar/s);
+  assert.match(app.querySelector('.phase-locked').textContent, /Bloqueada/);
+  assert.equal(app.querySelector('.phase-locked [data-phase]').disabled, true);
+  assert.ok(app.querySelector('.phase-summary progress[aria-label]'));
   app.querySelector('#back-catalog').click(); await tick();
   assert.equal(app.querySelector('#game-search').value, 'MEMORIA');
   await route('#/jogo/memory/fase/memory-p02');
@@ -97,6 +106,10 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   button(app, 'Próxima atividade').click(); await tick();
   assert.equal(getProgress().sessions.at(-1).phaseOrdinal, 2);
   solveSession();
+  await route('#/jogo/memory/fases');
+  assert.equal(app.querySelectorAll('.phase-completed').length, 2);
+  assert.match(app.querySelector('.phase-completed').textContent, /Concluída.*Melhor resultado/s);
+  assert.equal(app.querySelector('[data-phase][aria-current="step"]').dataset.phase, 'memory-p03');
   for (const game of games) {
     await route(`#/jogo/${game.id}`);
     button(app, 'Começar atividade').click(); await tick();
