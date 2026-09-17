@@ -408,7 +408,7 @@ Validar: BANANA com sílabas repetidas, palavras/frases maiores, ambos os sentid
 
 Commit: feat: implementa a task 35.
 
-[ ] Task 36 — Refinar sequências, categorização e atenção
+[x] Task 36 — Refinar sequências, categorização e atenção
 
 Depende de: Tasks 28 e 33. Requisitos: RUI026, RF033–RF037, RF040–RF043.
 
