@@ -438,7 +438,7 @@ Validar: controles com rótulos curtos/longos, mouse, teclado, toque e texto amp
 
 Commit: feat: implementa a task 38.
 
-[ ] Task 39 — Refinar feedback, resultado e diálogos
+[x] Task 39 — Refinar feedback, resultado e diálogos
 
 Depende de: Tasks 34–38. Requisitos: RUI029, RF019–RF022, RF060.
 
