@@ -368,7 +368,7 @@ Validar: exibir os 12 jogos, combinar busca/filtro, conferir os títulos mais lo
 
 Commit: feat: implementa a task 31.
 
-[ ] Task 32 — Refinar microtextos, estados vazios e mensagens de carregamento
+[x] Task 32 — Refinar microtextos, estados vazios e mensagens de carregamento
 
 Depende de: Tasks 30–31. Requisitos: RF061, RF062, RUI022, RUI015.
 
