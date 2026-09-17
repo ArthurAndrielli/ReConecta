@@ -604,7 +604,7 @@ Validar: em todos os grupos, três itens atendem ao critério declarado e soment
 
 Commit: feat: implementa a task 54.
 
-[ ] Task 55 — Entregar 20 fases de Complete a Sequência
+[x] Task 55 — Entregar 20 fases de Complete a Sequência
 
 Depende de: Tasks 13 e 49. Requisitos: RF069, RF078, RNF020.
 
