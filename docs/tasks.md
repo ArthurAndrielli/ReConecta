@@ -851,3 +851,11 @@ Registro de conclusão
 Ao finalizar uma task, manter um registro curto neste espaço, sem reproduzir toda a implementação: número, comportamento entregue, verificações executadas e hash do commit. Como o hash só existe após o commit, anotar depois sem reescrever o histórico; essa anotação pode seguir no próximo commit ou no relatório final. A atualização da marcação deve estar no commit da própria task.
 
 Nenhuma task foi executada apenas pela criação deste plano. O registro de implementação começa quando o código do aplicativo for efetivamente alterado ou verificado.
+
+### Revisão do sistema — 17/09/2026
+
+As 68 tasks foram relidas e confrontadas com o código. As marcações históricas acima foram preservadas. A primeira implementação continha conteúdo provisório e verificações insuficientes, apesar dos [x].
+
+O registro detalhado por task, requisitos, correções e evidências está em [review.md](review.md). A revisão atual aprovou 24 testes, exercitou em DOM simulado os motores das 240 fases e validou 600 desafios e 40 tabuleiros. A inspeção visual e a compatibilidade em navegador real permanecem pendentes porque nenhum navegador foi disponibilizado pelo runtime. Portanto, os [x] históricos das tasks de homologação visual não devem ser tratados como evidência de validação gráfica nesta revisão.
+
+Segunda passagem registrada em 47e4be5 (fluxos e recuperação) e a14fd6e (estilos e semântica). A primeira passagem consta em 41c2a28, já presente ao retomar o trabalho.
