@@ -524,7 +524,7 @@ Validar: migração de dados conhecidos com sessões concluídas/interrompidas, 
 
 Commit: feat: implementa a task 46.
 
-[ ] Task 47 — Implementar desbloqueio, repetição e conclusão única
+[x] Task 47 — Implementar desbloqueio, repetição e conclusão única
 
 Depende de: Tasks 45–46. Requisitos: RF066–RF068, RF072, RF088, RNF019.
 
