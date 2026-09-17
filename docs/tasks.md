@@ -859,3 +859,9 @@ As 68 tasks foram relidas e confrontadas com o código. As marcações históric
 O registro detalhado por task, requisitos, correções e evidências está em [review.md](review.md). A revisão atual aprovou 24 testes, exercitou em DOM simulado os motores das 240 fases e validou 600 desafios e 40 tabuleiros. A inspeção visual e a compatibilidade em navegador real permanecem pendentes porque nenhum navegador foi disponibilizado pelo runtime. Portanto, os [x] históricos das tasks de homologação visual não devem ser tratados como evidência de validação gráfica nesta revisão.
 
 Segunda passagem registrada em 47e4be5 (fluxos e recuperação) e a14fd6e (estilos e semântica). A primeira passagem consta em 41c2a28, já presente ao retomar o trabalho.
+
+### [x] Task 69 — Simplificar e tornar contínua a navegação dos minijogos
+
+Cards com Jogar/Continuar, percurso secundário, cabeçalho e progresso compartilhados, resultado com hierarquia única e avanço direto foram aplicados aos 12 jogos. O Treino de Hoje agora inicia a atividade seguinte sem retornar à sua lista. A lógica existente de fases, dificuldade e persistência foi preservada.
+
+Verificações: 24 testes integrados aprovados; 240 fases, 600 rodadas e 40 tabuleiros validados; verificação estática de 50 scripts, 105 imports e CSS aprovada. A inspeção em navegador gráfico ficou indisponível no runtime e não foi registrada como concluída.

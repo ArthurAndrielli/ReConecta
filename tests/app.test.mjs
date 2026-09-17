@@ -47,7 +47,7 @@ function solveSession() {
     assert.equal(next.hidden, false, id);
     next.click();
   }
-  assert.match(app.textContent, /Atividade concluída!/);
+  assert.match(app.textContent, /Muito bem!|Treino concluído!/);
   assert.equal(getProgress().sessions.at(-1).status, 'completed');
   checkSemantics();
 }
@@ -60,6 +60,8 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   search.value = 'MEMORIA'; search.dispatchEvent(new Event('input'));
   assert.equal(app.querySelectorAll('[data-game]').length, 1);
   app.querySelector('[data-game]').click(); await tick();
+  assert.match(app.textContent, /Começar atividade/);
+  await route('#/jogo/memory/fases');
   assert.equal(app.querySelectorAll('[data-phase]').length, 20);
   app.querySelector('#back-catalog').click(); await tick();
   assert.equal(app.querySelector('#game-search').value, 'MEMORIA');
@@ -67,7 +69,7 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.match(app.textContent, /Conclua a fase anterior/);
   assert.equal(getProgress().sessions.length, 0);
   await route('#/jogo/memory/fase/memory-p01');
-  button(app, 'Começar fase').click();
+  button(app, 'Começar atividade').click();
   await tick();
   button(app, 'Pausar').click(); await tick();
   assert.equal(app.querySelector('#game-interaction').inert, true);
@@ -79,12 +81,12 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.ok(app.querySelector('#game-board')); assert.equal(location.hash, '#/jogo/memory/fase/memory-p01');
   solveSession();
   const firstTotal = getProgress().atividades;
-  button(app, 'Repetir fase').click();
-  button(app, 'Começar fase').click(); await tick(); solveSession();
+  button(app, 'Tentar novamente').click(); await tick(); solveSession();
   assert.equal(getProgress().atividades, firstTotal + 1);
   assert.equal(getProgress().phaseProgress.memory[1].completions, 2);
-  button(app, 'Próxima fase').click(); await tick();
-  assert.match(app.textContent, /Fase 2 de 20/);
+  button(app, 'Próxima atividade').click(); await tick();
+  assert.equal(getProgress().sessions.at(-1).phaseOrdinal, 2);
+  solveSession();
   for (const game of games) {
     await route(`#/jogo/${game.id}`);
     button(app, 'Começar atividade').click(); await tick();
@@ -95,11 +97,12 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   const planBefore = structuredClone(getProgress().dailyPlans);
   button(app, 'Começar treino').click();
   for (let i = 0; i < 5; i++) {
-    button(app, 'Começar fase').click(); await tick(); solveSession();
+    if (i === 0) button(app, 'Começar atividade').click();
+    await tick(); solveSession();
     const session = getProgress().sessions.at(-1);
     assert.equal(session.mode, 'daily');
     assert.equal(getProgress().dailyPlans[session.trainingRef.dateKey].slots[i].completedSessionId, session.id);
-    if (i < 4) { button(app, 'Próxima atividade').click(); button(app, 'Continuar treino').click(); }
+    if (i < 4) button(app, 'Próxima atividade').click();
   }
   assert.match(app.textContent, /Parabéns! Você concluiu o treino de hoje/);
   await route('#/inicio'); assert.match(app.textContent, /Treino de hoje concluído/);
@@ -133,7 +136,7 @@ test('browser back cancellation keeps history, paused exit cancellation and rest
   resetProgress();
   await route('#/atividades');
   await route('#/jogo/word/fase/word-p01');
-  button(app, 'Começar fase').click(); await tick();
+  button(app, 'Começar atividade').click(); await tick();
   const originalSession = getProgress().sessions.at(-1).id;
   history.back(); await tick(); await tick();
   assert.ok(document.querySelector('dialog'));
@@ -148,8 +151,8 @@ test('browser back cancellation keeps history, paused exit cancellation and rest
   button(document.querySelector('dialog'), 'Continuar atividade').click(); await tick();
   button(app, 'Recomeçar atividade').click(); await tick();
   button(document.querySelector('dialog'), 'Sair da atividade').click(); await tick();
-  assert.equal(getProgress().sessions.at(-1).status, 'abandoned');
-  button(app, 'Começar fase').click(); await tick();
+  assert.equal(getProgress().sessions.find(session => session.id === originalSession).status, 'abandoned');
+  await tick();
   assert.notEqual(getProgress().sessions.at(-1).id, originalSession);
   history.back(); await tick(); await tick();
   button(document.querySelector('dialog'), 'Sair da atividade').click(); await tick(); await tick();
@@ -165,7 +168,7 @@ test('saving failure is visible and retry does not repeat the completed activity
   window.Storage.prototype.setItem = () => { throw new Error('Quota'); };
   try {
     await route('#/jogo/word/fase/word-p01');
-    button(app, 'Começar fase').click(); await tick(); solveSession();
+    button(app, 'Começar atividade').click(); await tick(); solveSession();
     assert.equal(document.getElementById('storage-status').hidden, false);
     assert.match(document.getElementById('storage-status').textContent, /não foi possível salvá-lo/);
     assert.equal(getProgress().atividades, 1);

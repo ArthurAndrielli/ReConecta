@@ -16,7 +16,7 @@ import { getGameLevel } from './levels.js';
 import { getBestCategory, getRecommendation, getCategoryPerformance } from './evolution.js';
 import { renderIcon } from './utils/icons.js';
 import { getPhase, getGamePhases, phaseCatalog } from './phases/catalog.js';
-import { canStartPhase, getPhaseSummary } from './phases/progression.js';
+import { canStartPhase, getNextPhase, getPhaseSummary } from './phases/progression.js';
 import { getPhaseContent } from './phases/content.js';
 import { renderPhaseMap } from './ui/phaseMap.js';
 import { getDailyPlan } from './dailyTraining.js';
@@ -55,8 +55,10 @@ function screen(title, nav = '', focusMode = false) {
 }
 function finishView() { focusHeading(app); window.scrollTo?.(0, 0); }
 function gameCard(game) {
-  const summary = getPhaseSummary(getProgress(), game.id);
-  return `<a class="game-card" href="${mapRoute(game.id)}" data-game="${game.id}" data-category="${game.category}"><div class="game-icon" aria-hidden="true">${renderIcon(game.id)}</div><div class="game-card-content"><span class="category-label category-${game.category}">${categoryLabel(game.category)}</span><h3>${game.name}</h3><p>${game.description}</p><p class="phase-progress">${summary.completed} de ${summary.total} fases concluídas</p></div><span class="card-action">Conhecer atividade <span aria-hidden="true">→</span></span></a>`;
+  const progress = getProgress(), summary = getPhaseSummary(progress, game.id);
+  const next = getNextPhase(progress, game.id) || getGamePhases(game.id)[0];
+  const action = summary.completed === 0 ? 'Jogar' : summary.completed === summary.total ? 'Jogar novamente' : 'Continuar';
+  return `<article class="game-card" data-category="${game.category}"><div class="game-icon" aria-hidden="true">${renderIcon(game.id)}</div><div class="game-card-content"><span class="category-label category-${game.category}">${categoryLabel(game.category)}</span><h3>${game.name}</h3><p>${game.description}</p><p class="phase-progress">${summary.completed ? `${summary.completed} atividades concluídas` : 'Pronto para começar'}</p></div><div class="card-actions"><a class="button card-action" href="${phaseRoute(game, next)}" data-game="${game.id}">${action} <span aria-hidden="true">→</span></a><a class="quiet-link" href="${mapRoute(game.id)}">Ver percurso</a></div></article>`;
 }
 function bindCards() { app.querySelectorAll('[data-game]').forEach(link => link.addEventListener('click', () => { returnCard = link.dataset.game; })); }
 function dayCount(sessions) { return new Set(sessions.filter(s => s.status === 'completed').map(s => localDateKey(new Date(s.endedAt)))).size; }
@@ -166,18 +168,21 @@ function openIntro(game, phase = null, trainingRef = null) {
     if (!phase || !slot || slot.completedSessionId || slot.phaseId !== phase.id || slot.contentVersion !== phase.contentVersion) return unavailable('A fase prevista neste treino não está disponível.', game);
   }
   screen(game.name, 'atividades', true);
-  app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">${categoryLabel(game.category)}</span><h1>${game.name}</h1><p class="phase-context">${phase ? `Fase ${phase.ordinal} de ${getGamePhases(game.id).length} · ${esc(phase.title)}` : 'Prática livre'}</p><p>${esc(phase?.instruction || game.description)}</p><p>${['memory', 'association'].includes(game.id) ? 'Encontre todos os pares do tabuleiro.' : 'São três desafios. Você decide quando continuar.'} A ajuda fica disponível durante toda a atividade.</p><div class="actions"><button id="start-activity">${phase ? 'Começar fase' : 'Começar atividade'}</button><a class="button secondary" href="${mapRoute(game.id)}">Ver fases</a><a class="button secondary" href="#/inicio">Voltar ao início</a></div></section>`;
-  app.querySelector('#start-activity').addEventListener('click', async event => {
-    const start = event.currentTarget;
-    if (start.disabled) return;
-    start.disabled = true;
-    start.textContent = 'Preparando atividade…';
+  const position = trainingRef ? getDailyPlan(trainingRef.dateKey)?.slots.findIndex(slot => slot.id === trainingRef.slotId) + 1 : null;
+  app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">${trainingRef ? `Treino de Hoje · Atividade ${position} de 5` : categoryLabel(game.category)}</span><h1>${game.name}</h1><p class="phase-context">${phase && !trainingRef ? `Próxima atividade do seu percurso` : trainingRef ? 'Uma etapa curta, no seu ritmo.' : 'Prática livre'}</p><p>${esc(phase?.instruction || game.description)}</p><p>${['memory', 'association'].includes(game.id) ? 'Encontre todos os pares do tabuleiro.' : 'São três desafios. Você decide quando continuar.'} A ajuda fica disponível durante toda a atividade.</p><div class="actions"><button id="start-activity">Começar atividade</button><a class="button secondary" href="${trainingRef ? '#/treino' : '#/atividades'}">Agora não</a>${!trainingRef ? `<a class="quiet-link" href="${mapRoute(game.id)}">Ver percurso completo</a>` : ''}</div></section>`;
+  app.querySelector('#start-activity').addEventListener('click', event => startActivity(game, phase, trainingRef, event.currentTarget));
+  finishView();
+}
+async function startActivity(game, phase = null, trainingRef = null, trigger = null) {
+    const start = trigger;
+    if (start?.disabled) return;
+    if (start) { start.disabled = true; start.textContent = 'Preparando atividade…'; }
     try { await ensureGameAssets(); }
     catch {
-      if (start.isConnected) { unavailable('Não foi possível carregar as imagens. Volte ao mapa e tente novamente.', game); finishView(); }
+      if (!start || start.isConnected) { unavailable('Não foi possível carregar as imagens. Escolha a atividade e tente novamente.', game); finishView(); }
       return;
     }
-    if (!start.isConnected) return;
+    if (start && !start.isConnected) return;
     let chosen = phase;
     if (!chosen) {
       const progress = getProgress(), level = getGameLevel(progress, game.id);
@@ -187,29 +192,35 @@ function openIntro(game, phase = null, trainingRef = null) {
     }
     const content = getPhaseContent(chosen);
     if (content.length !== (chosen.unit === 'board' ? 1 : 3)) { unavailable('O conteúdo desta atividade não está disponível.', game); return; }
-    const context = { phase, phaseId: phase?.id || null, phaseTotal: getGamePhases(game.id).length,
+    const trainingPosition = trainingRef ? getDailyPlan(trainingRef.dateKey)?.slots.findIndex(slot => slot.id === trainingRef.slotId) + 1 : null;
+    const context = { phase, phaseId: phase?.id || null, phaseTotal: getGamePhases(game.id).length, trainingPosition,
       mode: trainingRef ? 'daily' : phase ? 'phase' : 'free', trainingRef, content, preferences: getPreferences() };
     active = startGameSession(app, game, context, engines[game.id], result => { active = null; renderResult(game, phase, result); },
-      () => { active = null; navigate('#/inicio'); }, () => { active = null; openIntro(game, phase, trainingRef); finishView(); });
-    if (!active) unavailable('Esta atividade não pode ser iniciada. Volte ao mapa para continuar.', game);
-  });
-  finishView();
+      () => { active = null; navigate(trainingRef ? '#/treino' : '#/atividades'); }, () => { active = null; startActivity(game, phase, trainingRef); });
+    if (!active) unavailable('Esta atividade não pode ser iniciada. Escolha outra atividade para continuar.', game);
 }
 function renderResult(game, phase, session) {
   screen('Atividade concluída', 'atividades', true);
-  const record = phase ? getProgress().phaseProgress[game.id]?.[phase.ordinal] : null;
   const next = phase ? getGamePhases(game.id).find(p => p.ordinal === phase.ordinal + 1) : null;
   const plan = session.trainingRef ? getDailyPlan(session.trainingRef.dateKey) : null;
   const count = plan?.slots.filter(s => s.completedSessionId).length || 0;
-  app.innerHTML = `<section class="activity-card result-card"><h1>Atividade concluída!</h1><p>Muito bem por chegar até aqui.</p>${phase ? `<p>Fase ${phase.ordinal} de ${getGamePhases(game.id).length} · ${esc(phase.title)}</p>` : '<p>Prática livre</p>'}<p class="result-stars" aria-label="${session.stars} estrelas recebidas"><span aria-hidden="true">${'★'.repeat(session.stars)}</span></p>${record ? `<p>Melhor resultado desta fase: ${record.bestStars} de 3 estrelas.</p>` : ''}${plan ? `<p>${count === 5 ? 'Parabéns! Você concluiu o treino de hoje.' : `Atividade ${count} de 5 concluída.`}</p>` : phase && !next ? '<p>Parabéns! Você concluiu todas as fases deste jogo.</p>' : ''}<div class="actions"><button id="result-next">${plan ? count === 5 ? 'Escolher outra atividade' : 'Próxima atividade' : phase ? next ? 'Próxima fase' : 'Ver fases' : 'Praticar novamente'}</button>${!plan && phase ? '<button class="secondary" id="repeat-phase">Repetir fase</button>' : ''}<a class="button secondary" href="${mapRoute(game.id)}">Ver fases</a><a class="button secondary" href="#/atividades">Escolher outra atividade</a><a class="button secondary" href="#/inicio">Voltar ao início</a></div></section>`;
+  const correct = session.attempts.filter(attempt => attempt.correct).length;
+  const total = correct + session.attempts.filter(attempt => !attempt.correct).length;
+  const primary = plan ? count === 5 ? 'Concluir treino' : 'Próxima atividade' : phase && next ? 'Próxima atividade' : phase ? 'Concluir percurso' : 'Jogar novamente';
+  app.innerHTML = `<section class="activity-card result-card"><div class="result-mark" aria-hidden="true">✓</div><h1>${plan && count === 5 ? 'Treino concluído!' : 'Muito bem!'}</h1><p>${plan && count === 5 ? 'Parabéns! Você concluiu o treino de hoje.' : 'Você concluiu esta atividade no seu ritmo.'}</p><p class="result-stars" aria-label="${session.stars} estrelas recebidas"><span aria-hidden="true">${'★'.repeat(session.stars)}</span></p><p class="result-score">${correct} acertos em ${total} tentativas</p>${plan && count < 5 ? `<p>Atividade ${count} de 5 concluída.</p>` : phase && !next ? '<p>Você concluiu todo o percurso deste jogo.</p>' : ''}<div class="actions result-actions"><button id="result-next">${primary}</button><button class="secondary" id="repeat-activity">Tentar novamente</button><a class="quiet-link" href="#/atividades">Sair do jogo</a></div></section>`;
   app.querySelector('#result-next').addEventListener('click', () => {
     if (plan) {
       if (count === 5) navigate('#/atividades');
-      else { dailyDate = session.trainingRef.dateKey; renderTraining(); finishView(); }
-    } else if (phase) navigate(next ? phaseRoute(game, next) : mapRoute(game.id));
-    else { openIntro(game); }
+      else {
+        dailyDate = session.trainingRef.dateKey;
+        const slot = plan.slots.find(item => !item.completedSessionId);
+        startActivity(gameFor(slot.gameId), getPhase(slot.phaseId), { dateKey: dailyDate, slotId: slot.id }, app.querySelector('#result-next'));
+      }
+    } else if (phase && next) startActivity(game, next, null, app.querySelector('#result-next'));
+    else if (phase) navigate('#/atividades');
+    else startActivity(game, null, null, app.querySelector('#result-next'));
   });
-  app.querySelector('#repeat-phase')?.addEventListener('click', () => { openIntro(game, phase); });
+  app.querySelector('#repeat-activity').addEventListener('click', event => startActivity(game, phase, null, event.currentTarget));
   finishView();
 }
 function renderStorageStatus() {

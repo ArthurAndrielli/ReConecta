@@ -2263,3 +2263,9 @@ Interface
 Mapa, exercício e resultado em 320/390/768/1024/1440 px; claro/escuro; texto ampliado; teclado; movimento reduzido.
 
 As 48 combinações interativas podem usar dados de teste e navegação de desenvolvimento para alcançar fases, sem acrescentar desbloqueio de testes à interface de produção. A validação de todas as definições complementa essa amostra; não é necessário jogar manualmente as 240 para comprovar a estrutura do banco. Registrar apenas verificações efetivamente executadas, corrigir falhas relevantes e preservar os fluxos existentes.
+
+## Adendo — padrão de navegação das atividades (17/09/2026)
+
+O padrão compartilhado dos 12 jogos é: card com ação direta → introdução curta → atividade → resultado → próxima atividade. O mapa de 20 fases permanece disponível como visão detalhada do percurso, mas não interrompe o caminho principal.
+
+O cabeçalho de jogo usa três áreas: **Sair**, identidade/contexto central e **Pausar**. Logo abaixo, uma barra mostra o desafio atual dentro da atividade. No resultado, a hierarquia é vertical e inequívoca: ação recomendada preenchida, repetição secundária e saída em link discreto. Em celular, os controles ocupam a largura disponível e mantêm área de toque mínima de 48 px.

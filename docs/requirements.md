@@ -1217,3 +1217,14 @@ A entrega exige os 240 registros válidos, pelo menos 600 desafios distintos nos
 Validar os 12 jogos, limites entre blocos (5→6, 10→11 e 15→16), término da fase 20, repetição, prática livre, treino, migração e recarregamento. A validação de dados cobre todas as 240 definições; a inspeção interativa cobre pelo menos uma fase de cada bloco de cada jogo, além dos fluxos compartilhados de maior risco. As verificações são detalhadas em design.md, seção 16, e nas Tasks 65–68.
 
 As Tasks 01–44 permanecem como histórico e base. A ampliação pertence às Tasks 45–68. Regras desta seção sobre fases, acesso pelo catálogo e adaptação exclusiva da prática livre prevalecem sobre instruções anteriores desses mesmos pontos; todas as demais regras continuam valendo.
+
+## Adendo — fluxo contínuo dos minijogos (17/09/2026)
+
+Este adendo substitui, para o caminho principal, a exigência anterior de abrir o mapa de fases a partir de todo card. As 20 fases e suas regras de desbloqueio continuam preservadas, mas funcionam como progressão interna e como percurso opcional.
+
+- Cada card apresenta **Jogar**, **Continuar** ou **Jogar novamente** e abre diretamente a atividade adequada. **Ver percurso** é uma ação secundária.
+- Durante uma atividade, o cabeçalho informa jogo, contexto e progresso sem classificar a pessoa por nível ou fase.
+- Ao concluir, a ação dominante é **Próxima atividade**; a próxima sessão abre diretamente, sem retorno ao catálogo, mapa, introdução ou tela do treino.
+- O resultado oferece somente uma ação principal, **Tentar novamente** como ação secundária e **Sair do jogo** como ação discreta.
+- No Treino de Hoje, as cinco atividades formam um fluxo contínuo. A tela do treino é usada para iniciar ou retomar, não como parada obrigatória entre etapas.
+- Fases, dificuldade, tentativas, estrelas, tempo e progresso permanecem na arquitetura de persistência existente.

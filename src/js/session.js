@@ -47,7 +47,8 @@ export function startGameSession(container, game, context, render, onResult, onE
   function mountRound() {
     engine?.destroy?.(); roundSolved = false; roundErrors = 0; retry = null;
     const content = context.content[roundIndex];
-    container.innerHTML = `<section class="activity-card"><div class="game-toolbar"><button class="secondary" id="back-home">Voltar ao início</button><button class="secondary" id="pause-game">Pausar</button></div><h1>${escapeHTML(game.name)}</h1><p class="eyebrow">${context.phase ? `Fase ${context.phase.ordinal} de ${context.phaseTotal} · ${escapeHTML(context.phase.title)}` : 'Prática livre'}${context.mode === 'daily' ? ' · Treino de Hoje' : ''}</p><div id="game-interaction"><p class="stage-progress">${context.content.length === 3 ? `Etapa ${roundIndex + 1} de 3` : 'Encontre todos os pares'}</p><h2 class="game-command" data-command>${escapeHTML(content.prompt || context.phase?.instruction || game.description)}</h2><div id="game-board"></div><p id="feedback" class="feedback" role="status" aria-atomic="true"></p><div class="actions"><button id="continue-round" hidden>Continuar</button><button id="retry-round" hidden>Tentar novamente</button><button class="secondary" id="hint">Preciso de uma dica</button><button class="secondary" id="restart">Recomeçar atividade</button></div></div></section>`;
+    const overall = context.mode === 'daily' ? `Treino de Hoje · Atividade ${context.trainingPosition || ''} de 5` : context.phase ? 'Seu percurso' : 'Prática livre';
+    container.innerHTML = `<section class="activity-card"><header class="game-header"><button class="quiet-button" id="back-home" aria-label="Sair de ${escapeHTML(game.name)}">← Sair</button><div><h1>${escapeHTML(game.name)}</h1><p class="eyebrow">${overall}</p></div><button class="secondary" id="pause-game">Pausar</button></header><div id="game-interaction"><div class="activity-progress"><span>${context.content.length === 3 ? `Desafio ${roundIndex + 1} de 3` : 'Encontre todos os pares'}</span><progress value="${roundIndex + 1}" max="${context.content.length}" aria-label="Progresso desta atividade"></progress></div><h2 class="game-command" data-command>${escapeHTML(content.prompt || context.phase?.instruction || game.description)}</h2><div id="game-board"></div><p id="feedback" class="feedback" role="status" aria-atomic="true"></p><div class="actions"><button id="continue-round" hidden>Continuar</button><button id="retry-round" hidden>Tentar novamente</button><button class="secondary" id="hint">Preciso de uma dica</button><button class="quiet-button" id="restart">Recomeçar atividade</button></div></div></section>`;
     const isActive = () => !paused && !destroyed && !finished;
     engine = render(container.querySelector('#game-board'), {
       isActive, message,
@@ -66,7 +67,7 @@ export function startGameSession(container, game, context, render, onResult, onE
         if (!isActive() || roundSolved) return;
         roundSolved = true; message(text, 'success');
         const button = container.querySelector('#continue-round');
-        button.hidden = false; button.textContent = roundIndex === context.content.length - 1 ? 'Ver resultado' : 'Continuar'; button.focus();
+        button.hidden = false; button.textContent = roundIndex === context.content.length - 1 ? 'Concluir atividade' : 'Próximo desafio'; button.focus();
       }
     }, { content, level: session.level, preferences: context.preferences });
     container.querySelector('#hint').addEventListener('click', () => { if (isActive()) { engine?.hint?.(); message(content.hint, 'help'); } });
