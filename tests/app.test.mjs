@@ -13,7 +13,7 @@ const dom = new JSDOM(html, { url: 'http://localhost:4173/', pretendToBeVisual: 
 const { window } = dom;
 for (const name of ['window', 'document', 'localStorage', 'location', 'history', 'Event']) globalThis[name] = name === 'window' ? window : window[name];
 window.scrollTo = () => {};
-const artwork = await readFile(new URL('../src/assets/objects.svg', import.meta.url), 'utf8');
+const artwork = await readFile(new URL('../src/assets/game-objects-v2.svg', import.meta.url), 'utf8');
 globalThis.fetch = async () => ({ ok: true, text: async () => artwork });
 window.matchMedia = () => ({ matches: false, addEventListener() {} });
 window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };

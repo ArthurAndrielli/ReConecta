@@ -25,6 +25,7 @@ import { showDialog } from './ui/dialog.js';
 import { escapeHTML as esc, localDateKey, focusHeading } from './utils/dom.js';
 import { shuffle } from './utils/array.js';
 import { ensureGameAssets } from './utils/assets.js';
+import { fallbackPicture } from './utils/contentView.js';
 
 const app = document.getElementById('app');
 const navLinks = [...document.querySelectorAll('[data-nav]')];
@@ -155,9 +156,9 @@ function renderTraining() {
   app.innerHTML = `<section class="page-card"><h1>Treino de Hoje</h1><p>Cerca de 5 a 10 minutos, no seu ritmo.</p><p>${count} de 5 atividades concluídas.</p>${count === 5 ? '<p role="status">Parabéns! Você concluiu o treino de hoje.</p>' : '<p>As etapas concluídas são mantidas. Ao retomar, a atividade pendente recomeça do início.</p>'}<ol class="training-list">${plan.slots.map(slot => `<li><strong>${gameFor(slot.gameId).name}</strong><span>${categoryLabel(gameFor(slot.gameId).category)} · ${slot.completedSessionId ? 'Concluída' : getPhase(slot.phaseId) ? `Fase ${getPhase(slot.phaseId).ordinal}` : 'Conteúdo indisponível'}</span></li>`).join('')}</ol><div class="actions"><button id="training-next">${next ? count ? 'Continuar treino' : 'Começar treino' : 'Escolher outra atividade'}</button><a class="button secondary" href="#/inicio">Voltar ao início</a></div></section>`;
   app.querySelector('#training-next').addEventListener('click', () => next ? openIntro(gameFor(next.gameId), getPhase(next.phaseId), { dateKey: dailyDate, slotId: next.id }) : navigate('#/atividades'));
 }
-function unavailable(message, game = null) {
+function unavailable(message, game = null, showArtworkFallback = false) {
   screen('Atividade indisponível', 'atividades');
-  app.innerHTML = `<section class="page-card"><h1>Não foi possível abrir esta atividade</h1><p>${esc(message)}</p><a class="button" href="${game ? mapRoute(game.id) : '#/atividades'}">${game ? 'Voltar ao mapa' : 'Escolher atividade'}</a><a class="button secondary" href="#/inicio">Voltar ao início</a></section>`;
+  app.innerHTML = `<section class="page-card unavailable-state"><h1>Não foi possível abrir esta atividade</h1>${showArtworkFallback ? fallbackPicture('Ilustração temporariamente indisponível') : ''}<p>${esc(message)}</p><a class="button" href="${game ? mapRoute(game.id) : '#/atividades'}">${game ? 'Voltar ao mapa' : 'Escolher atividade'}</a><a class="button secondary" href="#/inicio">Voltar ao início</a></section>`;
 }
 function openPhaseMap(game) {
   screen(game.name, 'atividades');
@@ -181,7 +182,7 @@ async function startActivity(game, phase = null, trainingRef = null, trigger = n
     if (start) { start.disabled = true; start.textContent = 'Preparando atividade…'; }
     try { await ensureGameAssets(); }
     catch {
-      if (!start || start.isConnected) { unavailable('Não foi possível carregar as imagens. Escolha a atividade e tente novamente.', game); finishView(); }
+      if (!start || start.isConnected) { unavailable('Não foi possível carregar as imagens. Escolha a atividade e tente novamente.', game, true); finishView(); }
       return;
     }
     if (start && !start.isConnected) return;

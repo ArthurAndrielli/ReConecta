@@ -5,7 +5,7 @@ import { phaseCatalog } from '../src/js/phases/catalog.js';
 import { phaseBoards, phaseRounds } from '../src/js/phases/content.js';
 import { objects } from '../src/js/phases/objects.js';
 import { validatePhaseCatalog } from '../src/js/phases/validate.js';
-import { picture } from '../src/js/utils/contentView.js';
+import { fallbackPicture, picture } from '../src/js/utils/contentView.js';
 
 test('240 phases contain 600 distinct challenges and 40 distinct boards', () => {
   const report = validatePhaseCatalog();
@@ -15,9 +15,15 @@ test('240 phases contain 600 distinct challenges and 40 distinct boards', () => 
   assert.equal(report.boards, 40);
 });
 test('all local illustration references exist', async () => {
-  const svg = await readFile(new URL('../src/assets/objects.svg', import.meta.url), 'utf8');
-  for (const object of objects) assert.ok(svg.includes(`id="${object.symbol}"`), object.label);
-  assert.equal(new Set([...svg.matchAll(/id="([^"]+)"/g)].map(m => m[1])).size, objects.length);
+  const svg = await readFile(new URL('../src/assets/game-objects-v2.svg', import.meta.url), 'utf8');
+  for (const object of objects) {
+    assert.equal(object.asset, './src/assets/game-objects-v2.svg');
+    assert.ok(svg.includes(`id="${object.symbol}"`), object.label);
+  }
+  assert.equal(new Set([...svg.matchAll(/<symbol id="(object-\d+)"/g)].map(m => m[1])).size, objects.length);
+  assert.match(svg, /id="object-fallback"/);
+  assert.ok([...svg.matchAll(/<linearGradient /g)].length >= 10, 'new artwork must use the shared color palette');
+  assert.match(svg, /id="object-shadow"/);
 });
 test('shared game pictures preserve proportion and expose one useful alternative', () => {
   const standalone = picture('object-2', { label: false });
@@ -29,6 +35,11 @@ test('shared game pictures preserve proportion and expose one useful alternative
   assert.match(captioned, /aria-hidden="true"/);
   assert.doesNotMatch(captioned, /role="img"/);
   assert.match(captioned, /<span>bola<\/span>/);
+
+  const fallback = fallbackPicture();
+  assert.match(fallback, /object-picture-fallback/);
+  assert.doesNotMatch(fallback, /href=/);
+  assert.match(fallback, /Ilustração indisponível/);
 });
 test('validator rejects malformed records, wrong counts, ambiguous answers and normalized clones', () => {
   for (const mutate of [

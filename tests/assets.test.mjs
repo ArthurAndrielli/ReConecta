@@ -9,8 +9,13 @@ test('missing or malformed artwork fails, then a successful retry is cached', as
   globalThis.fetch = async () => ({ ok: true, text: async () => '<html>error</html>' });
   await assert.rejects(ensureGameAssets());
   let calls = 0;
-  const artwork = await readFile(new URL('../src/assets/objects.svg', import.meta.url), 'utf8');
-  globalThis.fetch = async () => { calls++; return { ok: true, text: async () => artwork }; };
+  const artwork = await readFile(new URL('../src/assets/game-objects-v2.svg', import.meta.url), 'utf8');
+  globalThis.fetch = async (path, options) => {
+    calls++;
+    assert.equal(path, './src/assets/game-objects-v2.svg');
+    assert.equal(options.cache, 'no-cache');
+    return { ok: true, text: async () => artwork };
+  };
   await ensureGameAssets(); await ensureGameAssets();
   assert.equal(calls, 1);
 });

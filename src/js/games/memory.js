@@ -5,7 +5,7 @@ export function render(container, callbacks, { content }) {
   const deck = shuffle(content.items.flatMap(id => [id, id]));
   const matched = new Set();
   let open = [], locked = false, destroyed = false, mismatchTimer = null;
-  container.innerHTML = `<p id="pair-progress">0 de ${content.items.length} pares encontrados</p><div class="memory-grid">${deck.map((id, i) => `<button class="memory-card" data-index="${i}" aria-label="Carta ${i + 1} fechada"><span class="memory-card-inner"><span class="memory-card-face memory-card-back" aria-hidden="true">◌</span><span class="memory-card-face memory-card-front" aria-hidden="true">${picture(id, { label: false, alt: '' })}</span></span></button>`).join('')}</div>`;
+  container.innerHTML = `<p id="pair-progress">0 de ${content.items.length} pares encontrados</p><div class="memory-grid">${deck.map((id, i) => `<button class="memory-card" data-index="${i}" aria-label="Carta ${i + 1} fechada"><span class="memory-card-inner"><span class="memory-card-face memory-card-back" aria-hidden="true"><span class="memory-card-emblem"></span></span><span class="memory-card-face memory-card-front" aria-hidden="true">${picture(id, { label: false, alt: '' })}</span></span></button>`).join('')}</div>`;
   const buttons = [...container.querySelectorAll('[data-index]')];
   const update = () => buttons.forEach((button, index) => {
     const revealed = open.includes(index) || matched.has(index);

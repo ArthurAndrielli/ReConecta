@@ -14,6 +14,7 @@ const dom = new JSDOM('<main></main>', { url: 'http://localhost:4173/' });
 globalThis.window = dom.window; globalThis.document = dom.window.document;
 
 test('play all 240 phases (640 boards/rounds), with manual retries and duplicate clicks', () => {
+  const gamesWithArtwork = new Set();
   for (const phase of phaseCatalog) for (const content of getPhaseContent(phase)) {
     const root = document.querySelector('main');
     let completed = 0, retry = null, active = true;
@@ -28,6 +29,12 @@ test('play all 240 phases (640 boards/rounds), with manual retries and duplicate
       onRetry: callback => { retry = callback; },
       message() {}
     }, { content, level: phase.level, preferences: { observationMode: 'self-paced' } });
+    const artwork = [...root.querySelectorAll('.object-picture use')];
+    if (artwork.length) gamesWithArtwork.add(phase.gameId);
+    artwork.forEach(use => {
+      assert.match(use.getAttribute('href'), /^\.\/src\/assets\/game-objects-v2\.svg#object-\d+$/);
+      assert.doesNotMatch(use.getAttribute('href'), /game-card-icons|objects\.svg#/);
+    });
     instance?.hint?.();
     solve(root, phase.gameId, content, () => { if (retry) { const fn = retry; retry = null; fn(); } }, true);
     assert.equal(completed, 1, content.id);
@@ -38,6 +45,7 @@ test('play all 240 phases (640 boards/rounds), with manual retries and duplicate
     root.querySelectorAll('button').forEach(button => button.click());
     assert.equal(attempts.length, before, `destroyed callback: ${content.id}`);
   }
+  assert.deepEqual([...gamesWithArtwork].sort(), ['findObject', 'image', 'memory', 'odd', 'sequence', 'tapOnly', 'whatDidYouSee', 'word']);
 });
 test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only that pair', () => {
   const originalSet = globalThis.setTimeout, originalClear = globalThis.clearTimeout;

@@ -23,7 +23,7 @@ const vocabulary = [
 ];
 export const objects = vocabulary.map(([label, syllables, category], index) => ({
   id: `object-${index + 1}`, label, syllables: syllables.split('-'), category,
-  asset: './src/assets/objects.svg', symbol: `object-${index + 1}`
+  asset: './src/assets/game-objects-v2.svg', symbol: `object-${index + 1}`
 }));
 export const objectById = Object.fromEntries(objects.map(item => [item.id, item]));
 export const groupLabels = {
