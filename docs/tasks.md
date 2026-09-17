@@ -458,7 +458,7 @@ Validar: histórico vazio, poucos dados, muitos registros, filtros de período e
 
 Commit: feat: implementa a task 40.
 
-[ ] Task 41 — Refinar a tela de Ajustes e suas preferências
+[x] Task 41 — Refinar a tela de Ajustes e suas preferências
 
 Depende de: Tasks 38–40. Requisitos: RUI031, RF058, RUI016.
 
