@@ -14,7 +14,10 @@ export function render(container, callbacks, { content: round }) {
       container.querySelector('#tap-progress').textContent = `${selected.size} de ${round.targets.length} objetos encontrados`;
       if (selected.size === round.targets.length) { done = true; callbacks.onComplete(); }
       else { callbacks.message('Muito bem! Continue procurando os outros objetos.', 'success'); container.querySelector('button:not(:disabled)')?.focus(); }
-    } else { waiting = true; callbacks.onRetry(() => { waiting = false; button.focus(); }); }
+    } else {
+      waiting = true; button.classList.add('is-incorrect');
+      callbacks.onRetry(() => { waiting = false; button.classList.remove('is-incorrect'); button.focus(); });
+    }
   }));
   return { destroy() { done = true; } };
 }

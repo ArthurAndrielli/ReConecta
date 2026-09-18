@@ -117,3 +117,43 @@ test('observation timer uses 12/9/6 seconds, pauses and is removed on destroy', 
     }
   } finally { globalThis.setTimeout = originalSet; globalThis.clearTimeout = originalClear; }
 });
+
+test('memory pause preserves the remaining observation time and never moves focus behind a dialog', t => {
+  let now = 0, timerId = 0, active = true;
+  const timers = new Map();
+  t.mock.method(performance, 'now', () => now);
+  t.mock.method(globalThis, 'setTimeout', (callback, delay) => { timers.set(++timerId, { callback, delay }); return timerId; });
+  t.mock.method(globalThis, 'clearTimeout', id => timers.delete(id));
+  const root = document.querySelector('main');
+  const content = getPhaseContent(phaseCatalog.find(p => p.gameId === 'memory'))[0];
+  const instance = engines.memory(root, { isActive: () => active, onAttempt: () => true, message() {} }, { content });
+  const cards = [...root.querySelectorAll('[data-index]')];
+  const first = cards[0], other = cards.find(card => card.querySelector('use').getAttribute('href') !== first.querySelector('use').getAttribute('href'));
+  first.click(); other.click();
+  now = 300; active = false; instance.pause();
+  assert.equal(timers.size, 0);
+  assert.equal(root.querySelectorAll('.is-open').length, 2);
+  now = 10000; active = true; instance.resume(); instance.resume();
+  assert.equal(timers.size, 1);
+  const pending = [...timers.values()][0];
+  assert.equal(pending.delay, 600, 'paused time must not consume observation time');
+  pending.callback(); timers.clear();
+  assert.equal(root.querySelectorAll('.is-open').length, 0);
+  assert.equal(document.activeElement, other);
+  first.click(); other.click(); instance.destroy();
+  assert.equal(timers.size, 0);
+});
+
+test('observation instruction changes only when images are hidden', () => {
+  const root = document.querySelector('main');
+  const content = getPhaseContent(phaseCatalog.find(p => p.gameId === 'whatDidYouSee'))[0];
+  const commands = [];
+  const instance = engines.whatDidYouSee(root, { isActive: () => true, message() {}, setCommand: text => commands.push(text) },
+    { content, level: 1, preferences: { observationMode: 'self-paced' } });
+  assert.equal(commands[0], 'Observe e memorize os objetos.');
+  assert.match(root.textContent, /Observe com calma/);
+  root.querySelector('#observe-done').click();
+  assert.equal(commands.at(-1), content.prompt);
+  assert.equal(root.querySelector('.observation-area'), null);
+  instance.destroy();
+});

@@ -2,6 +2,8 @@
 
 Aplicação acadêmica de atividades cognitivas e de linguagem. HTML, CSS e JavaScript com ES Modules, sem framework, backend ou conta. Os dados ficam neste navegador; a aplicação não faz avaliação clínica.
 
+A revisão de 18/09/2026 está em [AUDITORIA.md](AUDITORIA.md), com prioridades, correções e pendências. Veja [MELHORIAS_REALIZADAS.md](MELHORIAS_REALIZADAS.md) para o resumo das mudanças e os 33 testes aprovados. A verificação gráfica em navegador permanece pendente por indisponibilidade do ambiente.
+
 ## Executar
 
 Abra `index.html` com o **Live Server** do VS Code ou, com Python instalado, execute na pasta do projeto:

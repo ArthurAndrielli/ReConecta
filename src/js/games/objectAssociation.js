@@ -23,7 +23,10 @@ export function render(container, callbacks, { content: round }) {
       resolved.add(selected); selected = null; done = resolved.size === round.pairs.length; update();
       container.querySelector('#association-progress').textContent = `${resolved.size} de ${round.pairs.length} pares encontrados`;
       if (done) callbacks.onComplete(); else { callbacks.message('Muito bem! Par encontrado.', 'success'); left.find(item => !item.disabled)?.focus(); }
-    } else { waiting = true; update(); callbacks.onRetry(() => { waiting = false; update(); right.find(item => !item.disabled)?.focus(); }); }
+    } else {
+      waiting = true; b.classList.add('is-incorrect'); update();
+      callbacks.onRetry(() => { waiting = false; b.classList.remove('is-incorrect'); update(); right.find(item => !item.disabled)?.focus(); });
+    }
   }));
   container.querySelector('#cancel-association').addEventListener('click', () => { if (!callbacks.isActive() || done || waiting) return; const index = selected; selected = null; update(); left[index]?.focus(); });
   return { destroy() { done = true; } };

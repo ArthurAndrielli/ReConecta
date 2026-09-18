@@ -1,5 +1,7 @@
 # Registro da revisão — 17/09/2026
 
+> Registro histórico. A auditoria e as evidências atuais de 18/09/2026 estão em [AUDITORIA.md](../AUDITORIA.md) e [MELHORIAS_REALIZADAS.md](../MELHORIAS_REALIZADAS.md).
+
 ## Escopo e resultado
 
 Os 12 jogos foram revisados separadamente e consolidados em três fases: Fácil, Médio e Difícil. O catálogo contém 36 fases, 90 desafios nos dez jogos de rodadas e 6 tabuleiros nos jogos de Memória e Associação.

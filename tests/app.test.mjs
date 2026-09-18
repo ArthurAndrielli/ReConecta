@@ -40,9 +40,22 @@ function solveSession() {
   const session = getProgress().sessions.at(-1);
   for (const id of session.contentIds) {
     const content = phaseRounds[id] || phaseBoards[id];
+    const progress = app.querySelector('.activity-progress progress');
+    const before = progress.value;
+    assert.ok(before < progress.max, 'progress must not finish before the answer');
     solve(app.querySelector('#game-board'), session.gameId, content, () => {
-      const retry = app.querySelector('#retry-round'); if (retry && !retry.hidden) retry.click();
+      const retry = app.querySelector('#retry-round');
+      if (retry && !retry.hidden) {
+        assert.equal(app.querySelector('#feedback').dataset.type, 'retry');
+        assert.ok(app.querySelector('.is-incorrect'), 'the chosen wrong option is identified');
+        retry.click();
+        assert.equal(app.querySelector('.is-incorrect'), null, 'retry clears the old error state');
+      }
     }, true);
+    assert.ok(progress.value > before, 'correct objectives advance progress');
+    assert.match(progress.getAttribute('aria-label'), /objetivos concluídos/);
+    assert.equal(app.querySelector('#feedback').dataset.type, 'success');
+    assert.ok(app.querySelector('#feedback').textContent.trim(), 'every game announces success');
     const next = app.querySelector('#continue-round');
     assert.equal(next.hidden, false, id);
     next.click();
@@ -61,6 +74,7 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.equal(new Set(cards.map(card => card.dataset.gameTheme)).size, 12);
   cards.forEach(card => {
     assert.ok(card.querySelector('.game-icon'));
+    assert.equal(card.querySelector('.game-icon use').getAttribute('href'), `./src/assets/icons.svg#${card.dataset.gameTheme}`);
     assert.ok(card.querySelector('h3').textContent.trim());
     assert.ok(card.querySelector('.game-card-content > p').textContent.trim());
     assert.ok(card.querySelector('progress[aria-label]'));
@@ -68,7 +82,7 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   });
   const search = app.querySelector('#game-search');
   search.value = 'MEMORIA'; search.dispatchEvent(new Event('input'));
-  assert.equal(app.querySelectorAll('[data-game]').length, 1);
+  assert.equal(app.querySelectorAll('[data-game]').length, 2, 'search also matches the memory category');
   app.querySelector('[data-game]').click(); await tick();
   assert.match(app.textContent, /Começar atividade/);
   await route('#/jogo/memory/fases');
@@ -82,14 +96,24 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.match(app.querySelector('.phase-locked').textContent, /Bloqueada/);
   assert.equal(app.querySelector('.phase-locked [data-phase]').disabled, true);
   assert.ok(app.querySelector('.phase-summary progress[aria-label]'));
+  assert.equal(app.querySelectorAll('button h3').length, 0, 'phase buttons use valid phrasing content');
   app.querySelector('#back-catalog').click(); await tick();
   assert.equal(app.querySelector('#game-search').value, 'MEMORIA');
   await route('#/jogo/memory/fase/memory-p02');
   assert.match(app.textContent, /Conclua a fase anterior/);
   assert.equal(getProgress().sessions.length, 0);
   await route('#/jogo/memory/fase/memory-p01');
+  const originalFetch = globalThis.fetch;
+  let releaseArtwork;
+  globalThis.fetch = () => new Promise(resolve => { releaseArtwork = resolve; });
   button(app, 'Começar atividade').click();
+  assert.equal(app.querySelector('#start-activity').disabled, true);
+  assert.match(app.textContent, /Preparando atividade/);
+  releaseArtwork(await originalFetch());
+  globalThis.fetch = originalFetch;
   await tick();
+  assert.equal(app.querySelector('.activity-progress progress').value, 0);
+  assert.equal(app.querySelector('.activity-progress progress').max, 2);
   button(app, 'Pausar').click(); await tick();
   assert.equal(app.querySelector('#game-interaction').inert, true);
   button(document.querySelector('dialog'), 'Continuar atividade').click(); await tick();
@@ -117,17 +141,24 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   assert.match(app.textContent, /Pontuação:.*acertos/s);
   assert.ok(button(app, 'Jogar novamente'));
   for (const game of games) {
+    await route(`#/jogo/${game.id}/fases`);
+    assert.equal(app.querySelectorAll('[data-phase]').length, 3);
+    assert.equal(app.querySelector('.phase-map').dataset.gameTheme, game.id);
     await route(`#/jogo/${game.id}`);
+    assert.equal(app.querySelector('.activity-intro').dataset.gameTheme, game.id);
     button(app, 'Começar atividade').click(); await tick();
     solveSession();
     assert.equal(getProgress().sessions.at(-1).mode, 'free');
+    assert.equal([...app.querySelectorAll('button')].filter(b => b.textContent === 'Jogar novamente').length, 1);
   }
   await route('#/treino');
   const planBefore = structuredClone(getProgress().dailyPlans);
   button(app, 'Começar treino').click();
   for (let i = 0; i < 5; i++) {
     if (i === 0) button(app, 'Começar atividade').click();
-    await tick(); solveSession();
+    await tick();
+    assert.ok(document.title.startsWith(games.find(g => g.id === getProgress().sessions.at(-1).gameId).name));
+    solveSession();
     const session = getProgress().sessions.at(-1);
     assert.equal(session.mode, 'daily');
     assert.equal(getProgress().dailyPlans[session.trainingRef.dateKey].slots[i].completedSessionId, session.id);
@@ -145,8 +176,13 @@ test('integrated navigation, all games, daily plan, pause, retry, preferences an
   await route('#/ajustes');
   app.querySelector('#appearance').value = 'dark'; app.querySelector('#appearance').dispatchEvent(new Event('change'));
   assert.equal(document.documentElement.dataset.appearance, 'dark');
+  assert.match(app.querySelector('#settings-feedback').textContent, /Preferências salvas/);
   app.querySelector('#text-size').value = 'large'; app.querySelector('#text-size').dispatchEvent(new Event('change'));
   assert.equal(document.documentElement.dataset.textSize, 'large');
+  app.querySelector('#reduce-motion').checked = true; app.querySelector('#reduce-motion').dispatchEvent(new Event('change'));
+  assert.equal(document.documentElement.classList.contains('reduce-motion'), true);
+  app.querySelector('#observation-mode').value = 'suggested-time'; app.querySelector('#observation-mode').dispatchEvent(new Event('change'));
+  assert.equal(getPreferences().observationMode, 'suggested-time');
   localStorage.setItem('other-app', 'preserve');
   button(app, 'Apagar meu progresso').click(); await tick();
   button(document.querySelector('dialog'), 'Cancelar').click(); await tick();
@@ -207,4 +243,47 @@ test('saving failure is visible and retry does not repeat the completed activity
   assert.equal(document.getElementById('storage-status').hidden, true);
   assert.equal(JSON.parse(localStorage.getItem('reconecta_progress')).atividades, 1);
   assert.deepEqual(errors, []);
+});
+
+test('skip link preserves the current view and active session; reset cannot open duplicate dialogs', async () => {
+  await route('#/ajustes');
+  const hash = location.hash;
+  const heading = app.querySelector('h1');
+  document.querySelector('.skip-link').click(); await tick();
+  assert.equal(location.hash, hash);
+  assert.equal(app.querySelector('h1'), heading);
+  assert.equal(document.activeElement, app);
+  const reset = app.querySelector('#reset-progress');
+  reset.click(); reset.click();
+  assert.equal(document.querySelectorAll('dialog').length, 1);
+  button(document.querySelector('dialog'), 'Cancelar').click(); await tick();
+  assert.equal(reset.disabled, false);
+  assert.equal(document.activeElement, reset);
+  await route('#/jogo/memory');
+  button(app, 'Começar atividade').click(); await tick();
+  const session = getProgress().sessions.at(-1).id;
+  const board = app.querySelector('#game-board');
+  document.querySelector('.skip-link').click(); await tick();
+  assert.equal(app.querySelector('#game-board'), board);
+  assert.equal(getProgress().sessions.at(-1).id, session);
+  assert.equal(document.querySelector('dialog'), null);
+  solveSession();
+  assert.deepEqual(errors, []);
+});
+
+test('catalog searches categories, clears empty results and preserves filters on return', async () => {
+  await route('#/atividades');
+  const search = app.querySelector('#game-search');
+  search.value = 'ATENCAO'; search.dispatchEvent(new Event('input'));
+  assert.equal(app.querySelectorAll('[data-game]').length, 2);
+  search.value = 'atividade inexistente'; search.dispatchEvent(new Event('input'));
+  assert.equal(app.querySelectorAll('[data-game]').length, 0);
+  button(app, 'Limpar filtros').click();
+  assert.equal(app.querySelectorAll('[data-game]').length, 12);
+  assert.equal(document.activeElement, search);
+  app.querySelector('[data-filter="linguagem"]').click();
+  assert.equal(app.querySelectorAll('[data-game]').length, 3);
+  await route('#/inicio'); await route('#/atividades');
+  assert.equal(app.querySelector('[data-filter="linguagem"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(app.querySelectorAll('[data-game]').length, 3);
 });
