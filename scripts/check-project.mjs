@@ -43,7 +43,10 @@ for (const theme of ['light', 'dark']) {
   }
   const pairs = [
     ['--color-text', '--color-bg'], ['--color-text', '--color-surface'], ['--color-text-muted', '--color-surface-soft'],
-    ['--color-surface', '--color-primary'], ['--color-on-hero', '--color-hero'], ['--color-hero-muted', '--color-hero'],
+    ['--color-on-primary', '--color-primary'], ['--color-on-primary', '--color-primary-hover'], ['--color-on-primary', '--color-primary-active'],
+    ['--color-primary-strong', '--color-surface'], ['--color-primary-strong', '--color-primary-soft'],
+    ['--color-primary-strong', '--color-navigation-active'], ['--color-text', '--color-navigation-active'],
+    ['--color-on-hero', '--color-hero'], ['--color-hero-muted', '--color-hero'],
     ['--color-on-highlight', '--color-highlight'], ['--color-success', '--color-success-soft'],
     ['--color-help', '--color-help-soft'], ['--color-danger', '--color-danger-soft'],
     ...['memoria', 'linguagem', 'atencao', 'raciocinio', 'associacao', 'cotidiano'].map(id => [`--category-${id}-fg`, `--category-${id}-bg`])

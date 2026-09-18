@@ -1,7 +1,5 @@
 ReConecta — Plano de implementação
 
-> Nota de vigência (17/09/2026): as tarefas de ampliação para 20 fases registram trabalho histórico. O produto atual foi consolidado em 3 fases por jogo (Fácil, Médio e Difícil), conforme a revisão mais recente.
-
 Versão: 3.0 · Vinte fases por jogo
 Data: 16/09/2026
 Base: requirements.md e design.md.
