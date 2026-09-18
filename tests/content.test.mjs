@@ -36,7 +36,7 @@ test('all local illustration references exist', async () => {
   assert.equal(new Set([...svg.matchAll(/<symbol id="(object-\d+)"/g)].map(m => m[1])).size, objects.length);
   assert.match(svg, /id="object-fallback"/);
   assert.ok([...svg.matchAll(/<linearGradient /g)].length >= 10, 'new artwork must use the shared color palette');
-  assert.match(svg, /id="object-shadow"/);
+  assert.doesNotMatch(svg, /var\(|<filter|<style/, 'object colors and contours must be independent of host styles and filters');
 });
 test('shared game pictures preserve proportion and expose one useful alternative', () => {
   const standalone = picture('object-2', { label: false });
