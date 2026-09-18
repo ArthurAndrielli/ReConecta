@@ -264,6 +264,8 @@ html.reduce-motion .game-card { animation: none; }
 a { color: var(--color-primary-strong); }
 main, section, article, .actions > *, .game-card-content { min-width: 0; }
 h1 { margin: 0 0 1rem; font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.2; }
+/* Headings receive focus after navigation to announce the new view, not as controls. */
+:is(h1, h2)[tabindex="-1"]:focus { outline: none; }
 button, a, p, h1, h2, h3, h4, summary { overflow-wrap: anywhere; }
 button { min-width: 48px; border-width: 2px; }
 :where(a, button, input, select, summary):focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
