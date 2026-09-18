@@ -14,7 +14,7 @@ import { render as renderCompleteSentence } from './games/completeSentence.js';
 import { games, categories } from './data.js';
 import { getGameLevel } from './levels.js';
 import { getBestCategory, getRecommendation, getCategoryPerformance } from './evolution.js';
-import { renderGameCardIcon, renderIcon } from './utils/icons.js';
+import { renderIcon } from './utils/icons.js';
 import { getPhase, getGamePhases, phaseCatalog } from './phases/catalog.js';
 import { canStartPhase, getNextPhase, getPhaseSummary } from './phases/progression.js';
 import { getPhaseContent } from './phases/content.js';
@@ -25,6 +25,7 @@ import { showDialog } from './ui/dialog.js';
 import { escapeHTML as esc, localDateKey, focusHeading } from './utils/dom.js';
 import { shuffle } from './utils/array.js';
 import { ensureGameAssets } from './utils/assets.js';
+import { fallbackPicture } from './utils/contentView.js';
 
 const app = document.getElementById('app');
 const navLinks = [...document.querySelectorAll('[data-nav]')];
@@ -60,7 +61,7 @@ function gameCard(game) {
   const action = summary.completed === 0 ? 'Jogar' : summary.completed === summary.total ? 'Jogar novamente' : 'Continuar';
   const completed = summary.completed === summary.total, started = summary.completed > 0 && !completed;
   const percent = Math.round(summary.completed / summary.total * 100);
-  return `<article class="game-card ${started ? 'is-in-progress' : ''} ${completed ? 'is-completed' : ''}" data-game-theme="${game.id}" data-category="${game.category}"><div class="game-card-top"><div class="game-icon" aria-hidden="true">${renderGameCardIcon(game.icon)}</div>${completed ? '<span class="game-status status-complete"><span aria-hidden="true">✓</span> Concluído</span>' : started ? '<span class="game-status">Em andamento</span>' : ''}</div><div class="game-card-content"><span class="category-label category-${game.category}">${categoryLabel(game.category)}</span><h3>${game.name}</h3><p>${game.cardDescription || game.description}</p><div class="game-progress"><div><span>${summary.completed ? `${summary.completed} de ${summary.total}` : 'Não iniciado'}</span>${summary.completed ? `<span>${percent}%</span>` : ''}</div><progress value="${summary.completed}" max="${summary.total}" aria-label="Progresso em ${game.name}: ${summary.completed} de ${summary.total} atividades"></progress></div></div><div class="card-actions"><a class="card-action" href="${phaseRoute(game, next)}" data-game="${game.id}" aria-label="${action}: ${game.name}"><span>${action}</span><span class="card-arrow" aria-hidden="true">→</span></a><a class="quiet-link" href="${mapRoute(game.id)}" aria-label="Ver percurso de ${game.name}">Ver percurso</a></div></article>`;
+  return `<article class="game-card ${started ? 'is-in-progress' : ''} ${completed ? 'is-completed' : ''}" data-game-theme="${game.id}" data-category="${game.category}"><div class="game-card-top"><div class="game-icon" aria-hidden="true">${renderIcon(game.id)}</div>${completed ? '<span class="game-status status-complete"><span aria-hidden="true">✓</span> Concluído</span>' : started ? '<span class="game-status">Em andamento</span>' : ''}</div><div class="game-card-content"><span class="category-label category-${game.category}">${categoryLabel(game.category)}</span><h3>${game.name}</h3><p>${game.cardDescription || game.description}</p><div class="game-progress"><div><span>${summary.completed ? `${summary.completed} de ${summary.total}` : 'Não iniciado'}</span>${summary.completed ? `<span>${percent}%</span>` : ''}</div><progress value="${summary.completed}" max="${summary.total}" aria-label="Progresso em ${game.name}: ${summary.completed} de ${summary.total} atividades"></progress></div></div><div class="card-actions"><a class="card-action" href="${phaseRoute(game, next)}" data-game="${game.id}" aria-label="${action}: ${game.name}"><span>${action}</span><span class="card-arrow" aria-hidden="true">→</span></a><a class="quiet-link" href="${mapRoute(game.id)}" aria-label="Ver percurso de ${game.name}">Ver percurso</a></div></article>`;
 }
 function bindCards() { app.querySelectorAll('[data-game]').forEach(link => link.addEventListener('click', () => { returnCard = link.dataset.game; })); }
 function dayCount(sessions) { return new Set(sessions.filter(s => s.status === 'completed').map(s => localDateKey(new Date(s.endedAt)))).size; }
@@ -83,7 +84,7 @@ function renderActivities() {
   search.value = catalogState.query;
   const update = () => {
     const query = normalize(catalogState.query.trim());
-    const visible = games.filter(g => (catalogState.category === 'all' || g.category === catalogState.category) && normalize(g.name).includes(query));
+    const visible = games.filter(g => (catalogState.category === 'all' || g.category === catalogState.category) && normalize(`${g.name} ${categoryLabel(g.category)} ${g.description}`).includes(query));
     grid.innerHTML = visible.length ? visible.map(gameCard).join('') : '<div class="empty-state"><h2>Nenhuma atividade encontrada</h2><p>Tente outro nome ou limpe os filtros.</p><button id="clear-filters">Limpar filtros</button></div>';
     app.querySelector('#catalog-count').textContent = `${visible.length} ${visible.length === 1 ? 'atividade encontrada' : 'atividades encontradas'}`;
     app.querySelectorAll('[data-filter]').forEach(b => { const selected = b.dataset.filter === catalogState.category; b.classList.toggle('is-selected', selected); b.setAttribute('aria-pressed', String(selected)); });
@@ -118,9 +119,9 @@ function renderEvolution() {
   const summaries = games.map(g => ({ game: g, ...getPhaseSummary(progress, g.id) }));
   const history = [...sessions].reverse().map(s => {
     const phase = getPhase(s.phaseId), mode = s.mode === 'daily' ? 'Treino de Hoje' : s.mode === 'phase' ? 'Fases' : 'Prática livre';
-    return `<li><details><summary><strong>${esc(gameFor(s.gameId)?.name || 'Atividade')}</strong><span>${fmtDate(s.endedAt || s.startedAt)} · ${s.status === 'completed' ? `${s.stars} estrelas` : 'Interrompida'}</span></summary><p>${mode}${phase ? ` · Fase ${phase.ordinal}: ${esc(phase.title)}` : ''}</p><dl class="session-details"><div><dt>Tentativas</dt><dd>${s.attempts.length}</dd></div><div><dt>Acertos</dt><dd>${s.attempts.filter(a => a.correct).length}</dd></div><div><dt>Erros</dt><dd>${s.attempts.filter(a => !a.correct).length}</dd></div><div><dt>Tempo ativo</dt><dd>${Math.round(s.elapsedMs / 1000)} s</dd></div><div><dt>Configuração da atividade</dt><dd>${['Inicial', 'Fácil', 'Intermediário', 'Avançada'][s.level - 1]}</dd></div></dl></details></li>`;
+    return `<li><details><summary><strong>${esc(gameFor(s.gameId)?.name || 'Atividade')}</strong><span>${fmtDate(s.endedAt || s.startedAt)} · ${s.status === 'completed' ? `${s.stars} estrelas` : 'Interrompida'}</span></summary><p>${mode}${phase ? ` · Fase ${phase.ordinal}: ${esc(phase.title)}` : ''}</p><dl class="session-details"><div><dt>Tentativas</dt><dd>${s.attempts.length}</dd></div><div><dt>Acertos</dt><dd>${s.attempts.filter(a => a.correct).length}</dd></div><div><dt>Erros</dt><dd>${s.attempts.filter(a => !a.correct).length}</dd></div><div><dt>Tempo ativo</dt><dd>${Math.round(s.elapsedMs / 1000)} s</dd></div><div><dt>Configuração da atividade</dt><dd>${['Fácil', 'Médio', 'Difícil', 'Avançada (histórico)'][s.level - 1]}</dd></div></dl></details></li>`;
   }).join('');
-  app.innerHTML = `<section class="page-card"><h1>Cada prática conta</h1><p>Acompanhe as atividades que você realizou, no seu ritmo.</p><label for="history-period">Período</label><select id="history-period"><option value="all">Todo o período</option><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option></select>${totals.count ? `<div class="progress-card"><div><strong>${totals.count}</strong>Atividades concluídas</div><div><strong>${totals.stars}</strong>Estrelas históricas</div><div><strong>${dayCount(sessions)}</strong>Dias com atividade registrada</div></div>` : '<p class="empty-note">Seu progresso vai aparecer aqui depois da primeira atividade.</p>'}${period === 'all' && progress.legacyTotals?.atividades ? '<p>Inclui registros anteriores sem data detalhada. Eles não entram nos períodos de 7 e 30 dias.</p>' : ''}${participation(sessions)}<section><h2>Seu percurso completo</h2><p>${summaries.reduce((n, s) => n + s.completed, 0)} de ${phaseCatalog.length} fases · ${summaries.reduce((n, s) => n + s.stars, 0)} estrelas do percurso (melhores resultados).</p><ul class="path-list">${summaries.map(s => `<li><a href="${mapRoute(s.game.id)}">${s.game.name}</a><span>${s.completed} de ${s.total} fases · ${s.stars} estrelas</span><progress value="${s.completed}" max="${s.total}" aria-label="Fases concluídas de ${s.game.name}"></progress></li>`).join('')}</ul></section><section><h2>Suas atividades por categoria</h2><ul>${getCategoryPerformance(progress).map(c => `<li>${c.label}: ${c.count} sessões nas até dez mais recentes.</li>`).join('')}</ul>${best ? `<p>Maior facilidade nos exercícios recentes: ${best.label}.</p>` : '<p>Explore as atividades para descobrir suas preferidas. Ainda não há comparação suficiente entre categorias.</p>'}<p>${recommendation.reason} <a href="${mapRoute(recommendation.gameId)}">Praticar ${gameFor(recommendation.gameId).name}</a></p></section><section><h2>Histórico</h2>${history ? `<ul class="history-list">${history}</ul>` : '<div class="empty-state"><p>Nenhuma sessão neste período.</p><a href="#/atividades">Escolher atividade</a></div>'}</section></section>`;
+  app.innerHTML = `<section class="page-card evolution-page"><h1>Cada prática conta</h1><p>Acompanhe as atividades que você realizou, no seu ritmo.</p><label for="history-period">Período</label><select id="history-period"><option value="all">Todo o período</option><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option></select>${totals.count ? `<div class="progress-card"><div><strong>${totals.count}</strong>Atividades concluídas</div><div><strong>${totals.stars}</strong>Estrelas históricas</div><div><strong>${dayCount(sessions)}</strong>Dias com atividade registrada</div></div>` : '<p class="empty-note">Seu progresso vai aparecer aqui depois da primeira atividade.</p>'}${period === 'all' && progress.legacyTotals?.atividades ? '<p>Inclui registros anteriores sem data detalhada. Eles não entram nos períodos de 7 e 30 dias.</p>' : ''}${participation(sessions)}<section><h2>Seu percurso completo</h2><p>${summaries.reduce((n, s) => n + s.completed, 0)} de ${phaseCatalog.length} fases · ${summaries.reduce((n, s) => n + s.stars, 0)} estrelas do percurso (melhores resultados).</p><ul class="path-list">${summaries.map(s => `<li><a href="${mapRoute(s.game.id)}">${s.game.name}</a><span>${s.completed} de ${s.total} fases · ${s.stars} estrelas</span><progress value="${s.completed}" max="${s.total}" aria-label="Fases concluídas de ${s.game.name}"></progress></li>`).join('')}</ul></section><section><h2>Suas atividades por categoria</h2><ul>${getCategoryPerformance(progress).map(c => `<li>${c.label}: ${c.count} sessões nas até dez mais recentes.</li>`).join('')}</ul>${best ? `<p>Maior facilidade nos exercícios recentes: ${best.label}.</p>` : '<p>Explore as atividades para descobrir suas preferidas. Ainda não há comparação suficiente entre categorias.</p>'}<p>${recommendation.reason} <a href="${mapRoute(recommendation.gameId)}">Praticar ${gameFor(recommendation.gameId).name}</a></p></section><section><h2>Histórico</h2>${history ? `<ul class="history-list">${history}</ul>` : '<div class="empty-state"><p>Nenhuma sessão neste período.</p><a href="#/atividades">Escolher atividade</a></div>'}</section></section>`;
   const select = app.querySelector('#history-period'); select.value = period;
   select.addEventListener('change', () => { period = select.value; renderEvolution(); app.querySelector('#history-period').focus(); });
 }
@@ -140,11 +141,21 @@ function renderSettings() {
   app.querySelectorAll('select, input').forEach(control => control.addEventListener('change', () => {
     savePreferences({ appearance: app.querySelector('#appearance').value, textSize: app.querySelector('#text-size').value,
       observationMode: app.querySelector('#observation-mode').value, reduceMotion: app.querySelector('#reduce-motion').checked }); applyPreferences();
+    app.querySelector('#settings-feedback').textContent = getStorageStatus().preferenceIssue || 'Preferências salvas.';
   }));
-  app.querySelector('#reset-progress').addEventListener('click', async () => {
+  app.querySelector('#reset-progress').addEventListener('click', async event => {
+    const trigger = event.currentTarget;
+    if (trigger.disabled) return;
+    trigger.disabled = true;
     const confirm = await showDialog({ title: 'Apagar seu progresso?', text: 'As atividades, estrelas e treinos salvos neste navegador serão apagados. Suas preferências serão mantidas.',
       actions: [{ label: 'Cancelar', value: false }, { label: 'Apagar progresso', value: true, danger: true }] });
-    if (confirm) { const saved = resetProgress(); dailyDate = null; app.querySelector('#settings-feedback').textContent = saved ? 'Seu progresso foi apagado. Suas preferências foram mantidas.' : 'Não foi possível apagar o progresso. Tente novamente.'; }
+    trigger.disabled = false;
+    if (trigger.isConnected) trigger.focus();
+    if (confirm) {
+      const saved = resetProgress(); dailyDate = null;
+      const feedback = app.querySelector('#settings-feedback');
+      if (feedback) feedback.textContent = saved ? 'Seu progresso foi apagado. Suas preferências foram mantidas.' : 'Não foi possível apagar o progresso. Tente novamente.';
+    }
   });
 }
 function renderTraining() {
@@ -152,12 +163,12 @@ function renderTraining() {
   const plan = getDailyPlan(dailyDate);
   if (!plan) return unavailable('Não foi possível ler este treino. Você pode escolher uma atividade no catálogo.');
   const next = plan.slots.find(s => !s.completedSessionId), count = plan.slots.filter(s => s.completedSessionId).length;
-  app.innerHTML = `<section class="page-card"><h1>Treino de Hoje</h1><p>Cerca de 5 a 10 minutos, no seu ritmo.</p><p>${count} de 5 atividades concluídas.</p>${count === 5 ? '<p role="status">Parabéns! Você concluiu o treino de hoje.</p>' : '<p>As etapas concluídas são mantidas. Ao retomar, a atividade pendente recomeça do início.</p>'}<ol class="training-list">${plan.slots.map(slot => `<li><strong>${gameFor(slot.gameId).name}</strong><span>${categoryLabel(gameFor(slot.gameId).category)} · ${slot.completedSessionId ? 'Concluída' : getPhase(slot.phaseId) ? `Fase ${getPhase(slot.phaseId).ordinal}` : 'Conteúdo indisponível'}</span></li>`).join('')}</ol><div class="actions"><button id="training-next">${next ? count ? 'Continuar treino' : 'Começar treino' : 'Escolher outra atividade'}</button><a class="button secondary" href="#/inicio">Voltar ao início</a></div></section>`;
+  app.innerHTML = `<section class="page-card training-page"><h1>Treino de Hoje</h1><p>Cerca de 5 a 10 minutos, no seu ritmo.</p><div class="training-summary"><p>${count} de 5 atividades concluídas.</p><progress value="${count}" max="5" aria-label="${count} de 5 atividades do treino concluídas"></progress></div>${count === 5 ? '<p role="status">Parabéns! Você concluiu o treino de hoje.</p>' : '<p>As etapas concluídas são mantidas. Ao retomar, a atividade pendente recomeça do início.</p>'}<ol class="training-list">${plan.slots.map(slot => `<li class="${slot.completedSessionId ? 'is-completed' : slot === next ? 'is-current' : ''}" ${slot === next ? 'aria-current="step"' : ''}><strong>${gameFor(slot.gameId).name}</strong><span>${categoryLabel(gameFor(slot.gameId).category)} · ${slot.completedSessionId ? 'Concluída' : getPhase(slot.phaseId) ? `Fase ${getPhase(slot.phaseId).ordinal}` : 'Conteúdo indisponível'}</span></li>`).join('')}</ol><div class="actions"><button id="training-next">${next ? count ? 'Continuar treino' : 'Começar treino' : 'Escolher outra atividade'}</button><a class="button secondary" href="#/inicio">Voltar ao início</a></div></section>`;
   app.querySelector('#training-next').addEventListener('click', () => next ? openIntro(gameFor(next.gameId), getPhase(next.phaseId), { dateKey: dailyDate, slotId: next.id }) : navigate('#/atividades'));
 }
-function unavailable(message, game = null) {
+function unavailable(message, game = null, showArtworkFallback = false) {
   screen('Atividade indisponível', 'atividades');
-  app.innerHTML = `<section class="page-card"><h1>Não foi possível abrir esta atividade</h1><p>${esc(message)}</p><a class="button" href="${game ? mapRoute(game.id) : '#/atividades'}">${game ? 'Voltar ao mapa' : 'Escolher atividade'}</a><a class="button secondary" href="#/inicio">Voltar ao início</a></section>`;
+  app.innerHTML = `<section class="page-card unavailable-state"><h1>Não foi possível abrir esta atividade</h1>${showArtworkFallback ? fallbackPicture('Ilustração temporariamente indisponível') : ''}<p>${esc(message)}</p><a class="button" href="${game ? mapRoute(game.id) : '#/atividades'}">${game ? 'Voltar ao mapa' : 'Escolher atividade'}</a><a class="button secondary" href="#/inicio">Voltar ao início</a></section>`;
 }
 function openPhaseMap(game) {
   screen(game.name, 'atividades');
@@ -171,7 +182,7 @@ function openIntro(game, phase = null, trainingRef = null) {
   }
   screen(game.name, 'atividades', true);
   const position = trainingRef ? getDailyPlan(trainingRef.dateKey)?.slots.findIndex(slot => slot.id === trainingRef.slotId) + 1 : null;
-  app.innerHTML = `<section class="activity-card activity-intro"><span class="eyebrow">${trainingRef ? `Treino de Hoje · Atividade ${position} de 5` : categoryLabel(game.category)}</span><h1>${game.name}</h1><p class="phase-context">${phase && !trainingRef ? `Próxima atividade do seu percurso` : trainingRef ? 'Uma etapa curta, no seu ritmo.' : 'Prática livre'}</p><p>${esc(phase?.instruction || game.description)}</p><p>${['memory', 'association'].includes(game.id) ? 'Encontre todos os pares do tabuleiro.' : 'São três desafios. Você decide quando continuar.'} A ajuda fica disponível durante toda a atividade.</p><div class="actions"><button id="start-activity">Começar atividade</button><a class="button secondary" href="${trainingRef ? '#/treino' : '#/atividades'}">Agora não</a>${!trainingRef ? `<a class="quiet-link" href="${mapRoute(game.id)}">Ver percurso completo</a>` : ''}</div></section>`;
+  app.innerHTML = `<section class="activity-card activity-intro" data-game-theme="${game.id}"><div class="intro-icon" aria-hidden="true">${renderIcon(game.id)}</div><span class="eyebrow">${trainingRef ? `Treino de Hoje · Atividade ${position} de 5` : phase ? `Fase ${phase.ordinal} de ${getGamePhases(game.id).length}` : categoryLabel(game.category)}</span><h1>${game.name}</h1><p class="phase-context">${phase && !trainingRef ? `${['Fácil', 'Médio', 'Difícil'][phase.level - 1]} · fase ${phase.ordinal} de 3` : trainingRef ? 'Uma etapa curta, no seu ritmo.' : 'Prática livre'}</p><p>${esc(phase?.instruction || game.description)}</p><p>${['memory', 'association'].includes(game.id) ? 'Encontre todos os pares do tabuleiro.' : 'São três desafios. Você decide quando continuar.'} A ajuda fica disponível durante toda a atividade.</p><div class="actions"><button id="start-activity">Começar atividade</button><a class="button secondary" href="${trainingRef ? '#/treino' : '#/atividades'}">Agora não</a>${!trainingRef ? `<a class="quiet-link" href="${mapRoute(game.id)}">Ver percurso completo</a>` : ''}</div></section>`;
   app.querySelector('#start-activity').addEventListener('click', event => startActivity(game, phase, trainingRef, event.currentTarget));
   finishView();
 }
@@ -181,10 +192,11 @@ async function startActivity(game, phase = null, trainingRef = null, trigger = n
     if (start) { start.disabled = true; start.textContent = 'Preparando atividade…'; }
     try { await ensureGameAssets(); }
     catch {
-      if (!start || start.isConnected) { unavailable('Não foi possível carregar as imagens. Escolha a atividade e tente novamente.', game); finishView(); }
+      if (!start || start.isConnected) { unavailable('Não foi possível carregar as imagens. Escolha a atividade e tente novamente.', game, true); finishView(); }
       return;
     }
     if (start && !start.isConnected) return;
+    screen(game.name, 'atividades', true);
     let chosen = phase;
     if (!chosen) {
       const progress = getProgress(), level = getGameLevel(progress, game.id);
@@ -209,7 +221,7 @@ function renderResult(game, phase, session) {
   const correct = session.attempts.filter(attempt => attempt.correct).length;
   const total = correct + session.attempts.filter(attempt => !attempt.correct).length;
   const primary = plan ? count === 5 ? 'Concluir treino' : 'Próxima atividade' : phase && next ? 'Próxima atividade' : phase ? 'Concluir percurso' : 'Jogar novamente';
-  app.innerHTML = `<section class="activity-card result-card"><div class="result-mark" aria-hidden="true">✓</div><h1>${plan && count === 5 ? 'Treino concluído!' : 'Muito bem!'}</h1><p>${plan && count === 5 ? 'Parabéns! Você concluiu o treino de hoje.' : 'Você concluiu esta atividade no seu ritmo.'}</p><p class="result-stars" aria-label="${session.stars} estrelas recebidas"><span aria-hidden="true">${'★'.repeat(session.stars)}</span></p><p class="result-score">${correct} acertos em ${total} tentativas</p>${plan && count < 5 ? `<p>Atividade ${count} de 5 concluída.</p>` : phase && !next ? '<p>Você concluiu todo o percurso deste jogo.</p>' : ''}<div class="actions result-actions"><button id="result-next">${primary}</button><button class="secondary" id="repeat-activity">Tentar novamente</button><a class="quiet-link" href="#/atividades">Sair do jogo</a></div></section>`;
+  app.innerHTML = `<section class="activity-card result-card" data-game-theme="${game.id}"><div class="result-mark" aria-hidden="true">✓</div><h1>${plan && count === 5 ? 'Treino concluído!' : phase && !next ? 'Percurso concluído!' : 'Muito bem!'}</h1><p>${plan && count === 5 ? 'Parabéns! Você concluiu o treino de hoje.' : phase && !next ? 'Parabéns! Você concluiu as 3 fases deste jogo.' : 'Você concluiu esta atividade no seu ritmo.'}</p><p class="result-stars" aria-label="${session.stars} estrelas recebidas"><span aria-hidden="true">${'★'.repeat(session.stars)}</span></p><p class="result-score"><strong>Pontuação:</strong> ${correct} acertos</p><p>${total} tentativas realizadas.</p>${plan && count < 5 ? `<p>Atividade ${count} de 5 concluída.</p>` : ''}<div class="actions result-actions"><button id="result-next">${primary}</button>${phase || plan ? '<button class="secondary" id="repeat-activity">Jogar novamente</button>' : ''}<a class="quiet-link" href="#/atividades">Sair do jogo</a></div></section>`;
   app.querySelector('#result-next').addEventListener('click', () => {
     if (plan) {
       if (count === 5) navigate('#/atividades');
@@ -222,7 +234,7 @@ function renderResult(game, phase, session) {
     else if (phase) navigate('#/atividades');
     else startActivity(game, null, null, app.querySelector('#result-next'));
   });
-  app.querySelector('#repeat-activity').addEventListener('click', event => startActivity(game, phase, null, event.currentTarget));
+  app.querySelector('#repeat-activity')?.addEventListener('click', event => startActivity(game, phase, null, event.currentTarget));
   finishView();
 }
 function renderStorageStatus() {
@@ -282,7 +294,12 @@ window.addEventListener('hashchange', () => {
     renderRoute();
   }
 });
+document.querySelector('.skip-link').addEventListener('click', event => {
+  event.preventDefault();
+  app.focus({ preventScroll: true });
+  app.scrollIntoView?.({ block: 'start' });
+});
 window.addEventListener('storage-status', renderStorageStatus);
-navLinks.forEach((link, index) => link.insertAdjacentHTML('afterbegin', renderIcon(['situations', 'memory', 'sequence', 'routine'][index])));
+navLinks.forEach((link, index) => link.insertAdjacentHTML('afterbegin', renderIcon(['home', 'activities', 'evolution', 'settings'][index])));
 getProgress(); applyPreferences(); renderRoute(); renderStorageStatus();
 export { app, renderHome };

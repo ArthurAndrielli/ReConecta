@@ -1,19 +1,24 @@
 import { createSession, recordSessionAttempt, finishSession, abandonSession, checkpointSession } from './storage.js';
 import { showDialog } from './ui/dialog.js';
 import { escapeHTML, focusHeading } from './utils/dom.js';
+import { objectivesFor } from './phases/objectives.js';
 
 export function startGameSession(container, game, context, render, onResult, onExit, onRestart) {
   const session = createSession({ ...context, gameId: game.id, contentIds: context.content.map(c => c.id) });
   if (!session) return null;
   let engine = null, roundIndex = 0, elapsed = 0, started = performance.now(), paused = false, destroyed = false, finished = false;
   let serial = 0, roundSolved = false, roundErrors = 0, retry = null, dialogPending = false;
-  const objectives = context.content.flatMap(content => game.id === 'memory' ? content.items.map(id => `${content.id}:${id}`)
-    : game.id === 'association' ? content.pairs.map((_, i) => `${content.id}:${i}`)
-    : game.id === 'tapOnly' ? content.targets.map(id => `${content.id}:${id}`) : [content.id]);
+  const solvedObjectives = new Set();
+  const objectives = objectivesFor(context.content);
   const activeTime = () => elapsed + (paused || finished || destroyed ? 0 : performance.now() - started);
   const message = (text, type = '') => {
     const feedback = container.querySelector('#feedback');
     if (feedback) { feedback.textContent = text; feedback.dataset.type = type; }
+  };
+  const updateProgress = () => {
+    const progress = container.querySelector('.activity-progress progress');
+    progress.value = solvedObjectives.size;
+    progress.setAttribute('aria-label', `${solvedObjectives.size} de ${objectives.length} objetivos concluídos`);
   };
   function pause() {
     if (paused || destroyed || finished) return;
@@ -47,25 +52,31 @@ export function startGameSession(container, game, context, render, onResult, onE
   function mountRound() {
     engine?.destroy?.(); roundSolved = false; roundErrors = 0; retry = null;
     const content = context.content[roundIndex];
-    const overall = context.mode === 'daily' ? `Treino de Hoje · Atividade ${context.trainingPosition || ''} de 5` : context.phase ? 'Seu percurso' : 'Prática livre';
-    container.innerHTML = `<section class="activity-card"><header class="game-header"><button class="quiet-button" id="back-home" aria-label="Sair de ${escapeHTML(game.name)}">← Sair</button><div><h1>${escapeHTML(game.name)}</h1><p class="eyebrow">${overall}</p></div><button class="secondary" id="pause-game">Pausar</button></header><div id="game-interaction"><div class="activity-progress"><span>${context.content.length === 3 ? `Desafio ${roundIndex + 1} de 3` : 'Encontre todos os pares'}</span><progress value="${roundIndex + 1}" max="${context.content.length}" aria-label="Progresso desta atividade"></progress></div><h2 class="game-command" data-command>${escapeHTML(content.prompt || context.phase?.instruction || game.description)}</h2><div id="game-board"></div><p id="feedback" class="feedback" role="status" aria-atomic="true"></p><div class="actions"><button id="continue-round" hidden>Continuar</button><button id="retry-round" hidden>Tentar novamente</button><button class="secondary" id="hint">Preciso de uma dica</button><button class="quiet-button" id="restart">Recomeçar atividade</button></div></div></section>`;
+    const overall = context.mode === 'daily' ? `Treino de Hoje · Atividade ${context.trainingPosition || ''} de 5`
+      : context.phase ? `Fase ${context.phase.ordinal} de ${context.phaseTotal}` : 'Prática livre';
+    container.innerHTML = `<section class="activity-card" data-game-theme="${escapeHTML(game.id)}"><header class="game-header"><button class="quiet-button" id="back-home" aria-label="Sair de ${escapeHTML(game.name)}">← Sair</button><div><h1>${escapeHTML(game.name)}</h1><p class="eyebrow">${overall}</p></div><button class="secondary" id="pause-game">Pausar</button></header><div id="game-interaction"><div class="activity-progress"><span>${context.content.length === 3 ? `Desafio ${roundIndex + 1} de 3` : 'Encontre todos os pares'}</span><progress value="${solvedObjectives.size}" max="${objectives.length}" aria-label="Progresso desta atividade"></progress></div><h2 class="game-command" data-command>${escapeHTML(content.prompt || context.phase?.instruction || game.description)}</h2><div id="game-board"></div><p id="feedback" class="feedback" role="status" aria-atomic="true"></p><div class="actions"><button id="continue-round" hidden>Continuar</button><button id="retry-round" hidden>Tentar novamente</button><button class="secondary" id="hint">Preciso de uma dica</button><button class="quiet-button" id="restart">Recomeçar atividade</button></div></div></section>`;
     const isActive = () => !paused && !destroyed && !finished;
+    updateProgress();
     engine = render(container.querySelector('#game-board'), {
       isActive, message,
+      setCommand(text) { container.querySelector('[data-command]').textContent = text; },
       onAttempt(correct, objectiveId) {
         if (!isActive() || roundSolved) return false;
         const accepted = recordSessionAttempt(session.id, { id: `${session.id}:${++serial}`, challengeId: content.id, objectiveId, correct }, activeTime());
+        if (correct && accepted) { solvedObjectives.add(objectiveId); updateProgress(); }
         if (!correct && accepted) { roundErrors++; if (roundErrors >= 2) container.querySelector('#hint').classList.add('hint-available'); }
         return accepted;
       },
       onRetry(callback, label = 'Tentar novamente') {
         if (!isActive()) return;
-        retry = callback; message(roundErrors >= 2 ? 'Vamos tentar novamente. Você também pode pedir uma dica.' : 'Vamos tentar novamente.', 'help');
+        retry = callback; message(roundErrors >= 2 ? 'Ainda não. Vamos tentar novamente. Você também pode pedir uma dica.' : 'Ainda não. Toque em “Tentar novamente” para escolher outra resposta.', 'retry');
         const button = container.querySelector('#retry-round'); button.hidden = false; button.textContent = label; button.focus();
       },
       onComplete(text = 'Muito bem! Você conseguiu.') {
         if (!isActive() || roundSolved) return;
-        roundSolved = true; message(text, 'success');
+        roundSolved = true; message(text || 'Muito bem! Você conseguiu.', 'success');
+        container.querySelector('#hint').disabled = true;
+        container.querySelector('#hint').classList.remove('hint-available');
         const button = container.querySelector('#continue-round');
         button.hidden = false; button.textContent = roundIndex === context.content.length - 1 ? 'Concluir atividade' : 'Próximo desafio'; button.focus();
       }

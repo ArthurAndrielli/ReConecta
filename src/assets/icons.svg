@@ -1,4 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></symbol>
+  <symbol id="activities" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="evolution" viewBox="0 0 24 24"><path d="M4 3v17h17M8 15l4-5 4 2 5-7"/></symbol>
+  <symbol id="settings" viewBox="0 0 24 24"><path d="M4 7h3m6 0h7M4 17h9m6 0h1"/><circle cx="10" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></symbol>
   <symbol id="memory" viewBox="0 0 24 24"><rect x="5" y="5" width="10" height="13" rx="2"/><rect x="9" y="3" width="10" height="13" rx="2"/><path d="M12 8h4M12 11h3"/></symbol>
   <symbol id="whatDidYouSee" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
   <symbol id="word" viewBox="0 0 24 24"><path d="m5 6 4 4m0-4-4 4M13 7h6M13 12h6M5 17h14"/></symbol>

@@ -1,5 +1,7 @@
 ReConecta — Design visual, interação e arquitetura
 
+> Nota de vigência (17/09/2026): o mapa e o banco atuais usam 3 fases progressivas por jogo. A descrição de 20 fases abaixo permanece apenas como histórico da revisão anterior.
+
 Versão: 3.0 · Fases, conteúdo e progressão do ReConecta
 Data: 16/09/2026
 Base funcional: requirements.md

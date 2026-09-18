@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { phaseCatalog } from '../src/js/phases/catalog.js';
 import { getPhaseContent } from '../src/js/phases/content.js';
+import { objectById } from '../src/js/phases/objects.js';
 import { solve } from './game-helpers.mjs';
 
 const modules = { memory: 'memory', whatDidYouSee: 'whatDidYouSee', word: 'wordBuilder', image: 'imageWord',
@@ -12,7 +13,8 @@ const engines = Object.fromEntries(await Promise.all(Object.entries(modules).map
 const dom = new JSDOM('<main></main>', { url: 'http://localhost:4173/' });
 globalThis.window = dom.window; globalThis.document = dom.window.document;
 
-test('play all 240 phases (640 boards/rounds), with manual retries and duplicate clicks', () => {
+test('play all 36 phases (96 boards/rounds), with manual retries and duplicate clicks', () => {
+  const gamesWithArtwork = new Set();
   for (const phase of phaseCatalog) for (const content of getPhaseContent(phase)) {
     const root = document.querySelector('main');
     let completed = 0, retry = null, active = true;
@@ -27,6 +29,12 @@ test('play all 240 phases (640 boards/rounds), with manual retries and duplicate
       onRetry: callback => { retry = callback; },
       message() {}
     }, { content, level: phase.level, preferences: { observationMode: 'self-paced' } });
+    const artwork = [...root.querySelectorAll('.object-picture use')];
+    if (artwork.length) gamesWithArtwork.add(phase.gameId);
+    artwork.forEach(use => {
+      assert.match(use.getAttribute('href'), /^\.\/src\/assets\/game-objects-v2\.svg#object-\d+$/);
+      assert.doesNotMatch(use.getAttribute('href'), /game-card-icons|objects\.svg#/);
+    });
     instance?.hint?.();
     solve(root, phase.gameId, content, () => { if (retry) { const fn = retry; retry = null; fn(); } }, true);
     assert.equal(completed, 1, content.id);
@@ -37,6 +45,7 @@ test('play all 240 phases (640 boards/rounds), with manual retries and duplicate
     root.querySelectorAll('button').forEach(button => button.click());
     assert.equal(attempts.length, before, `destroyed callback: ${content.id}`);
   }
+  assert.deepEqual([...gamesWithArtwork].sort(), ['findObject', 'image', 'memory', 'odd', 'sequence', 'tapOnly', 'whatDidYouSee', 'word']);
 });
 test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only that pair', () => {
   const originalSet = globalThis.setTimeout, originalClear = globalThis.clearTimeout;
@@ -54,6 +63,8 @@ test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only 
       message() {}
     }, { content });
     const cards = [...root.querySelectorAll('[data-index]')];
+    assert.ok(cards.every(card => card.querySelector('.memory-card-front').getAttribute('aria-hidden') === 'true'));
+    assert.ok(cards.every(card => card.querySelector('svg').getAttribute('aria-hidden') === 'true'));
     const byPair = new Map();
     cards.forEach((card, index) => {
       const href = card.querySelector('use').getAttribute('href');
@@ -61,7 +72,12 @@ test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only 
       byPair.get(href).push(index);
     });
     const [firstPair, secondPair] = [...byPair.values()];
-    cards[firstPair[0]].click(); cards[secondPair[0]].click();
+    const firstCard = cards[firstPair[0]];
+    const firstId = firstCard.querySelector('use').getAttribute('href').split('#').at(-1);
+    assert.doesNotMatch(firstCard.getAttribute('aria-label'), new RegExp(objectById[firstId].label, 'i'));
+    firstCard.click();
+    assert.match(firstCard.getAttribute('aria-label'), new RegExp(objectById[firstId].label, 'i'));
+    cards[secondPair[0]].click();
     assert.equal(pending.delay, 900);
     assert.ok(cards[firstPair[0]].classList.contains('is-open'));
     assert.ok(cards[secondPair[0]].classList.contains('is-open'));
@@ -84,20 +100,60 @@ test('memory keeps a wrong pair open for 900 ms, locks clicks, then closes only 
     assert.equal(cleared, 42, 'destroy must clear a pending mismatch timer');
   } finally { globalThis.setTimeout = originalSet; globalThis.clearTimeout = originalClear; }
 });
-test('observation timer uses 12/10/8/6 seconds, pauses and is removed on destroy', () => {
+test('observation timer uses 12/9/6 seconds, pauses and is removed on destroy', () => {
   const originalSet = globalThis.setTimeout, originalClear = globalThis.clearTimeout;
   const pending = new Map(); let id = 0;
   globalThis.setTimeout = (callback, delay) => { pending.set(++id, { callback, delay }); return id; };
   globalThis.clearTimeout = id => pending.delete(id);
   try {
-    for (let level = 1; level <= 4; level++) {
+    for (let level = 1; level <= 3; level++) {
       const content = getPhaseContent(phaseCatalog.find(p => p.gameId === 'whatDidYouSee' && p.level === level))[0];
       const instance = engines.whatDidYouSee(document.querySelector('main'), { isActive: () => true, message() {} },
         { content, level, preferences: { observationMode: 'suggested-time' } });
-      assert.equal([...pending.values()][0].delay, [12000, 10000, 8000, 6000][level - 1]);
+      assert.equal([...pending.values()][0].delay, [12000, 9000, 6000][level - 1]);
       instance.pause(); assert.equal(pending.size, 0);
       instance.resume(); instance.resume(); assert.equal(pending.size, 1);
       instance.destroy(); assert.equal(pending.size, 0);
     }
   } finally { globalThis.setTimeout = originalSet; globalThis.clearTimeout = originalClear; }
+});
+
+test('memory pause preserves the remaining observation time and never moves focus behind a dialog', t => {
+  let now = 0, timerId = 0, active = true;
+  const timers = new Map();
+  t.mock.method(performance, 'now', () => now);
+  t.mock.method(globalThis, 'setTimeout', (callback, delay) => { timers.set(++timerId, { callback, delay }); return timerId; });
+  t.mock.method(globalThis, 'clearTimeout', id => timers.delete(id));
+  const root = document.querySelector('main');
+  const content = getPhaseContent(phaseCatalog.find(p => p.gameId === 'memory'))[0];
+  const instance = engines.memory(root, { isActive: () => active, onAttempt: () => true, message() {} }, { content });
+  const cards = [...root.querySelectorAll('[data-index]')];
+  const first = cards[0], other = cards.find(card => card.querySelector('use').getAttribute('href') !== first.querySelector('use').getAttribute('href'));
+  first.click(); other.click();
+  now = 300; active = false; instance.pause();
+  assert.equal(timers.size, 0);
+  assert.equal(root.querySelectorAll('.is-open').length, 2);
+  now = 10000; active = true; instance.resume(); instance.resume();
+  assert.equal(timers.size, 1);
+  const pending = [...timers.values()][0];
+  assert.equal(pending.delay, 600, 'paused time must not consume observation time');
+  pending.callback(); timers.clear();
+  assert.equal(root.querySelectorAll('.is-open').length, 0);
+  assert.equal(document.activeElement, other);
+  first.click(); other.click(); instance.destroy();
+  assert.equal(timers.size, 0);
+});
+
+test('observation instruction changes only when images are hidden', () => {
+  const root = document.querySelector('main');
+  const content = getPhaseContent(phaseCatalog.find(p => p.gameId === 'whatDidYouSee'))[0];
+  const commands = [];
+  const instance = engines.whatDidYouSee(root, { isActive: () => true, message() {}, setCommand: text => commands.push(text) },
+    { content, level: 1, preferences: { observationMode: 'self-paced' } });
+  assert.equal(commands[0], 'Observe e memorize os objetos.');
+  assert.match(root.textContent, /Observe com calma/);
+  root.querySelector('#observe-done').click();
+  assert.equal(commands.at(-1), content.prompt);
+  assert.equal(root.querySelector('.observation-area'), null);
+  instance.destroy();
 });

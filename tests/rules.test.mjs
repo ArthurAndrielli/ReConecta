@@ -30,7 +30,7 @@ test('adaptive thresholds are 85 percent inclusive and below 50 percent, with li
     assert.equal(progress.levelState.memory.level, expected);
     assert.deepEqual(progress.levelState.memory.completedSinceEvaluation, []);
   }
-  for (const [level, correct] of [[1, 0], [4, 20]]) {
+  for (const [level, correct] of [[1, 0], [3, 20]]) {
     const progress = { levelState: { memory: { level, completedSinceEvaluation: [] } }, sessions: [] };
     for (let i = 0; i < 3; i++) { const s = session('s' + i, 'memoria', correct, 20); progress.sessions.push(s); evaluateLevel(progress, 'memory', s); }
     assert.equal(progress.levelState.memory.level, level);
@@ -60,9 +60,9 @@ test('daily plans freeze slots, keep their original date and choose oldest compl
   const progress = getProgress();
   progress.phaseProgress.memory = Object.fromEntries(getGamePhases('memory').map(p => [p.ordinal, {
     completed: true, bestStars: 3, firstCompletedAt: '2026-09-01T12:00:00Z',
-    lastCompletedAt: p.ordinal === 7 ? '2026-09-01T12:00:00Z' : '2026-09-15T12:00:00Z'
+    lastCompletedAt: p.ordinal === 2 ? '2026-09-01T12:00:00Z' : '2026-09-15T12:00:00Z'
   }]));
-  assert.equal(chooseDailyPhase(progress, 'memory').ordinal, 7);
+  assert.equal(chooseDailyPhase(progress, 'memory').ordinal, 2);
   saveProgress(progress);
   assert.deepEqual(getDailyPlan('2026-09-16').slots.map(s => s.phaseId), original.slots.map(s => s.phaseId));
 });
@@ -77,6 +77,19 @@ test('legacy daily migration preserves completed slots and populates only pendin
   assert.equal(plan.slots[2].phaseId, 'sequence-p01');
   assert.deepEqual(getDailyPlan('2026-09-14'), plan);
   assert.equal(getProgress().atividades, 0);
+});
+test('pending daily slots referencing removed phases are reassigned', () => {
+  resetProgress();
+  const progress = getProgress();
+  progress.dailyPlans['2026-09-13'] = { dateKey: '2026-09-13', slots: [
+    { id: '1', gameId: 'memory', phaseId: 'memory-p20', contentVersion: 1, completedSessionId: null },
+    { id: '2', gameId: 'word', completedSessionId: 'done' },
+    { id: '3', gameId: 'sequence', completedSessionId: 'done' },
+    { id: '4', gameId: 'findObject', completedSessionId: 'done' },
+    { id: '5', gameId: 'situations', completedSessionId: 'done' }
+  ] };
+  saveProgress(progress);
+  assert.equal(getDailyPlan('2026-09-13').slots[0].phaseId, 'memory-p01');
 });
 test('date key uses local year, month and day', () => {
   assert.equal(localDateKey(new Date(2026, 8, 16, 23, 59)), '2026-09-16');

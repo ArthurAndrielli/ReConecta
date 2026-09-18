@@ -43,15 +43,31 @@ for (const theme of ['light', 'dark']) {
   }
   const pairs = [
     ['--color-text', '--color-bg'], ['--color-text', '--color-surface'], ['--color-text-muted', '--color-surface-soft'],
-    ['--color-surface', '--color-primary'], ['--color-on-hero', '--color-hero'], ['--color-hero-muted', '--color-hero'],
+    ['--color-on-primary', '--color-primary'], ['--color-on-primary', '--color-primary-hover'], ['--color-on-primary', '--color-primary-active'],
+    ['--color-primary-strong', '--color-surface'], ['--color-primary-strong', '--color-primary-soft'],
+    ['--color-primary-strong', '--color-navigation-active'], ['--color-text', '--color-navigation-active'],
+    ['--color-on-hero', '--color-hero'], ['--color-hero-muted', '--color-hero'],
     ['--color-on-highlight', '--color-highlight'], ['--color-success', '--color-success-soft'],
+    ['--color-text', '--color-surface-soft'], ['--color-text-muted', '--color-bg'],
+    ['--color-text-muted', '--color-surface'], ['--color-primary-strong', '--color-bg'],
     ['--color-help', '--color-help-soft'], ['--color-danger', '--color-danger-soft'],
-    ...['memoria', 'linguagem', 'atencao', 'raciocinio', 'associacao', 'cotidiano'].map(id => [`--category-${id}-fg`, `--category-${id}-bg`])
+    ...['memoria', 'linguagem', 'atencao', 'raciocinio', 'associacao', 'cotidiano'].map(id => [`--category-${id}-fg`, `--category-${id}-bg`]),
+    ...['memory', 'seen', 'word', 'image', 'odd', 'sequence', 'routine', 'find', 'tap', 'association', 'situations', 'sentence']
+      .flatMap(id => [
+        [`--game-${id}-ink`, `--game-${id}-bg`], [`--game-${id}-ink`, `--game-${id}-soft`],
+        [`--game-${id}-ink`, '--color-surface'], [`--game-${id}-accent`, '--color-surface']
+      ])
   ];
   for (const [foreground, background] of pairs) {
     const contrast = ratio(tokens[foreground], tokens[background]);
     assert.ok(contrast >= 4.5, `${theme}: ${foreground}/${background}: ${contrast}`);
     minimum = Math.min(minimum, contrast);
+  }
+  for (const [foreground, background] of [
+    ['--color-control-border', '--color-surface'], ['--color-focus', '--color-surface'],
+    ['--color-focus', '--color-bg'], ['--color-control-border', '--color-surface-soft']
+  ]) {
+    assert.ok(ratio(tokens[foreground], tokens[background]) >= 3, `${theme}: control/focus contrast ${foreground}/${background}`);
   }
 }
 process.stdout.write(`Project checks: ${scripts} scripts, ${imports} import references, valid CSS.\nProduction files: ${bytes} bytes. Minimum checked token contrast: ${minimum.toFixed(2)}:1.\nThis is not a browser rendering/accessibility audit.\n`);

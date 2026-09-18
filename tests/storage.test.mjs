@@ -86,7 +86,17 @@ test('legacy migration, reload interruption and reset preserve unrelated data/pr
   assert.equal(loaded.getPreferences().appearance, 'dark');
   assert.equal(loaded.getProgress().atividades, 0);
 });
-test('all 240 phases can progress through every block boundary and preserve maximum totals', async () => {
+test('migration removes retired phases and maps the former fourth level to difficult', async () => {
+  const completedAt = '2026-09-01T12:00:00Z';
+  const s = await fresh({ schemaVersion: 3, sessions: [], dailyPlans: {}, atividades: 0, acertos: 0, erros: 0,
+    tentativas: 0, estrelas: 0, tempoRespostaTotal: 0, nivelAtual: 4,
+    phaseProgress: { memory: { 4: { completed: true, bestStars: 3, completedAt } } },
+    levelState: { memory: { level: 4, completedSinceEvaluation: [] } } });
+  assert.deepEqual(s.getProgress().phaseProgress.memory, {});
+  assert.equal(s.getProgress().nivelAtual, 3);
+  assert.equal(s.getProgress().levelState.memory.level, 3);
+});
+test('all 36 phases can progress through every difficulty and preserve maximum totals', async () => {
   const s = await fresh();
   for (const phase of phaseCatalog) {
     const session = s.createSession({ gameId: phase.gameId, mode: 'phase', phaseId: phase.id });
@@ -95,8 +105,8 @@ test('all 240 phases can progress through every block boundary and preserve maxi
     assert.ok(s.finishSession(session.id, { objectives: ['goal'] }), phase.id);
   }
   const progress = s.getProgress();
-  assert.equal(progress.atividades, 240); assert.equal(progress.estrelas, 720);
-  for (const id of new Set(phaseCatalog.map(p => p.gameId))) assert.deepEqual([getPhaseSummary(progress, id).completed, getPhaseSummary(progress, id).stars], [20, 60]);
+  assert.equal(progress.atividades, 36); assert.equal(progress.estrelas, 108);
+  for (const id of new Set(phaseCatalog.map(p => p.gameId))) assert.deepEqual([getPhaseSummary(progress, id).completed, getPhaseSummary(progress, id).stars], [3, 9]);
 });
 test('daily slot is credited by matching session only, in the same saved object', async () => {
   const s = await fresh();

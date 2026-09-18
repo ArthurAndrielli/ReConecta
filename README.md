@@ -2,6 +2,8 @@
 
 Aplicação acadêmica de atividades cognitivas e de linguagem. HTML, CSS e JavaScript com ES Modules, sem framework, backend ou conta. Os dados ficam neste navegador; a aplicação não faz avaliação clínica.
 
+A revisão de 18/09/2026 está em [AUDITORIA.md](AUDITORIA.md), com prioridades, correções e pendências. Veja [MELHORIAS_REALIZADAS.md](MELHORIAS_REALIZADAS.md) para o resumo das mudanças e os 33 testes aprovados. A verificação gráfica em navegador permanece pendente por indisponibilidade do ambiente.
+
 ## Executar
 
 Abra `index.html` com o **Live Server** do VS Code ou, com Python instalado, execute na pasta do projeto:
@@ -14,7 +16,7 @@ Acesse **http://127.0.0.1:4173**. Use um servidor HTTP; abrir o arquivo diretame
 
 ## Funcionalidades
 
-- 12 jogos com 20 fases cada: 240 fases, 600 desafios e 40 tabuleiros.
+- 12 jogos com 3 fases cada (Fácil, Médio e Difícil): 36 fases, 90 desafios e 6 tabuleiros.
 - Mapa com desbloqueio por conclusão, repetição e melhores estrelas.
 - Prática livre com dificuldade independente por jogo.
 - Treino diário de cinco atividades, com seleção persistida e retomada da etapa pendente.
@@ -41,7 +43,7 @@ node src/js/phases/regression.mjs
 
 No PowerShell com execução de scripts desabilitada, use `npm.cmd`.
 
-Os testes usam os módulos reais e jsdom. Cobrem os 12 jogos e as 240 fases, integração das telas, sessões, progresso, treino, migrações e falhas. **jsdom não valida renderização, responsividade ou compatibilidade entre navegadores.** As evidências e pendências estão em [docs/review.md](docs/review.md).
+Os testes usam os módulos reais e jsdom. Cobrem os 12 jogos e as 36 fases, integração das telas, sessões, progresso, treino, migrações e falhas. **jsdom não valida renderização, responsividade ou compatibilidade entre navegadores.** As evidências e pendências estão em [docs/review.md](docs/review.md).
 
 ## Estrutura
 
