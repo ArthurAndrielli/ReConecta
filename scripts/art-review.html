@@ -1,0 +1,31 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../"><link rel="stylesheet" href="src/css/style.css"><title>ReConecta — revisão das imagens</title>
+<style>body{padding:16px}main{max-width:1050px;margin:auto}.atlas{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.atlas .object-picture{padding:8px;border:1px solid #bcc9d0;border-radius:12px}.atlas svg{width:128px}#report{font-size:14px}@media(max-width:600px){.atlas{grid-template-columns:repeat(3,1fr)}} </style>
+<main><h1 id="title">Revisão das imagens</h1><div id="game"></div><p id="report"></p></main>
+<script type="module">
+import { objects } from './src/js/phases/objects.js';
+import { picture } from './src/js/utils/contentView.js';
+import { phaseCatalog } from './src/js/phases/catalog.js';
+import { getPhaseContent } from './src/js/phases/content.js';
+import { games } from './src/js/data.js';
+const q=new URLSearchParams(location.search), root=document.querySelector('#game');
+const modules={memory:'memory',whatDidYouSee:'whatDidYouSee',word:'wordBuilder',image:'imageWord',odd:'oddOneOut',sequence:'sequence',routine:'organizeRoutine',findObject:'findObject',tapOnly:'tapOnly',association:'objectAssociation',situations:'dailySituations',sentence:'completeSentence'};
+if(q.has('game')){
+  const id=q.get('game'), phase=phaseCatalog.find(p=>p.gameId===id&&p.ordinal===+(q.get('phase')||1));
+  const content=getPhaseContent(phase)[+(q.get('round')||0)];
+  document.querySelector('#title').textContent=games.find(g=>g.id===id).name+' — '+phase.title;
+  const {render}=await import(`./src/js/games/${modules[id]}.js`);
+  render(root,{isActive:()=>true,onAttempt:()=>true,onComplete(){},message(){},onRetry(){}},{content,preferences:{observationMode:'self-paced'}});
+  if(id==='memory'){
+    const groups=new Map();
+    for(const card of root.querySelectorAll('button[data-index]')){const key=card.querySelector('use').getAttribute('href');if(!groups.has(key))groups.set(key,[]);groups.get(key).push(card)}
+    for(const cards of groups.values())cards.forEach(card=>card.click());
+  }
+}else{
+  root.className='atlas';const page=+(q.get('page')||0);
+  root.innerHTML=objects.slice(page*20,page*20+20).map(o=>picture(o.id)).join('');
+}
+await new Promise(resolve=>setTimeout(resolve,500));
+const overflow=document.documentElement.scrollWidth>innerWidth;
+document.querySelector('#report').textContent=`${innerWidth}px · ${root.querySelectorAll('use').length} imagens · ${overflow?'ERRO: transbordamento':'sem transbordamento horizontal'}`;
+document.body.dataset.ready='true';
+</script></html>
